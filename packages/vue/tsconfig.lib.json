@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "temp",
+        "rootDir": "src",
+        "emitDeclarationOnly": true,
+        "declarationDir": "temp/types",
+        "allowJs": true,
+        "paths": {
+            "@fkui/custom-partner-vue": ["./src/index.ts"]
+        },
+        "skipLibCheck": true
+    },
+    "include": ["src/**/*.ts", "src/**/*.vue"],
+    "exclude": ["src/@types/cypress.d.ts", "src/stub.d.ts"]
+}

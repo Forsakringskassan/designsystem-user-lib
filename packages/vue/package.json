@@ -1,0 +1,75 @@
+{
+  "name": "@fkui/custom-partner-vue",
+  "version": "0.0.0",
+  "description": "Vue implementation of custom partner components",
+  "keywords": [
+    "fkui",
+    "designsystem",
+    "vue"
+  ],
+  "homepage": "https://forsakringskassan.github.io/custom-partner-ds/",
+  "bugs": "https://github.com/Forsakringskassan/custom-partner-ds/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Forsakringskassan/custom-partner-ds.git",
+    "directory": "packages/vue"
+  },
+  "license": "MIT",
+  "author": "Försäkringskassan",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "require": "./dist/cjs/index.cjs.js",
+      "import": "./dist/esm/index.esm.js"
+    }
+  },
+  "main": "dist/cjs/index.cjs.js",
+  "module": "dist/esm/index.esm.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prebuild": "run-s clean",
+    "build": "run-s build:lib build:dts build:api",
+    "build:api": "fk-api-extractor api-extractor.json",
+    "build:dts": "vue-tsc -b",
+    "build:lib": "fk-build-vue-lib",
+    "clean": "rimraf -g .jest-cache *.tsbuildinfo coverage dist public temp test-results",
+    "start": "vite --",
+    "test": "jest --coverage",
+    "unit": "jest",
+    "unit:watch": "jest --watch"
+  },
+  "jest": {
+    "globals": {
+      "vue-jest": {
+        "compilerOptions": {
+          "comments": false
+        }
+      }
+    },
+    "preset": "@forsakringskassan/jest-config-vue",
+    "setupFilesAfterEnv": [
+      "./jest.setup.ts"
+    ]
+  },
+  "devDependencies": {
+    "@fkui/vue": "5.37.1",
+    "@forsakringskassan/vite-lib-config": "2.0.3",
+    "@vue/test-utils": "2.4.6",
+    "flush-promises": "1.0.2",
+    "vite": "5.4.8",
+    "vue": "3.4.38"
+  },
+  "peerDependencies": {
+    "@babel/runtime": "^7",
+    "@fkui/vue": "^5",
+    "core-js": "^3.24",
+    "vue": "^3"
+  },
+  "engines": {
+    "node": ">= 20",
+    "npm": ">= 7"
+  }
+}

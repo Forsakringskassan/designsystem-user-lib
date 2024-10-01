@@ -1,0 +1,39 @@
+{
+  "name": "@fkui/custom-partner-design",
+  "version": "0.0.0",
+  "description": "custom partner design",
+  "keywords": [
+    "fkui",
+    "designsystem",
+    "css"
+  ],
+  "homepage": "https://forsakringskassan.github.io/custom-partner-ds/",
+  "bugs": "https://github.com/Forsakringskassan/custom-partner-ds/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Forsakringskassan/custom-partner-ds.git",
+    "directory": "packages/design"
+  },
+  "license": "MIT",
+  "author": "Försäkringskassan",
+  "main": "src/custom-partner.scss",
+  "files": [
+    "src"
+  ],
+  "devDependencies": {
+    "@fkui/css-variables": "5.37.0"
+  },
+  "peerDependencies": {
+    "@fkui/css-variables": "^5.37.0",
+    "sass": "^1.40"
+  },
+  "peerDependenciesMeta": {
+    "sass": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">= 20",
+    "npm": ">= 7"
+  }
+}

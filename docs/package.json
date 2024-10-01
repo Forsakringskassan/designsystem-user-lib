@@ -1,0 +1,25 @@
+{
+  "name": "docs",
+  "version": "0.0.0",
+  "private": true,
+  "homepage": "https://forsakringskassan.github.io/custom-partner-ds/",
+  "bugs": "https://github.com/Forsakringskassan/custom-partner-ds/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Forsakringskassan/custom-partner-ds.git",
+    "directory": "docs"
+  },
+  "scripts": {
+    "build": "vue-tsc -b",
+    "clean": "rimraf -g *.tsbuildinfo"
+  },
+  "dependencies": {
+    "@fkui/icon-lib-default": "5.37.0",
+    "@fkui/vue": "5.37.0"
+  },
+  "devDependencies": {
+    "@forsakringskassan/docs-generator": "2.4.0",
+    "cypress": "13.15.0",
+    "vue": "3.4.38"
+  }
+}
