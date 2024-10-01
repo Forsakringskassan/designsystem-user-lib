@@ -1,2 +1,2 @@
 import "@forsakringskassan/docs-generator/runtime";
-import "fk-icons/dist/f";
+import "@fkui/icon-lib-default/dist/f";
