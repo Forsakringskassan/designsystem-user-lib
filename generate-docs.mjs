@@ -1,9 +1,5 @@
-import fs from "node:fs/promises";
 import path from "node:path";
 import module from "node:module";
-import { fileURLToPath } from "node:url";
-import { execSync } from "node:child_process";
-import isCI from "is-ci";
 import {
     Generator,
     searchProcessor,
@@ -15,13 +11,6 @@ import config from "./docs.config.js";
 const require = module.createRequire(import.meta.url);
 
 const pkg = require("./package.json");
-
-const rootDir = path.dirname(fileURLToPath(import.meta.url));
-
-const fkuiDesign = path.relative(
-    rootDir,
-    path.dirname(require.resolve("@fkui/design")),
-);
 
 const docs = new Generator({
     site: {

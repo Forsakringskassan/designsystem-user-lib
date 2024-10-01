@@ -55,15 +55,24 @@
     ]
   },
   "devDependencies": {
+    "@fkui/css-variables": "5.37.0",
+    "@fkui/design": "5.37.0",
+    "@fkui/icon-lib-default": "5.37.0",
+    "@fkui/logic": "5.37.0",
     "@fkui/vue": "5.37.1",
     "@forsakringskassan/vite-lib-config": "2.0.3",
     "@vue/test-utils": "2.4.6",
     "flush-promises": "1.0.2",
+    "html-validate": "8.24.0",
     "vite": "5.4.8",
     "vue": "3.4.38"
   },
   "peerDependencies": {
     "@babel/runtime": "^7",
+    "@fkui/css-variables": "^5.36.0",
+    "@fkui/design": "^5.36.0",
+    "@fkui/icon-lib-default": "^5.36.0",
+    "@fkui/logic": "^5.36.0",
     "@fkui/vue": "^5.36.0",
     "core-js": "^3.24",
     "vue": "^3"
