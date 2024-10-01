@@ -13,5 +13,5 @@
         "skipLibCheck": true
     },
     "include": ["src/**/*.ts", "src/**/*.vue"],
-    "exclude": ["src/@types/cypress.d.ts", "src/stub.d.ts"]
+    "exclude": ["src/stub.d.ts"]
 }

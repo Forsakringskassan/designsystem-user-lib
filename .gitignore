@@ -15,10 +15,6 @@ temp/
 coverage/
 jest-junit.xml
 
-# Cypress output
-cypress/screenshots/
-test-results/
-
 # Local env files
 .env.local
 .env.*.local

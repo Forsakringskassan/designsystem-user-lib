@@ -21,7 +21,6 @@
     /* this is also needed for vue3-jest to allow typescript to handle *.vue
      * files imported from the spec-files */
     "include": ["src/@types/*.ts", "src/stub.ts"],
-    "exclude": ["src/@types/cypress.d.ts"],
     "references": [
         {
             "path": "./tsconfig.lib.json"

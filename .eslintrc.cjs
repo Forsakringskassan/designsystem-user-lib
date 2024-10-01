@@ -47,21 +47,6 @@ module.exports = {
         },
 
         {
-            files: ["*.cy.[jt]s", "cypress/support/**/*.[jt]s"],
-            extends: ["@forsakringskassan/cypress"],
-        },
-
-        {
-            /* E2E tests imports pageobjects from monorepo packages but the
-             * import plugin wont resolve them, yielding lots of false
-             * positives */
-            files: "cypress/**/*.[jt]s",
-            rules: {
-                "import/no-extraneous-dependencies": "off",
-            },
-        },
-
-        {
             /* These legacy files points to compiled files which may or may not
              * exist yet */
             files: "packages/*/*.d.ts",
