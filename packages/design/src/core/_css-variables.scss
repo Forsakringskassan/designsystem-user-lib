@@ -6,9 +6,9 @@
     --f-text-color-button-standard: #6e0e50;
     --f-text-color-button-secondary: #6e0e50;
     --f-text-color-button-discrete: #6e0e50;
-    --f-text-color-button-discrete-disabled: rgba(110, 14, 80, 0.5);
-    --f-text-color-button-discrete-hover: rgba(110, 14, 80, 0.5);
-    --f-text-color-button-discrete-inverted-disabled: rgba(110, 14, 80, 0.25);
+    --f-text-color-button-discrete-disabled: rgb(110 14 80 / 50%);
+    --f-text-color-button-discrete-hover: rgb(110 14 80 / 50%);
+    --f-text-color-button-discrete-inverted-disabled: rgb(110 14 80 / 25%);
     --f-text-color-button-tertiary: #6e0e50;
     --f-text-color-button-tertiary-hover: #6e0e50;
     --f-icon-color-info: #6e0e50; // message-box, modal, tooltip
@@ -16,14 +16,14 @@
     --f-icon-color-expandable-panel: #6e0e50;
     --f-icon-color-expandable-paragraph: #6e0e50;
     --f-icon-color-wizard-step-done: #6e0e50; // wizard-step
-    --f-icon-color-success-background: rgba(110, 14, 80, 0.25);
+    --f-icon-color-success-background: rgb(110 14 80 / 25%);
     --f-background-input-hover: #f4f4f4; // select-field
     --f-background-input-selected: #6e0e50; // checkbox, radiobutton
     --f-background-heading-expandable-panel: #ffffff;
     --f-background-heading-expandable-panel-hover: #eeeeee;
     --f-background-expandable-panel: #fff9ec;
-    --f-background-button-standard: rgba(110, 14, 80, 0.5);
-    --f-background-button-standard-hover: rgba(110, 14, 80, 0.25);
+    --f-background-button-standard: rgb(110 14 80 / 50%);
+    --f-background-button-standard-hover: rgb(110 14 80 / 25%);
     --f-background-button-primary: #6e0e50;
     --f-background-button-primary-hover: #940e5c;
     --f-background-button-secondary: #ffffff;
@@ -33,11 +33,11 @@
     --f-background-grid-selected: #f7f7f7; // list, table
     --f-background-grid-hover: #f7f7f7; // list, table (also focus)
     --f-background-calendar-selected: #6e0e50;
-    --f-background-calendar-hover: rgba(110, 14, 80, 0.15);
-    --f-background-menu-vertical-highlight: rgba(110, 14, 80, 0.15);
-    --f-background-popupmenu-vertical-hover: rgba(110, 14, 80, 0.15);
-    --f-background-popupmenu-vertical-highlight: rgba(110, 14, 80, 0.15);
-    --f-background-dialogue-tree-hover: rgba(110, 14, 80, 0.15);
+    --f-background-calendar-hover: rgb(110 14 80 / 15%);
+    --f-background-menu-vertical-highlight: rgb(110 14 80 / 15%);
+    --f-background-popupmenu-vertical-hover: rgb(110 14 80 / 15%);
+    --f-background-popupmenu-vertical-highlight: rgb(110 14 80 / 15%);
+    --f-background-dialogue-tree-hover: rgb(110 14 80 / 15%);
     --f-border-color-input-inner-selected: #ffffff; // radiobutton
     --f-border-color-card: #dcdcdc; // Card
     --f-border-color-panel: #dcdcdc; // expandable-panel, static-panel palettfärg!?
@@ -47,8 +47,7 @@
     --f-border-color-grid: #dcdcdc; // list, table
     --f-border-color-expandable-panel-closed: #dcdcdc;
     --f-border-color-menu-horizontal: #6e0e50;
-    --f-border-color-menu-horizontal-hover: rgba(110, 14, 80, 0.5);
-
+    --f-border-color-menu-horizontal-hover: rgb(110 14 80 / 50%);
     --f-border-color-menu-horizontal-highlight: #6e0e50;
     --f-input-shadow-inset: none; //  Inner shadow input fields
     --f-font-family: "ExpFont", "NeueHass", "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans-serif;
@@ -58,13 +57,16 @@
     --f-font-size-h2: 1.9882rem; // Desktop h2, mobile h1
     --f-font-size-h3: 1.5811rem; // Desktop h4
     $_f-font-size-h4: 1.2574rem;
+
     --f-border-width-medium: 1px; // button, chip, input elemenents, expandable panel, expandable paragraph, static panel, tooltip, file-item, messagebox, modal
     $_f-border-radius-medium: 6px;
+
     --f-focus-box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #1b1e23, 0 0 0 6px #ffffff;
     --f-expandable-panel-heading-border-close: 1px solid #dcdcdc;
     --f-expandable-panel-heading-border-open: 1px solid #dcdcdc;
     --f-expandable-panel-heading-border-radius: 6px 6px 0 0;
     --f-button-shadow: none;
+
     $_f-button-default-padding-top: 0.8rem;
     $_f-button-default-padding-bottom: 0.8rem;
 }
