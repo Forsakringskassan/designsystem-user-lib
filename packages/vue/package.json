@@ -64,7 +64,7 @@
   },
   "peerDependencies": {
     "@babel/runtime": "^7",
-    "@fkui/vue": "^5",
+    "@fkui/vue": "^5.36.0",
     "core-js": "^3.24",
     "vue": "^3"
   },
