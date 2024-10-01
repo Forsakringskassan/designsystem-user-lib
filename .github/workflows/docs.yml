@@ -30,8 +30,8 @@ jobs:
               run: echo "VERSION=v$(npm pkg get version | jq -r)" | tee -a $GITHUB_ENV
             - name: Install dependencies
               run: npm ci
-            - name: Build (minimal)
-              run: npm exec lerna -- run --include-dependencies --scope=@fkui/vue --scope=@fkui/vue-labs build
+            - name: Build
+              run: npm run build
             - name: Build documentation
               run: npm run build:docs
             - name: Sanity check
