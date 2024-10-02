@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@forsakringskassan/docs-generator": "2.4.0",
+    "express": "4.21.0",
     "vue": "3.4.38"
   }
 }
