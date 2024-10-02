@@ -14,7 +14,7 @@ const pkg = require("./package.json");
 
 const docs = new Generator({
     site: {
-        name: "Custom partner Designsystem",
+        name: "Användaranpassat designsystem",
         lang: "sv",
     },
     outputFolder: "./public",
@@ -41,7 +41,7 @@ const docs = new Generator({
             },
         }),
 
-        topnavProcessor("docs/topmenu.json", "Custom partner designsystem"),
+        topnavProcessor("docs/topmenu.json", "Användaranpassat designsystem"),
     ],
     setupPath: path.resolve("docs/src/setup.ts"),
 });
