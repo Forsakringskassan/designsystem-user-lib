@@ -21,13 +21,15 @@
       "types": "./dist/types/index.d.ts",
       "require": "./dist/cjs/index.cjs.js",
       "import": "./dist/esm/index.esm.js"
-    }
+    },
+    "./htmlvalidate": "./htmlvalidate/index.js"
   },
   "main": "dist/cjs/index.cjs.js",
   "module": "dist/esm/index.esm.js",
   "types": "dist/types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "htmlvalidate"
   ],
   "scripts": {
     "prebuild": "run-s clean",

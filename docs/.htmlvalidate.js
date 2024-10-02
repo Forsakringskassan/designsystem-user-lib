@@ -1,6 +1,9 @@
 module.exports = {
-    extends: ["@fkui/vue:recommended"],
-    plugins: ["@fkui/vue/htmlvalidate"],
+    extends: ["@fkui/vue:recommended", "@fkui/custom-partner-vue:recommended"],
+    plugins: [
+        "@fkui/vue/htmlvalidate",
+        "@fkui/custom-partner-vue/htmlvalidate",
+    ],
 
     elements: [
         {
