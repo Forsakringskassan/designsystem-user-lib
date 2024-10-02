@@ -469,135 +469,6 @@
   border-bottom: var(--f-border-width-small) solid #ddddde;
 }
 
-pre code.hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 1em;
-}
-
-code.hljs {
-  padding: 3px 5px;
-}
-
-/*!
-  Theme: Default
-  Description: Original highlight.js style
-  Author: (c) Ivan Sagalaev <maniac@softwaremaniacs.org>
-  Maintainer: @highlightjs/core-team
-  Website: https://highlightjs.org/
-  License: see project LICENSE
-  Touched: 2021
-*/
-/*
-This is left on purpose making default.css the single file that can be lifted
-as-is from the repository directly without the need for a build step
-
-Typically this "required" baseline CSS is added by `makestuff.js` during build.
-*/
-pre code.hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 1em;
-}
-
-code.hljs {
-  padding: 3px 5px;
-}
-
-/* end baseline CSS */
-.hljs {
-  background: #F3F3F3;
-  color: #444;
-}
-
-/* Base color: saturation 0; */
-.hljs-subst {
-  /* default */
-}
-
-/* purposely ignored */
-.hljs-comment {
-  color: #697070;
-}
-
-.hljs-tag,
-.hljs-punctuation {
-  color: rgba(68, 68, 68, 0.6666666667);
-}
-
-.hljs-tag .hljs-name,
-.hljs-tag .hljs-attr {
-  color: #444;
-}
-
-.hljs-keyword,
-.hljs-attribute,
-.hljs-selector-tag,
-.hljs-meta .hljs-keyword,
-.hljs-doctag,
-.hljs-name {
-  font-weight: bold;
-}
-
-/* User color: hue: 0 */
-.hljs-type,
-.hljs-string,
-.hljs-number,
-.hljs-selector-id,
-.hljs-selector-class,
-.hljs-quote,
-.hljs-template-tag,
-.hljs-deletion {
-  color: #880000;
-}
-
-.hljs-title,
-.hljs-section {
-  color: #880000;
-  font-weight: bold;
-}
-
-.hljs-regexp,
-.hljs-symbol,
-.hljs-variable,
-.hljs-template-variable,
-.hljs-link,
-.hljs-selector-attr,
-.hljs-operator,
-.hljs-selector-pseudo {
-  color: #ab5656;
-}
-
-/* Language color: hue: 90; */
-.hljs-literal {
-  color: #695;
-}
-
-.hljs-built_in,
-.hljs-bullet,
-.hljs-code,
-.hljs-addition {
-  color: #397300;
-}
-
-/* Meta color: hue: 200 */
-.hljs-meta {
-  color: #1f7199;
-}
-
-.hljs-meta .hljs-string {
-  color: #38a;
-}
-
-/* Misc effects */
-.hljs-emphasis {
-  font-style: italic;
-}
-
-.hljs-strong {
-  font-weight: bold;
-}
-
 *,
 *::before,
 *::after {
@@ -2534,7 +2405,7 @@ input[type=search]:focus,
   background-repeat: no-repeat;
   background-position: center;
   padding: 0.8rem;
-  background-image: url("./images/fk-logo-primary-small.svg");
+  background-image: url("~@fkui/design/src/assets/images/fk-logo-primary-small.svg");
 }
 .page-header__logo--large {
   display: inline-block;
@@ -2542,7 +2413,7 @@ input[type=search]:focus,
   background-position: center;
   background-color: var(--f-background-pageheader-primary);
   padding: 0.8rem 6.195rem;
-  background-image: url("./images/fk-logo-primary-large.svg");
+  background-image: url("~@fkui/design/src/assets/images/fk-logo-primary-large.svg");
 }
 .page-header__logo--responsive {
   display: inline-block;
@@ -2550,13 +2421,13 @@ input[type=search]:focus,
   background-position: center;
   background-color: var(--f-background-pageheader-primary);
   padding: 0.8rem 6.195rem;
-  background-image: url("./images/fk-logo-primary-large.svg");
+  background-image: url("~@fkui/design/src/assets/images/fk-logo-primary-large.svg");
 }
 @media (max-width: 639.98px) {
   .page-header__logo--responsive {
     min-width: 0.8rem;
     padding: 0.8rem;
-    background-image: url("./images/fk-logo-primary-small.svg");
+    background-image: url("~@fkui/design/src/assets/images/fk-logo-primary-small.svg");
   }
 }
 .page-header__logo > a {
@@ -6322,18 +6193,18 @@ input[type=search]:focus,
   background-position: center;
 }
 .navbar__header-logo {
-  background-image: url("./images/fk-logo-primary.svg");
+  background-image: url("~@fkui/design/src/assets/images/fk-logo-primary.svg");
   flex-grow: 0.3;
 }
 @media (max-width: 1279.98px) {
   .navbar__header-logo {
-    background-image: url("./images/fk-logo-small.svg");
+    background-image: url("~@fkui/design/src/assets/images/fk-logo-small.svg");
     flex-grow: 0.03;
     min-width: 1.75rem;
   }
 }
 .navbar__header-logo--small {
-  background-image: url("./images/fk-logo-small.svg");
+  background-image: url("~@fkui/design/src/assets/images/fk-logo-small.svg");
   flex-grow: 0.03;
 }
 .navbar__header-logo, .navbar__header-start, .navbar__header-end {
@@ -6398,17 +6269,17 @@ input[type=search]:focus,
   color: var(--f-text-color-default-inverted);
 }
 .navbar--primary .navbar__header-logo {
-  background-image: url("./images/fk-logo-default.svg");
+  background-image: url("~@fkui/design/src/assets/images/fk-logo-default.svg");
 }
 @media (max-width: 1279.98px) {
   .navbar--primary .navbar__header-logo {
-    background-image: url("./images/fk-logo-small.svg");
+    background-image: url("~@fkui/design/src/assets/images/fk-logo-small.svg");
     flex-grow: 0.03;
     min-width: 1.75rem;
   }
 }
 .navbar--primary .navbar__header-logo--small {
-  background-image: url("./images/fk-logo-small.svg");
+  background-image: url("~@fkui/design/src/assets/images/fk-logo-small.svg");
 }
 .navbar--primary .navbar__header-start::before {
   background-color: var(--f-border-color-separator-pageheader-primary);
@@ -6420,17 +6291,17 @@ input[type=search]:focus,
   background-color: var(--f-background-pageheader-secondary);
 }
 .navbar--secondary .navbar__header-logo {
-  background-image: url("./images/fk-logo-primary.svg");
+  background-image: url("~@fkui/design/src/assets/images/fk-logo-primary.svg");
 }
 @media (max-width: 1279.98px) {
   .navbar--secondary .navbar__header-logo {
-    background-image: url("./images/fk-logo-small.svg");
+    background-image: url("~@fkui/design/src/assets/images/fk-logo-small.svg");
     flex-grow: 0.03;
     min-width: 1.75rem;
   }
 }
 .navbar--secondary .navbar__header-logo--small {
-  background-image: url("./images/fk-logo-small.svg");
+  background-image: url("~@fkui/design/src/assets/images/fk-logo-small.svg");
 }
 .navbar--secondary .navbar__header-start::before {
   background-color: var(--f-border-color-separator-pageheader-secondary);
