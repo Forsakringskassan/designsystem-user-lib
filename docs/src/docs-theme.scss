@@ -1,3 +1,18 @@
 @use "@fkui/css-variables/dist/fkui-exp-css-variables";
-@use "@forsakringskassan/docs-generator/style";
 @use "@forsakringskassan/docs-live-example/dist/main";
+@use "@fkui/design/src/fkui-exp";
+@use "@forsakringskassan/docs-generator/style";
+
+:root {
+    --f-border-color-menu-horizontal-hover: hotpink;
+}
+header {
+    .page-header__logo--small {
+        background: hotpink;
+        border-radius: 50%;
+        box-shadow: 0.2rem 0.2rem 0 0 rgb(202, 84, 143);
+    }
+    .page-header__app-name {
+        color: hotpink;
+    }
+}
