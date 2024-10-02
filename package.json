@@ -42,7 +42,7 @@
     "vue": "npm run --workspace packages/vue --"
   },
   "commitlint": {
-    "extends": "@forsakringskassan/commitlint-config"
+    "extends": "@forsakringskassan/commitlint-config/no-jira"
   },
   "lint-staged": {
     "*.{json,md,css,scss,html}": "prettier --write",
