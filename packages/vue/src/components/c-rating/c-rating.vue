@@ -29,7 +29,7 @@ import { ElementIdService } from "@fkui/logic";
 import { FLabel } from "@fkui/vue";
 
 withDefaults(defineProps<{ id?: string; count?: number }>(), {
-    id: ElementIdService.generateElementId(),
+    id: () => ElementIdService.generateElementId(),
     count: 5,
 });
 
