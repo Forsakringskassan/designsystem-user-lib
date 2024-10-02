@@ -7,6 +7,7 @@
 import { ComponentOptionsMixin } from 'vue';
 import { DefineComponent } from 'vue';
 import { ExtractPropTypes } from 'vue';
+import { ModelRef } from 'vue';
 import { PropType } from 'vue';
 import { PublicProps } from 'vue';
 
