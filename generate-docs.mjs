@@ -41,7 +41,7 @@ const docs = new Generator({
             },
         }),
 
-        topnavProcessor("docs/topmenu.json", "Användaranpassat designsystem"),
+        topnavProcessor("docs/topmenu.json", "Användaranpassat DS"),
     ],
     setupPath: path.resolve("docs/src/setup.ts"),
 });
