@@ -12,7 +12,7 @@ module.exports = {
     },
     outputFolder: "./public",
     cacheFolder: "./temp/docs",
-    exampleFolders: ["./packages/vue/src", "./docs"],
+    exampleFolders: ["./packages/vue/src", "./docs", "./from-fkui"],
     templateFolders: ["./docs/templates"],
     setupPath: path.resolve("docs/src/setup.ts"),
     sourceFiles: [
@@ -20,6 +20,11 @@ module.exports = {
             include: "docs/**/*.md",
             exclude: "docs/node_modules/**",
             basePath: "docs",
+            fileReader: frontMatterFileReader,
+        },
+        {
+            include: "from-fkui/**/*.md",
+            basePath: "from-fkui",
             fileReader: frontMatterFileReader,
         },
         {
