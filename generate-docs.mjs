@@ -14,7 +14,7 @@ const pkg = require("./package.json");
 
 const docs = new Generator({
     site: {
-        name: "Användaranpassat designsystem",
+        name: "Användaranpassat DS",
         lang: "sv",
     },
     outputFolder: "./public",
