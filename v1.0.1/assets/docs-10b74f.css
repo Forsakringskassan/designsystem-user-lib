@@ -9518,21 +9518,21 @@ body {
 }
 
 :root {
-  --f-border-color-menu-horizontal-hover: hotpink;
-  --f-border-color-menu-horizontal-highlight: hotpink;
-  --highlight-color: hotpink;
-  --f-color-brand-a-strong: hotpink;
+  --f-border-color-menu-horizontal-hover: #6e0e50;
+  --f-border-color-menu-horizontal-highlight: #6e0e50;
+  --highlight-color: #6e0e50;
+  --f-color-brand-a-strong: #6e0e50;
 }
 
 header .page-header__logo--small {
-  background: hotpink;
+  background: #6e0e50;
   border-radius: 50%;
-  box-shadow: 0.2rem 0.2rem 0 0 rgb(202, 84, 143);
+  box-shadow: 0.2rem 0.2rem 0 0 #28051d;
 }
 header .page-header__app-name {
-  color: hotpink;
+  color: #6e0e50;
 }
 
 .navigation {
-  --highlight-color: hotpink;
+  --highlight-color: #6e0e50;
 }
