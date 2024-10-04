@@ -19,6 +19,66 @@ import { PublicProps } from 'vue';
 export const CRating: __VLS_WithTemplateSlots<typeof __VLS_component, __VLS_TemplateResult["slots"]>;
 
 // @public (undocumented)
+export const CRatingModal: DefineComponent<    {
+isOpen: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
+title: {
+type: StringConstructor;
+required: false;
+default: string;
+};
+ratingText: {
+type: StringConstructor;
+required: false;
+default: string;
+};
+}, unknown, {
+value: {
+score: undefined;
+comment: string;
+};
+}, {}, {
+onSubmit(event: {
+data: unknown;
+}): void;
+onClose(): void;
+}, ComponentOptionsMixin, ComponentOptionsMixin, ("submit" | "close")[], "submit" | "close", PublicProps, Readonly<ExtractPropTypes<    {
+isOpen: {
+type: BooleanConstructor;
+required: false;
+default: boolean;
+};
+title: {
+type: StringConstructor;
+required: false;
+default: string;
+};
+ratingText: {
+type: StringConstructor;
+required: false;
+default: string;
+};
+}>> & {
+onSubmit?: ((...args: any[]) => any) | undefined;
+onClose?: ((...args: any[]) => any) | undefined;
+}, {
+title: string;
+isOpen: boolean;
+ratingText: string;
+}, {}>;
+
+// @public (undocumented)
+export interface CRatingModalResult {
+    // (undocumented)
+    comment: string;
+    // (undocumented)
+    score: number;
+}
+
+// @public (undocumented)
 export const FBadge: DefineComponent<    {
 status: {
 type: StringConstructor;
