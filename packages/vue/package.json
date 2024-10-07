@@ -1,6 +1,6 @@
 {
   "name": "@fkui/user-lib-vue",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Vue implementation of custom user components",
   "keywords": [
     "fkui",
@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@fkui/css-variables": "5.37.0",
-    "@fkui/user-lib-design": "1.0.1",
+    "@fkui/user-lib-design": "1.1.0",
     "@fkui/design": "5.37.0",
     "@fkui/icon-lib-default": "5.37.0",
     "@fkui/logic": "5.37.0",
