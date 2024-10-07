@@ -6,7 +6,7 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            "@fkui/custom-partner-vue": "src/index.ts",
+            "@fkui/user-lib-vue": "src/index.ts",
             "~@fkui/design": "@fkui/design",
             "~@fkui/css-variables": "@fkui/css-variables",
         },

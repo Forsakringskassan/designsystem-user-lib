@@ -2,11 +2,11 @@
   "name": "docs",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://forsakringskassan.github.io/custom-partner-ds/",
-  "bugs": "https://github.com/Forsakringskassan/custom-partner-ds/issues",
+  "homepage": "https://forsakringskassan.github.io/designsystem-user-lib/",
+  "bugs": "https://github.com/Forsakringskassan/designsystem-user-lib/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Forsakringskassan/custom-partner-ds.git",
+    "url": "git+https://github.com/Forsakringskassan/designsystem-user-lib.git",
     "directory": "docs"
   },
   "scripts": {

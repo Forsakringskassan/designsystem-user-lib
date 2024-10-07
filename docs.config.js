@@ -7,7 +7,7 @@ const {
 
 module.exports = {
     site: {
-        name: "Custom partner Designsystem",
+        name: "Custom user Designsystem",
         lang: "sv",
     },
     outputFolder: "./public",

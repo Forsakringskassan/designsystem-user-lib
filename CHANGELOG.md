@@ -5,7 +5,7 @@
 
 ### Bug Fixes
 
-* **@fkui/custom-partner-design:** use fkui-exp style (refs SFKUI-6500) 03e420c
+* **@fkui/user-lib-design:** use fkui-exp style (refs SFKUI-6500) 03e420c
 
 ## 1.0.0 (2024-10-01)
 

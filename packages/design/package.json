@@ -1,22 +1,22 @@
 {
-  "name": "@fkui/custom-partner-design",
+  "name": "@fkui/user-lib-design",
   "version": "1.0.1",
-  "description": "custom partner design",
+  "description": "custom user design",
   "keywords": [
     "fkui",
     "designsystem",
     "css"
   ],
-  "homepage": "https://forsakringskassan.github.io/custom-partner-ds/",
-  "bugs": "https://github.com/Forsakringskassan/custom-partner-ds/issues",
+  "homepage": "https://forsakringskassan.github.io/designsystem-user-lib/",
+  "bugs": "https://github.com/Forsakringskassan/designsystem-user-lib/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Forsakringskassan/custom-partner-ds.git",
+    "url": "git+https://github.com/Forsakringskassan/designsystem-user-lib.git",
     "directory": "packages/design"
   },
   "license": "MIT",
   "author": "Försäkringskassan",
-  "main": "src/custom-partner.scss",
+  "main": "src/user-lib.scss",
   "files": [
     "src"
   ],

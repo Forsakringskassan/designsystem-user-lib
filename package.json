@@ -1,13 +1,13 @@
 {
-  "name": "@fkui/custom-partner-monorepo",
+  "name": "@fkui/user-lib-monorepo",
   "version": "1.0.1",
   "private": true,
-  "description": "fkui custom partner monorepo",
-  "homepage": "https://forsakringskassan.github.io/custom-partner-ds/",
-  "bugs": "https://github.com/Forsakringskassan/custom-partner-ds/issues",
+  "description": "fkui custom user monorepo",
+  "homepage": "https://forsakringskassan.github.io/designsystem-user-lib/",
+  "bugs": "https://github.com/Forsakringskassan/designsystem-user-lib/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Forsakringskassan/custom-partner-ds.git"
+    "url": "git+https://github.com/Forsakringskassan/designsystem-user-lib.git"
   },
   "license": "MIT",
   "author": "Försäkringskassan",

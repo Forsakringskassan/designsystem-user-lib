@@ -8,7 +8,7 @@
         "declarationDir": "temp/types",
         "allowJs": true,
         "paths": {
-            "@fkui/custom-partner-vue": ["./src/index.ts"]
+            "@fkui/user-lib-vue": ["./src/index.ts"]
         },
         "skipLibCheck": true
     },

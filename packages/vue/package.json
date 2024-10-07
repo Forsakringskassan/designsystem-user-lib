@@ -1,17 +1,17 @@
 {
-  "name": "@fkui/custom-partner-vue",
+  "name": "@fkui/user-lib-vue",
   "version": "1.0.0",
-  "description": "Vue implementation of custom partner components",
+  "description": "Vue implementation of custom user components",
   "keywords": [
     "fkui",
     "designsystem",
     "vue"
   ],
-  "homepage": "https://forsakringskassan.github.io/custom-partner-ds/",
-  "bugs": "https://github.com/Forsakringskassan/custom-partner-ds/issues",
+  "homepage": "https://forsakringskassan.github.io/designsystem-user-lib/",
+  "bugs": "https://github.com/Forsakringskassan/designsystem-user-lib/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Forsakringskassan/custom-partner-ds.git",
+    "url": "git+https://github.com/Forsakringskassan/designsystem-user-lib.git",
     "directory": "packages/vue"
   },
   "license": "MIT",
@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@fkui/css-variables": "5.37.0",
-    "@fkui/custom-partner-design": "1.0.1",
+    "@fkui/user-lib-design": "1.0.1",
     "@fkui/design": "5.37.0",
     "@fkui/icon-lib-default": "5.37.0",
     "@fkui/logic": "5.37.0",
@@ -73,7 +73,7 @@
   "peerDependencies": {
     "@babel/runtime": "^7",
     "@fkui/css-variables": "^5.36.0",
-    "@fkui/custom-partner-design": "^1",
+    "@fkui/user-lib-design": "^1",
     "@fkui/design": "^5.36.0",
     "@fkui/icon-lib-default": "^5.36.0",
     "@fkui/logic": "^5.36.0",
