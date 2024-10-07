@@ -21,4 +21,17 @@ module.exports = defineMetadata({
     "c-rating#default": {
         permittedContent: ["@phrasing", "slot"],
     },
+
+    "c-rating-modal": {
+        flow: true,
+        phrasing: false,
+        interactive: true,
+        attributes: {
+            title: {},
+            ratingText: {},
+            "is-open": {
+                boolean: true,
+            },
+        },
+    },
 });
