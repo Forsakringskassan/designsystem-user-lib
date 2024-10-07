@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>Betyg - Användaranpassat designsystem</title>
+        <title>Betygsmodal - Användaranpassat DS</title>
 
         <!-- prettier-ignore -->
         <link
@@ -28,10 +28,10 @@
 
         <link
             rel="preload"
-            href="../search-data-2141e4.json"
+            href="../search-data-69c7f0.json"
             as="fetch"
             crossorigin
-            integrity="sha384-ZHQFjNs/DiIfUbdXfd0AvW/dT1/YrP44g8Jzn3QUikZdJm6ExkCgD2O1njICexE7"
+            integrity="sha384-iTQ78VvPOw38RXXjV52gJidR/eOyZTMVYugARjSwJS0X7lG93LovbH48GKjtNfCL"
             id="search-data"
         />
     </head>
@@ -46,7 +46,7 @@
         <a class="page-header__logo" href="../index.html">
             <span aria-label="Försäkringskassan" role="img" class="page-header__logo--small"> </span>
         </a>
-        <a class="page-header__app-name" href="../index.html"> Användaranpassat designsystem </a>
+        <a class="page-header__app-name" href="../index.html"> Användaranpassat DS </a>
         <div class="page-header__right"><nav class="imenu imenu--horizontal" aria-label="Primär">
     <ul class="imenu__list">
         <!-- prettier-ignore -->
@@ -61,6 +61,20 @@
                     href="./"
                 >
                     Komponenter
+                </a>
+            </div>
+        </li>
+        
+        
+        <li class="imenu__list__item ">
+            <div
+                class="imenu__list__anchor-container "
+            >
+                <a
+                    class="imenu__list__anchor "
+                    href="../style/"
+                >
+                    Visuellt
                 </a>
             </div>
         </li></ul>
@@ -90,14 +104,70 @@
 <nav class="navigation" aria-label="Sekundär">
 <ol>
     <!-- prettier-ignore --><!-- prettier-ignore -->
+    <li class="expandable ">
+        <details >
+            <summary>Egna komponenter</summary>
+            <!-- prettier-ignore -->
+            
+            
+<ol>
+    <!-- prettier-ignore --><!-- prettier-ignore -->
+    <!-- prettier-ignore -->
+    <li class="link ">
+        <!-- prettier-ignore -->
+        <a
+            href="./custom/crating.html"
+            
+        >
+            Betyg
+        </a>
+    </li><!-- prettier-ignore --></ol>
+
+            
+        </details>
+    </li><!-- prettier-ignore -->
+    <!-- prettier-ignore --><!-- prettier-ignore -->
+    <li class="expandable ">
+        <details >
+            <summary>FKUI</summary>
+            <!-- prettier-ignore -->
+            
+            
+<ol>
+    <!-- prettier-ignore --><!-- prettier-ignore -->
+    <!-- prettier-ignore -->
+    <li class="link ">
+        <!-- prettier-ignore -->
+        <a
+            href="./fkui/fdatepickerfield.html"
+            
+        >
+            Datumväljare
+        </a>
+    </li><!-- prettier-ignore --><!-- prettier-ignore -->
+    <!-- prettier-ignore -->
+    <li class="link ">
+        <!-- prettier-ignore -->
+        <a
+            href="./fkui/foo.html"
+            
+        >
+            Datumväljare 2
+        </a>
+    </li><!-- prettier-ignore --></ol>
+
+            
+        </details>
+    </li><!-- prettier-ignore -->
+    <!-- prettier-ignore --><!-- prettier-ignore -->
     <!-- prettier-ignore -->
     <li class="link active">
         <!-- prettier-ignore -->
         <a
-            href="./crating.html"
+            href="./cratingmodal.html"
             
         >
-            Betyg
+            Betygsmodal
         </a>
     </li><!-- prettier-ignore --></ol>
 </nav>
@@ -133,7 +203,7 @@
 
                 <!-- prettier-ignore --><main>
                     <!-- [html-validate-disable-next heading-level, no-unused-disable -- allowed sectioning root] -->
-                    <h1 id="title">Betyg</h1>
+                    <h1 id="title">Betygsmodal</h1>
                      
                     <div id="aside">
                         <!-- prettier-ignore -->
@@ -144,7 +214,7 @@
     <dd>
         
         <code>
-             CRating 
+             CRatingModal 
         </code>
          
     </dd>
@@ -166,8 +236,6 @@
                             <summary class="outline__heading">Innehåll</summary>
                             <ul>
                                 
-                                <li><a href="#tank_pa_att">Tänk på att</a></li>
-                                
                                 <li><a href="#api">API</a></li>
                                 
                             </ul>
@@ -178,39 +246,109 @@
 
                     <div id="content">
                         <!-- prettier-ignore -->
-<p>Sätt betyg med hjälp av köttbullar.</p>
+<p>Betygsmodal är en komponent för att öppna en modal för att betygsätta med köttbullar.</p>
+<p>Betygsmodalen använder komponenten <a href="custom/crating.html"><code>CRating</code></a>.</p>
 
-                <div
-                    id="example-f367c2"
-                    class="code-preview code-preview--borderless"
-                    
-                    data-tags=live-example
-                    data-language="vue"
-                >
-                    
-        <div id="CRatingLiveExample"></div>
+            <div
+                id="example-55e0c4"
+                class="code-preview code-preview--default"
+                
+                
+                data-language="vue"
+            >
+                
+                <div class="code-preview__preview">
+        <div id="CRatingModalExample"></div>
         <!-- [html-validate-disable-next element-permitted-content -- technical debt, should be inserted into <head>] -->
         <style>
             
         </style>
         <!-- [html-validate-disable-next require-sri -- technical debt, should generate integrity but we don't know the hash of the compiled file yet] -->
-        <script defer src="./CRatingLiveExample-a31701.js"></script>
-    
+        <script defer src="./CRatingModalExample-373abd.js"></script>
+    </div>
+                <div>
+            <button
+                type="button"
+                class="button button--discrete code-preview__toggle-markup"
+                aria-expanded="false"
+                onclick="toggleMarkup(this)"
+            >
+                <i class="icon icon--code"></i>
+                Visa kod
+            </button>
+         </div>
+                <div
+                    class="code-preview__expand animate-expand"
+                    style="height: 0px;"
+                    hidden
+                >
+                    <pre class="code-preview__markup"><code class="hljs lang-html" tabindex="0"><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;button&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;button button--primary&quot;</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;onClick&quot;</span>&gt;</span>Öppna betygsmodal<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">c-rating-modal</span>
+        <span class="hljs-attr">:title</span>=<span class="hljs-string">&quot;title&quot;</span>
+        <span class="hljs-attr">:rating-text</span>=<span class="hljs-string">&quot;ratingText&quot;</span>
+        <span class="hljs-attr">:is-open</span>=<span class="hljs-string">&quot;modalOpen&quot;</span>
+        @<span class="hljs-attr">close</span>=<span class="hljs-string">&quot;onClose&quot;</span>
+        @<span class="hljs-attr">submit</span>=<span class="hljs-string">&quot;onSubmit&quot;</span>
+    /&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">pre</span>&gt;</span>{{ result }}<span class="hljs-tag">&lt;/<span class="hljs-name">pre</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">&quot;ts&quot;</span>&gt;</span><span class="language-javascript">
+<span class="hljs-keyword">import</span> { defineComponent } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;
+<span class="hljs-keyword">import</span> { type <span class="hljs-title class_">CRatingModalResult</span>, <span class="hljs-title class_">CRatingModal</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;..&quot;</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title function_">defineComponent</span>({
+    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;CRatingModalExample&quot;</span>,
+    <span class="hljs-attr">components</span>: { <span class="hljs-title class_">CRatingModal</span> },
+    <span class="hljs-title function_">data</span>(<span class="hljs-params"></span>) {
+        <span class="hljs-keyword">return</span> {
+            <span class="hljs-attr">modalOpen</span>: <span class="hljs-literal">false</span>,
+            <span class="hljs-attr">title</span>: <span class="hljs-string">&quot;Betygsätt betygsmodalen&quot;</span>,
+            <span class="hljs-attr">ratingText</span>: <span class="hljs-string">&quot;Hur många köttbullar ger du denna komponent?&quot;</span>,
+            <span class="hljs-attr">result</span>: <span class="hljs-literal">null</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">CRatingModalResult</span> | <span class="hljs-literal">null</span>,
+        };
+    },
+    <span class="hljs-attr">methods</span>: {
+        <span class="hljs-title function_">onClick</span>(): <span class="hljs-keyword">void</span> {
+            <span class="hljs-variable language_">this</span>.<span class="hljs-property">modalOpen</span> = !<span class="hljs-variable language_">this</span>.<span class="hljs-property">modalOpen</span>;
+        },
+        <span class="hljs-title function_">onClose</span>(): <span class="hljs-keyword">void</span> {
+            <span class="hljs-variable language_">this</span>.<span class="hljs-property">modalOpen</span> = <span class="hljs-literal">false</span>;
+        },
+        <span class="hljs-title function_">onSubmit</span>(<span class="hljs-attr">result</span>: <span class="hljs-title class_">CRatingModalResult</span>): <span class="hljs-keyword">void</span> {
+            <span class="hljs-variable language_">this</span>.<span class="hljs-property">result</span> = result;
+        },
+    },
+});
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</code></pre>
                 </div>
-            <h2 id="tank_pa_att"><a class="header-anchor" href="#tank_pa_att">Tänk på att</a></h2><p>Glöm inte att komplettera med ketchup, pasta och kanske lite grönsaker.</p>
-<h2 id="api"><a class="header-anchor" href="#api">API</a></h2><div class="docs-table"><table><caption>Props</caption><thead><tr><th>Name</th><th>Description</th><th>Type</th><th>Required</th><th>Default</th></tr></thead><tbody><tr><td><p>id</p>
-</td><td><p>‐</p>
+            </div>
+        <h2 id="api"><a class="header-anchor" href="#api">API</a></h2><div class="docs-table"><table><caption>Props</caption><thead><tr><th>Name</th><th>Description</th><th>Type</th><th>Required</th><th>Default</th></tr></thead><tbody><tr><td><p>isOpen</p>
+</td><td><p>If the modal is open.<br>
+Use this to toggle if the modal should be visible or not.</p>
+</td><td><p>boolean</p>
+</td><td><p>false</p>
+</td><td><p>false</p>
+</td></tr><tr><td><p>title</p>
+</td><td><p>Title of the modal.</p>
 </td><td><p>string</p>
 </td><td><p>false</p>
-</td><td><p>() =&gt; ElementIdService.generateElementId()</p>
-</td></tr><tr><td><p>count</p>
-</td><td><p>‐</p>
-</td><td><p>number</p>
+</td><td><p>&quot;Sätt ett betyg&quot;</p>
+</td></tr><tr><td><p>ratingText</p>
+</td><td><p>Description text for rating field.</p>
+</td><td><p>string</p>
 </td><td><p>false</p>
-</td><td><p>5</p>
-</td></tr></tbody></table></div><div class="docs-table"><table><caption>Slots</caption><thead><tr><th>Name</th><th>Description</th><th>Bindings</th></tr></thead><tbody><tr><td><p>default</p>
+</td><td><p>&quot;Hur många köttbullar vill du ge?&quot;</p>
+</td></tr></tbody></table></div><div class="docs-table"><table><caption>Events</caption><thead><tr><th>Name</th><th>Description</th><th>Properties</th></tr></thead><tbody><tr><td><p>close</p>
+</td><td><p>Emitted when modal is closed by clicking a button or pressing escape.</p>
 </td><td><p>‐</p>
-</td><td><p>‐</p>
+</td></tr><tr><td><p>submit</p>
+</td><td><p>Emitted when modal has been submitted.</p>
+</td><td><p>&lt;anonymous&gt;: CRatingModalResult</p>
 </td></tr></tbody></table></div>
 
                     </div>
@@ -305,10 +443,10 @@
 
     <!--
 
-         Source file: docs/components/CRating.md
-         Document ID: fs:docs/components/CRating.md
-         Document name: CRating
-         Document alias: component:CRating
+         Source file: docs/components/CRatingModal.md
+         Document ID: fs:docs/components/CRatingModal.md
+         Document name: CRatingModal
+         Document alias: component:CRatingModal
 
     -->
 </html>
