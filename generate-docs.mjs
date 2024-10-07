@@ -19,7 +19,7 @@ const docs = new Generator({
     },
     outputFolder: "./public",
     cacheFolder: "./temp/docs",
-    exampleFolders: ["./packages/vue/src", "./docs"],
+    exampleFolders: ["./packages/vue/src", "./docs", "./from-fkui"],
     templateFolders: ["./docs/templates"],
     vendor: [
         {

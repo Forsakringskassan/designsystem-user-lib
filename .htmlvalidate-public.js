@@ -16,6 +16,7 @@ module.exports = {
                 allowExternal: {
                     include: [
                         "^https://forsakringskassan.github.io/designsystem/",
+                        "^https://developer.mozilla.org/",
                     ],
                 },
                 allowRelative: true,

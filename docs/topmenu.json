@@ -2,5 +2,9 @@
     {
         "path": "./components/",
         "title": "Komponenter"
+    },
+    {
+        "path": "./style/",
+        "title": "Visuellt"
     }
 ]
