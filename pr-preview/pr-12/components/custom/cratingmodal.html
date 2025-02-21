@@ -9,9 +9,9 @@
         <!-- prettier-ignore -->
         <link
             rel="stylesheet"
-            href="../../assets/docs-10b74f.css"
+            href="../../assets/docs-3b496a.css"
             crossorigin
-            integrity="sha384-8o2B/2qprosU4tT9txCDZWf4aFLPMOtqhMpNUJEf0DziOspx05GQaQefKvR/uUdn"
+            integrity="sha384-35L4TRUV3cQfeeHAocpGWmZvv/HjhCGBYutVD2b/IQlYyqHwUQUIP/RfnDN7DvWt"
             
         />
 
@@ -44,40 +44,52 @@
                 <!-- prettier-ignore --><div class="page-header__root">
     <div class="page-header">
         <a class="page-header__logo" href="../../index.html">
-            <span aria-label="Försäkringskassan" role="img" class="page-header__logo--small"> </span>
+            <span aria-label="Användaranpassat DS" role="img" class="page-header__logo--small"> </span>
         </a>
         <a class="page-header__app-name" href="../../index.html"> Användaranpassat DS </a>
-        <div class="page-header__right"><nav class="imenu imenu--horizontal" aria-label="Primär">
-    <ul class="imenu__list">
+        <div class="page-header__right"><nav id="topnav" class="docs-topnav" aria-label="Primär">
+    <ul class="docs-topnav__list">
         <!-- prettier-ignore -->
         
         
-        <li class="imenu__list__item imenu__list__item--highlight">
-            <div
-                class="imenu__list__anchor-container imenu__list__anchor-container--highlight"
-            >
-                <a
-                    class="imenu__list__anchor imenu__list__anchor--highlight"
-                    href="../"
-                >
-                    Komponenter
-                </a>
-            </div>
+        
+        <li class="docs-topnav__item highlight">
+            <a class="docs-topnav__anchor" href="../"> Komponenter </a>
         </li>
         
         
-        <li class="imenu__list__item ">
-            <div
-                class="imenu__list__anchor-container "
-            >
-                <a
-                    class="imenu__list__anchor "
-                    href="../../style/"
-                >
-                    Visuellt
-                </a>
+        
+        
+        <li class="docs-topnav__item ">
+            <a class="docs-topnav__anchor" href="../../style/"> Visuellt </a>
+        </li>
+        <li class="docs-topnav__item docs-topnav__item--more" style="visibility: hidden">
+            <button type="button" class="docs-topnav__anchor" aria-expanded="false">
+                <span>Mer</span>
+                <svg class="icon" focusable="false" aria-hidden="true">
+                    <use xlink:href="#docs-icon-arrow-down"></use>
+                </svg>
+            </button>
+            <div class="docs-contextmenu">
+                <ul class="docs-contextmenu__list">
+                    <!-- prettier-ignore -->
+                    
+                    
+                    
+                    <li class="docs-contextmenu__item highlight" style="display: none">
+                        <a class="docs-contextmenu__anchor" href="../"> Komponenter </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    <li class="docs-contextmenu__item " style="display: none">
+                        <a class="docs-contextmenu__anchor" href="../../style/"> Visuellt </a>
+                    </li>
+                    </ul>
             </div>
-        </li></ul>
+        </li>
+    </ul>
 </nav>
 
             <div class="page-header__right-slot">
@@ -176,9 +188,9 @@
 
                 <!-- prettier-ignore -->
                 <script
-                    src="../../assets/vendor-vue-53c889.js"
+                    src="../../assets/vendor-vue-3380d8.js"
                     crossorigin
-                    integrity="sha384-osVBQyQkjYO/oFCUj6agF//TASfw+djNbHPN1FQZCrA3F/n7LY8jI1q+L5M2LUh7"
+                    integrity="sha384-eAJ79IE8uwo/EWU69myrlDth3vweEeuWbEzYPVFICvVvo5pc6UTV++Oio1+skRAS"
                 ></script>
                 <script
                     src="../../assets/vendor-fkui-logic-3f7e45.js"
@@ -204,7 +216,8 @@
                 <!-- prettier-ignore --><main>
                     <!-- [html-validate-disable-next heading-level, no-unused-disable -- allowed sectioning root] -->
                     <h1 id="title">Betygsmodal</h1>
-                     
+
+                    
                     <div id="aside">
                         <!-- prettier-ignore -->
 <dl>
@@ -228,7 +241,6 @@
     </dd>
     
 </dl>
-
 
 
                         
@@ -327,36 +339,124 @@
 </code></pre>
                 </div>
             </div>
-        <h2 id="api"><a class="header-anchor" href="#api">API</a></h2><div class="docs-table"><table><caption>Props</caption><thead><tr><th>Name</th><th>Description</th><th>Type</th><th>Required</th><th>Default</th></tr></thead><tbody><tr><td><p>isOpen</p>
-</td><td><p>If the modal is open.<br>
+        <h2 id="api"><a class="header-anchor" href="#api">API</a></h2>
+        <h3 id="cratingmodal-props">
+            <a class="header-anchor" href="#cratingmodal-props">Props</a>
+        </h3>
+        <dl class="docs-api docs-api--slots">
+            
+                        <dt>
+                            <code id="cratingmodal-prop-isopen"
+                                ><a class="docs-api__anchor" href="#cratingmodal-prop-isopen"
+                                    ><span class="docs-api__name"
+                                        >isOpen</span
+                                    >: boolean</a
+                                ></code
+                            >
+                            <span class="docs-tag docs-tag--default">Optional</span>
+                            
+                        </dt>
+                        <dd>
+                            <p>If the modal is open.
 Use this to toggle if the modal should be visible or not.</p>
-</td><td><p>boolean</p>
-</td><td><p>false</p>
-</td><td><p>false</p>
-</td></tr><tr><td><p>title</p>
-</td><td><p>Title of the modal.</p>
-</td><td><p>string</p>
-</td><td><p>false</p>
-</td><td><p>&quot;Sätt ett betyg&quot;</p>
-</td></tr><tr><td><p>ratingText</p>
-</td><td><p>Description text for rating field.</p>
-</td><td><p>string</p>
-</td><td><p>false</p>
-</td><td><p>&quot;Hur många köttbullar vill du ge?&quot;</p>
-</td></tr></tbody></table></div><div class="docs-table"><table><caption>Events</caption><thead><tr><th>Name</th><th>Description</th><th>Properties</th></tr></thead><tbody><tr><td><p>close</p>
-</td><td><p>Emitted when modal is closed by clicking a button or pressing escape.</p>
-</td><td><p>‐</p>
-</td></tr><tr><td><p>submit</p>
-</td><td><p>Emitted when modal has been submitted.</p>
-</td><td><p>&lt;anonymous&gt;: CRatingModalResult</p>
-</td></tr></tbody></table></div>
+
+                            <p class="doc-api__item">Default: <code>false</code></p>
+                            
+                        </dd>
+                    
+                        <dt>
+                            <code id="cratingmodal-prop-title"
+                                ><a class="docs-api__anchor" href="#cratingmodal-prop-title"
+                                    ><span class="docs-api__name"
+                                        >title</span
+                                    >: string</a
+                                ></code
+                            >
+                            <span class="docs-tag docs-tag--default">Optional</span>
+                            
+                        </dt>
+                        <dd>
+                            <p>Title of the modal.</p>
+
+                            <p class="doc-api__item">Default: <code>&quot;Sätt ett betyg&quot;</code></p>
+                            
+                        </dd>
+                    
+                        <dt>
+                            <code id="cratingmodal-prop-ratingtext"
+                                ><a class="docs-api__anchor" href="#cratingmodal-prop-ratingtext"
+                                    ><span class="docs-api__name"
+                                        >ratingText</span
+                                    >: string</a
+                                ></code
+                            >
+                            <span class="docs-tag docs-tag--default">Optional</span>
+                            
+                        </dt>
+                        <dd>
+                            <p>Description text for rating field.</p>
+
+                            <p class="doc-api__item">Default: <code>&quot;Hur många köttbullar vill du ge?&quot;</code></p>
+                            
+                        </dd>
+                    
+        </dl>
+    
+        <h3 id="cratingmodal-events">
+            <a class="header-anchor" href="#cratingmodal-events">Events</a>
+        </h3>
+        <dl class="docs-api docs-api--events">
+            
+                        <dt>
+                            <code id="cratingmodal-event-close"
+                                ><a class="docs-api__anchor" href="#cratingmodal-event-close"
+                                    ><span class="docs-api__name"
+                                        >close</span
+                                    ></a
+                                ></code
+                            >
+                            
+                        </dt>
+                        <dd>
+                            <p>Emitted when modal is closed by clicking a button or pressing escape.</p>
+
+                            
+                            
+                            
+                            
+                        </dd>
+                    
+                        <dt>
+                            <code id="cratingmodal-event-submit"
+                                ><a class="docs-api__anchor" href="#cratingmodal-event-submit"
+                                    ><span class="docs-api__name"
+                                        >submit</span
+                                    ></a
+                                ></code
+                            >
+                            
+                        </dt>
+                        <dd>
+                            <p>Emitted when modal has been submitted.</p>
+
+                            <p class="docs-api__list-title">Arguments:</p><ul class="docs-api__list">
+                            <li><code>&lt;anonymous&gt;: CRatingModalResult</code></li>
+                            </ul>
+                            
+                        </dd>
+                    
+        </dl>
+    
 
                     </div>
                 </main>
             </div>
 
             <footer>
-                <!-- prettier-ignore --><!-- prettier-ignore -->
+                <!-- prettier-ignore --><div class="footer">
+    <!-- prettier-ignore -->
+    
+</div>
 </footer>
         </div>
 
@@ -434,9 +534,9 @@ Use this to toggle if the modal should be visible or not.</p>
 
         <!-- prettier-ignore -->
         <script
-            src="../../assets/main-a1b1ae.js"
+            src="../../assets/main-0a6267.js"
             crossorigin
-            integrity="sha384-tZf1XAMSeMjmrLXADLN+Fo4ssyrH9A31K05zYjvtQhcQW9or64ycYfixqcTJium1"
+            integrity="sha384-KGg8cx40qSGGH4cF6MiyGZrRw2tcj/vGlPAU1o5o7mC4J+fmDwJyD/GIT536RTIL"
             
         ></script>
     </body>

@@ -146,7 +146,7 @@
       }
     }
   });
-  function render2(_ctx, _cache) {
+  function render2(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_f_select_field = (0, import_vue8.resolveComponent)("f-select-field");
     const _component_live_example = (0, import_vue8.resolveComponent)("live-example");
     return (0, import_vue8.openBlock)(), (0, import_vue8.createBlock)(_component_live_example, {
@@ -162,24 +162,21 @@
             (0, import_vue8.createTextVNode)(" Maxbetyg ")
           ])),
           default: (0, import_vue8.withCtx)(() => [
-            _cache[2] || (_cache[2] = (0, import_vue8.createTextVNode)()),
-            _cache[3] || (_cache[3] = (0, import_vue8.createElementVNode)(
+            _cache[2] || (_cache[2] = (0, import_vue8.createElementVNode)(
               "option",
               { value: 3 },
               "3",
               -1
               /* HOISTED */
             )),
-            _cache[4] || (_cache[4] = (0, import_vue8.createTextVNode)()),
-            _cache[5] || (_cache[5] = (0, import_vue8.createElementVNode)(
+            _cache[3] || (_cache[3] = (0, import_vue8.createElementVNode)(
               "option",
               { value: void 0 },
               "5 (default)",
               -1
               /* HOISTED */
             )),
-            _cache[6] || (_cache[6] = (0, import_vue8.createTextVNode)()),
-            _cache[7] || (_cache[7] = (0, import_vue8.createElementVNode)(
+            _cache[4] || (_cache[4] = (0, import_vue8.createElementVNode)(
               "option",
               { value: 10 },
               "10",
