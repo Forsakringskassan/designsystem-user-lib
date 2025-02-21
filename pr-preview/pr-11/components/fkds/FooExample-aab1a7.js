@@ -166,7 +166,7 @@
     }
   });
   var _hoisted_1 = ["value"];
-  function render(_ctx, _cache) {
+  function render(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_f_select_field = (0, import_vue5.resolveComponent)("f-select-field");
     const _component_live_example = (0, import_vue5.resolveComponent)("live-example");
     return (0, import_vue5.openBlock)(), (0, import_vue5.createBlock)(_component_live_example, {
@@ -175,7 +175,7 @@
       livedata: _ctx.livedata
     }, {
       default: (0, import_vue5.withCtx)(() => [
-        _cache[5] || (_cache[5] = (0, import_vue5.createTextVNode)("\n        asdfadf\n        ")),
+        _cache[3] || (_cache[3] = (0, import_vue5.createTextVNode)(" asdfadf ")),
         (0, import_vue5.createVNode)(_component_f_select_field, {
           modelValue: _ctx.monthToShow,
           "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => _ctx.monthToShow = $event)
@@ -184,15 +184,13 @@
             (0, import_vue5.createTextVNode)(" Visa m\xE5nad ")
           ])),
           default: (0, import_vue5.withCtx)(() => [
-            _cache[2] || (_cache[2] = (0, import_vue5.createTextVNode)()),
-            _cache[3] || (_cache[3] = (0, import_vue5.createElementVNode)(
+            _cache[2] || (_cache[2] = (0, import_vue5.createElementVNode)(
               "option",
               { value: "" },
               "Nuvarande m\xE5nad (standard)",
               -1
               /* HOISTED */
             )),
-            _cache[4] || (_cache[4] = (0, import_vue5.createTextVNode)()),
             (0, import_vue5.createElementVNode)("option", {
               value: _ctx.getDateWithOffset(-6)
             }, "Exempel: " + (0, import_vue5.toDisplayString)(_ctx.getMonthYearString(_ctx.getDateWithOffset(-6))), 9, _hoisted_1)

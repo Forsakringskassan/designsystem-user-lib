@@ -330,7 +330,7 @@
       }
     }
   });
-  function render4(_ctx, _cache) {
+  function render4(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_c_rating_modal = (0, import_vue12.resolveComponent)("c-rating-modal");
     return (0, import_vue12.openBlock)(), (0, import_vue12.createElementBlock)(
       import_vue12.Fragment,
@@ -341,7 +341,6 @@
           class: "button button--primary",
           onClick: _cache[0] || (_cache[0] = (...args) => _ctx.onClick && _ctx.onClick(...args))
         }, "\xD6ppna betygsmodal"),
-        _cache[1] || (_cache[1] = (0, import_vue12.createTextVNode)()),
         (0, import_vue12.createVNode)(_component_c_rating_modal, {
           title: _ctx.title,
           "rating-text": _ctx.ratingText,
@@ -349,7 +348,6 @@
           onClose: _ctx.onClose,
           onSubmit: _ctx.onSubmit
         }, null, 8, ["title", "rating-text", "is-open", "onClose", "onSubmit"]),
-        _cache[2] || (_cache[2] = (0, import_vue12.createTextVNode)()),
         (0, import_vue12.createElementVNode)(
           "pre",
           null,
