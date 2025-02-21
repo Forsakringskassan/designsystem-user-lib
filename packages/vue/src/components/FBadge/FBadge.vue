@@ -1,10 +1,3 @@
-<template>
-    <div class="badge" :class="badgeClass">
-        <!-- @slot Slot for text to display in the badge. -->
-        <slot name="default"></slot>
-    </div>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { statuses } from "./statuses";
@@ -39,3 +32,10 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <div class="badge" :class="badgeClass">
+        <!-- @slot Slot for text to display in the badge. -->
+        <slot name="default"></slot>
+    </div>
+</template>

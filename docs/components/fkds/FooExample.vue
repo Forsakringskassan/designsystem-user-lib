@@ -1,14 +1,3 @@
-<template>
-    <live-example :components="components" :template="template" :livedata="livedata">
-        asdfadf
-        <f-select-field v-model="monthToShow">
-            <template #label> Visa månad </template>
-            <option value="">Nuvarande månad (standard)</option>
-            <option :value="getDateWithOffset(-6)">Exempel: {{ getMonthYearString(getDateWithOffset(-6)) }}</option>
-        </f-select-field>
-    </live-example>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FDatepickerField, FSelectField, FTooltip } from "@fkui/vue";
@@ -145,3 +134,14 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <live-example :components="components" :template="template" :livedata="livedata">
+        asdfadf
+        <f-select-field v-model="monthToShow">
+            <template #label> Visa månad </template>
+            <option value="">Nuvarande månad (standard)</option>
+            <option :value="getDateWithOffset(-6)">Exempel: {{ getMonthYearString(getDateWithOffset(-6)) }}</option>
+        </f-select-field>
+    </live-example>
+</template>
