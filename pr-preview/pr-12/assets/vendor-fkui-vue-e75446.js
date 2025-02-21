@@ -438,10 +438,10 @@
       var SHARED = "__core-js_shared__";
       var store = module.exports = globalThis2[SHARED] || defineGlobalProperty(SHARED, {});
       (store.versions || (store.versions = [])).push({
-        version: "3.38.1",
+        version: "3.40.0",
         mode: IS_PURE ? "pure" : "global",
-        copyright: "\xA9 2014-2024 Denis Pushkarev (zloirock.ru)",
-        license: "https://github.com/zloirock/core-js/blob/v3.38.1/LICENSE",
+        copyright: "\xA9 2014-2025 Denis Pushkarev (zloirock.ru)",
+        license: "https://github.com/zloirock/core-js/blob/v3.40.0/LICENSE",
         source: "https://github.com/zloirock/core-js"
       });
     }
@@ -1309,15 +1309,11 @@
     }
   });
 
-  // node_modules/core-js/internals/function-uncurry-this-clause.js
-  var require_function_uncurry_this_clause = __commonJS({
-    "node_modules/core-js/internals/function-uncurry-this-clause.js"(exports, module) {
+  // node_modules/core-js/internals/array-buffer-basic-detection.js
+  var require_array_buffer_basic_detection = __commonJS({
+    "node_modules/core-js/internals/array-buffer-basic-detection.js"(exports, module) {
       "use strict";
-      var classofRaw = require_classof_raw();
-      var uncurryThis = require_function_uncurry_this();
-      module.exports = function(fn2) {
-        if (classofRaw(fn2) === "Function") return uncurryThis(fn2);
-      };
+      module.exports = typeof ArrayBuffer != "undefined" && typeof DataView != "undefined";
     }
   });
 
@@ -1357,16 +1353,13 @@
     "node_modules/core-js/internals/array-buffer-is-detached.js"(exports, module) {
       "use strict";
       var globalThis2 = require_global_this();
-      var uncurryThis = require_function_uncurry_this_clause();
+      var NATIVE_ARRAY_BUFFER = require_array_buffer_basic_detection();
       var arrayBufferByteLength = require_array_buffer_byte_length();
-      var ArrayBuffer2 = globalThis2.ArrayBuffer;
-      var ArrayBufferPrototype = ArrayBuffer2 && ArrayBuffer2.prototype;
-      var slice = ArrayBufferPrototype && uncurryThis(ArrayBufferPrototype.slice);
+      var DataView3 = globalThis2.DataView;
       module.exports = function(O) {
-        if (arrayBufferByteLength(O) !== 0) return false;
-        if (!slice) return false;
+        if (!NATIVE_ARRAY_BUFFER || arrayBufferByteLength(O) !== 0) return false;
         try {
-          slice(O, 0, 0);
+          new DataView3(O);
           return false;
         } catch (error) {
           return true;
@@ -1551,10 +1544,10 @@
       var PROPER_STRUCTURED_CLONE_TRANSFER = require_structured_clone_proper_transfer();
       var structuredClone = globalThis2.structuredClone;
       var ArrayBuffer2 = globalThis2.ArrayBuffer;
-      var DataView2 = globalThis2.DataView;
+      var DataView3 = globalThis2.DataView;
       var min = Math.min;
       var ArrayBufferPrototype = ArrayBuffer2.prototype;
-      var DataViewPrototype = DataView2.prototype;
+      var DataViewPrototype = DataView3.prototype;
       var slice = uncurryThis(ArrayBufferPrototype.slice);
       var isResizable = uncurryThisAccessor(ArrayBufferPrototype, "resizable", "get");
       var maxByteLength = uncurryThisAccessor(ArrayBufferPrototype, "maxByteLength", "get");
@@ -1575,8 +1568,8 @@
         } else {
           var options = preserveResizability && !fixedLength && maxByteLength ? { maxByteLength: maxByteLength(arrayBuffer) } : void 0;
           newBuffer = new ArrayBuffer2(newByteLength, options);
-          var a = new DataView2(arrayBuffer);
-          var b = new DataView2(newBuffer);
+          var a = new DataView3(arrayBuffer);
+          var b = new DataView3(newBuffer);
           var copyLength = min(newByteLength, byteLength);
           for (var i = 0; i < copyLength; i++) setInt8(b, i, getInt8(a, i));
         }
@@ -2333,10 +2326,10 @@
           }();
           var ctxClearTimeout = context.clearTimeout !== root2.clearTimeout && context.clearTimeout, ctxNow = Date2 && Date2.now !== root2.Date.now && Date2.now, ctxSetTimeout = context.setTimeout !== root2.setTimeout && context.setTimeout;
           var nativeCeil = Math2.ceil, nativeFloor = Math2.floor, nativeGetSymbols2 = Object2.getOwnPropertySymbols, nativeIsBuffer = Buffer2 ? Buffer2.isBuffer : undefined2, nativeIsFinite = context.isFinite, nativeJoin = arrayProto2.join, nativeKeys2 = overArg2(Object2.keys, Object2), nativeMax = Math2.max, nativeMin = Math2.min, nativeNow = Date2.now, nativeParseInt = context.parseInt, nativeRandom = Math2.random, nativeReverse = arrayProto2.reverse;
-          var DataView2 = getNative2(context, "DataView"), Map2 = getNative2(context, "Map"), Promise2 = getNative2(context, "Promise"), Set2 = getNative2(context, "Set"), WeakMap2 = getNative2(context, "WeakMap"), nativeCreate2 = getNative2(Object2, "create");
+          var DataView3 = getNative2(context, "DataView"), Map2 = getNative2(context, "Map"), Promise2 = getNative2(context, "Promise"), Set2 = getNative2(context, "Set"), WeakMap2 = getNative2(context, "WeakMap"), nativeCreate2 = getNative2(Object2, "create");
           var metaMap = WeakMap2 && new WeakMap2();
           var realNames = {};
-          var dataViewCtorString2 = toSource2(DataView2), mapCtorString2 = toSource2(Map2), promiseCtorString2 = toSource2(Promise2), setCtorString2 = toSource2(Set2), weakMapCtorString2 = toSource2(WeakMap2);
+          var dataViewCtorString2 = toSource2(DataView3), mapCtorString2 = toSource2(Map2), promiseCtorString2 = toSource2(Promise2), setCtorString2 = toSource2(Set2), weakMapCtorString2 = toSource2(WeakMap2);
           var symbolProto2 = Symbol2 ? Symbol2.prototype : undefined2, symbolValueOf2 = symbolProto2 ? symbolProto2.valueOf : undefined2, symbolToString = symbolProto2 ? symbolProto2.toString : undefined2;
           function lodash(value) {
             if (isObjectLike2(value) && !isArray2(value) && !(value instanceof LazyWrapper)) {
@@ -4390,7 +4383,7 @@
             return result2;
           };
           var getTag2 = baseGetTag2;
-          if (DataView2 && getTag2(new DataView2(new ArrayBuffer(1))) != dataViewTag2 || Map2 && getTag2(new Map2()) != mapTag2 || Promise2 && getTag2(Promise2.resolve()) != promiseTag2 || Set2 && getTag2(new Set2()) != setTag2 || WeakMap2 && getTag2(new WeakMap2()) != weakMapTag2) {
+          if (DataView3 && getTag2(new DataView3(new ArrayBuffer(1))) != dataViewTag2 || Map2 && getTag2(new Map2()) != mapTag2 || Promise2 && getTag2(Promise2.resolve()) != promiseTag2 || Set2 && getTag2(new Set2()) != setTag2 || WeakMap2 && getTag2(new WeakMap2()) != weakMapTag2) {
             getTag2 = function(value) {
               var result2 = baseGetTag2(value), Ctor = result2 == objectTag2 ? value.constructor : undefined2, ctorString = Ctor ? toSource2(Ctor) : "";
               if (ctorString) {
@@ -8270,7 +8263,7 @@
   var root = _root;
   var WeakMap$1 = getNative(root, "WeakMap");
   var _WeakMap = WeakMap$1;
-  var DataView = _DataView;
+  var DataView2 = _DataView;
   var Map$1 = _Map;
   var Promise$1 = _Promise;
   var Set = _Set;
@@ -8283,13 +8276,13 @@
   var setTag = "[object Set]";
   var weakMapTag = "[object WeakMap]";
   var dataViewTag = "[object DataView]";
-  var dataViewCtorString = toSource(DataView);
+  var dataViewCtorString = toSource(DataView2);
   var mapCtorString = toSource(Map$1);
   var promiseCtorString = toSource(Promise$1);
   var setCtorString = toSource(Set);
   var weakMapCtorString = toSource(WeakMap);
   var getTag$1 = baseGetTag;
-  if (DataView && getTag$1(new DataView(new ArrayBuffer(1))) != dataViewTag || Map$1 && getTag$1(new Map$1()) != mapTag || Promise$1 && getTag$1(Promise$1.resolve()) != promiseTag || Set && getTag$1(new Set()) != setTag || WeakMap && getTag$1(new WeakMap()) != weakMapTag) {
+  if (DataView2 && getTag$1(new DataView2(new ArrayBuffer(1))) != dataViewTag || Map$1 && getTag$1(new Map$1()) != mapTag || Promise$1 && getTag$1(Promise$1.resolve()) != promiseTag || Set && getTag$1(new Set()) != setTag || WeakMap && getTag$1(new WeakMap()) != weakMapTag) {
     getTag$1 = function(value) {
       var result = baseGetTag(value), Ctor = result == objectTag$1 ? value.constructor : void 0, ctorString = Ctor ? toSource(Ctor) : "";
       if (ctorString) {
