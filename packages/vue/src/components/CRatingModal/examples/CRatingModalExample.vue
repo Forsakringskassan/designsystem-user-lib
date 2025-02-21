@@ -1,17 +1,3 @@
-<template>
-    <button type="button" class="button button--primary" @click="onClick">Öppna betygsmodal</button>
-
-    <c-rating-modal
-        :title="title"
-        :rating-text="ratingText"
-        :is-open="modalOpen"
-        @close="onClose"
-        @submit="onSubmit"
-    />
-
-    <pre>{{ result }}</pre>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { type CRatingModalResult, CRatingModal } from "..";
@@ -40,3 +26,17 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <button type="button" class="button button--primary" @click="onClick">Öppna betygsmodal</button>
+
+    <c-rating-modal
+        :title="title"
+        :rating-text="ratingText"
+        :is-open="modalOpen"
+        @close="onClose"
+        @submit="onSubmit"
+    />
+
+    <pre>{{ result }}</pre>
+</template>

@@ -1,3 +1,15 @@
+<script setup lang="ts">
+import { ElementIdService } from "@fkui/logic";
+import { FLabel } from "@fkui/vue";
+
+withDefaults(defineProps<{ id?: string; count?: number }>(), {
+    id: () => ElementIdService.generateElementId(),
+    count: 5,
+});
+
+const selected = defineModel({ type: Number });
+</script>
+
 <template>
     <f-label :for="id"><slot></slot></f-label>
     <div :id class="rating">
@@ -23,15 +35,3 @@
         </button>
     </div>
 </template>
-
-<script setup lang="ts">
-import { ElementIdService } from "@fkui/logic";
-import { FLabel } from "@fkui/vue";
-
-withDefaults(defineProps<{ id?: string; count?: number }>(), {
-    id: () => ElementIdService.generateElementId(),
-    count: 5,
-});
-
-const selected = defineModel({ type: Number });
-</script>

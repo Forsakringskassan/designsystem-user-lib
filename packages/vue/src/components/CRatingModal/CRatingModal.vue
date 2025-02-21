@@ -1,14 +1,3 @@
-<template>
-    <f-form-modal :is-open="isOpen" :value="value" :use-error-list="false" @close="onClose" @submit="onSubmit">
-        <template #header> {{ title }} </template>
-        <template #input-text-fields>
-            <c-rating v-model="value.score" :count="5"> {{ ratingText }} </c-rating>
-
-            <f-textarea-field v-model="value.comment"> Lägg till en kommentar </f-textarea-field>
-        </template>
-    </f-form-modal>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FFormModal, FTextareaField } from "@fkui/vue";
@@ -74,3 +63,14 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <f-form-modal :is-open="isOpen" :value="value" :use-error-list="false" @close="onClose" @submit="onSubmit">
+        <template #header> {{ title }} </template>
+        <template #input-text-fields>
+            <c-rating v-model="value.score" :count="5"> {{ ratingText }} </c-rating>
+
+            <f-textarea-field v-model="value.comment"> Lägg till en kommentar </f-textarea-field>
+        </template>
+    </f-form-modal>
+</template>

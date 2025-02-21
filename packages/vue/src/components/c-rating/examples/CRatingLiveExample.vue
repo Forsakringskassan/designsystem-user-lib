@@ -1,14 +1,3 @@
-<template>
-    <live-example :components="components" :template="template">
-        <f-select-field v-model="count">
-            <template #label> Maxbetyg </template>
-            <option :value="3">3</option>
-            <option :value="undefined">5 (default)</option>
-            <option :value="10">10</option>
-        </f-select-field>
-    </live-example>
-</template>
-
 <script lang="ts">
 import { defineComponent } from "vue";
 import { FSelectField } from "@fkui/vue";
@@ -35,3 +24,14 @@ export default defineComponent({
     },
 });
 </script>
+
+<template>
+    <live-example :components="components" :template="template">
+        <f-select-field v-model="count">
+            <template #label> Maxbetyg </template>
+            <option :value="3">3</option>
+            <option :value="undefined">5 (default)</option>
+            <option :value="10">10</option>
+        </f-select-field>
+    </live-example>
+</template>
