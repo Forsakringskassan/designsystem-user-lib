@@ -63,7 +63,7 @@
     "@fkui/icon-lib-default": "5.37.0",
     "@fkui/logic": "5.37.0",
     "@fkui/vue": "5.37.1",
-    "@forsakringskassan/vite-lib-config": "2.3.0",
+    "@forsakringskassan/vite-lib-config": "3.4.3",
     "@vue/test-utils": "2.4.6",
     "flush-promises": "1.0.2",
     "html-validate": "8.29.0",
