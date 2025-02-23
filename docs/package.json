@@ -15,10 +15,10 @@
   },
   "dependencies": {
     "@forsakringskassan/docs-live-example": "1.5.6",
-    "@fkui/icon-lib-default": "5.37.0",
-    "@fkui/vue": "5.37.1",
-    "@fkui/date": "5.37.0",
-    "@fkui/design": "5.37.0"
+    "@fkui/icon-lib-default": "5.46.0",
+    "@fkui/vue": "5.46.2",
+    "@fkui/date": "5.46.0",
+    "@fkui/design": "5.46.0"
   },
   "devDependencies": {
     "@forsakringskassan/docs-generator": "2.19.1",
