@@ -21,7 +21,7 @@
     "src"
   ],
   "devDependencies": {
-    "@fkui/css-variables": "5.37.0"
+    "@fkui/css-variables": "5.46.0"
   },
   "peerDependencies": {
     "@fkui/css-variables": "^5.37.0",
