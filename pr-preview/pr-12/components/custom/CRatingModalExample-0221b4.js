@@ -30,11 +30,12 @@
   }
 
   // virtual-entry:./packages/vue/src/components/CRatingModal/examples/CRatingModalExample.vue
-  var import_vue11 = __require("vue");
+  var import_vue12 = __require("vue");
 
   // sfc-script:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/CRatingModal/CRatingModal.vue?type=script
   var import_vue8 = __require("vue");
-  var import_vue9 = __require("@fkui/vue");
+  var import_vue9 = __require("vue");
+  var import_vue10 = __require("@fkui/vue");
 
   // sfc-script:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/FBadge/FBadge.vue?type=script
   var import_vue3 = __require("vue");
@@ -188,9 +189,8 @@
   var c_rating_default2 = c_rating_default;
 
   // sfc-script:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/CRatingModal/CRatingModal.vue?type=script
-  var CRatingModal_default2 = (0, import_vue8.defineComponent)({
-    name: "CRatingModal",
-    components: { CRating: c_rating_default2, FFormModal: import_vue9.FFormModal, FTextareaField: import_vue9.FTextareaField },
+  var CRatingModal_default2 = /* @__PURE__ */ (0, import_vue8.defineComponent)({
+    __name: "CRatingModal",
     props: {
       /**
        * If the modal is open.
@@ -218,65 +218,59 @@
         default: "Hur m\xE5nga k\xF6ttbullar vill du ge?"
       }
     },
-    emits: [
-      /**
-       * Emitted when modal is closed by clicking a button or pressing escape.
-       */
-      "close",
-      /**
-       * Emitted when modal has been submitted.
-       *
-       * @type {CRatingModalResult}
-       */
-      "submit"
-    ],
-    data() {
-      return {
-        value: {
-          score: void 0,
-          comment: ""
-        }
-      };
-    },
-    methods: {
-      onSubmit(event) {
-        this.$emit("submit", event.data);
-      },
-      onClose() {
-        this.$emit("close");
+    emits: ["close", "submit"],
+    setup(__props, { expose: __expose, emit: __emit }) {
+      __expose();
+      const value = (0, import_vue9.ref)({
+        score: void 0,
+        comment: ""
+      });
+      const props = __props;
+      const emits = __emit;
+      function onSubmit(event) {
+        emits("submit", event.data);
       }
+      function onClose() {
+        emits("close");
+      }
+      const __returned__ = { value, props, emits, onSubmit, onClose, get FFormModal() {
+        return import_vue10.FFormModal;
+      }, get FTextareaField() {
+        return import_vue10.FTextareaField;
+      }, get CRating() {
+        return c_rating_default2;
+      } };
+      Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
+      return __returned__;
     }
   });
 
   // sfc-template:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/CRatingModal/CRatingModal.vue?type=template
-  var import_vue10 = __require("vue");
+  var import_vue11 = __require("vue");
   function render3(_ctx, _cache, $props, $setup, $data, $options) {
-    const _component_c_rating = (0, import_vue10.resolveComponent)("c-rating");
-    const _component_f_textarea_field = (0, import_vue10.resolveComponent)("f-textarea-field");
-    const _component_f_form_modal = (0, import_vue10.resolveComponent)("f-form-modal");
-    return (0, import_vue10.openBlock)(), (0, import_vue10.createBlock)(_component_f_form_modal, {
-      "is-open": _ctx.isOpen,
-      value: _ctx.value,
+    return (0, import_vue11.openBlock)(), (0, import_vue11.createBlock)($setup["FFormModal"], {
+      "is-open": $setup.props.isOpen,
+      value: $setup.value,
       "use-error-list": false,
-      onClose: _ctx.onClose,
-      onSubmit: _ctx.onSubmit
+      onClose: $setup.onClose,
+      onSubmit: $setup.onSubmit
     }, {
-      header: (0, import_vue10.withCtx)(() => [
-        (0, import_vue10.createTextVNode)(
-          (0, import_vue10.toDisplayString)(_ctx.title),
+      header: (0, import_vue11.withCtx)(() => [
+        (0, import_vue11.createTextVNode)(
+          (0, import_vue11.toDisplayString)($props.title),
           1
           /* TEXT */
         )
       ]),
-      "input-text-fields": (0, import_vue10.withCtx)(() => [
-        (0, import_vue10.createVNode)(_component_c_rating, {
-          modelValue: _ctx.value.score,
-          "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => _ctx.value.score = $event),
+      "input-text-fields": (0, import_vue11.withCtx)(() => [
+        (0, import_vue11.createVNode)($setup["CRating"], {
+          modelValue: $setup.value.score,
+          "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $setup.value.score = $event),
           count: 5
         }, {
-          default: (0, import_vue10.withCtx)(() => [
-            (0, import_vue10.createTextVNode)(
-              (0, import_vue10.toDisplayString)(_ctx.ratingText),
+          default: (0, import_vue11.withCtx)(() => [
+            (0, import_vue11.createTextVNode)(
+              (0, import_vue11.toDisplayString)($props.ratingText),
               1
               /* TEXT */
             )
@@ -284,12 +278,12 @@
           _: 1
           /* STABLE */
         }, 8, ["modelValue"]),
-        (0, import_vue10.createVNode)(_component_f_textarea_field, {
-          modelValue: _ctx.value.comment,
-          "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.value.comment = $event)
+        (0, import_vue11.createVNode)($setup["FTextareaField"], {
+          modelValue: $setup.value.comment,
+          "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $setup.value.comment = $event)
         }, {
-          default: (0, import_vue10.withCtx)(() => _cache[2] || (_cache[2] = [
-            (0, import_vue10.createTextVNode)(" L\xE4gg till en kommentar ")
+          default: (0, import_vue11.withCtx)(() => _cache[2] || (_cache[2] = [
+            (0, import_vue11.createTextVNode)(" L\xE4gg till en kommentar ")
           ])),
           _: 1
           /* STABLE */
@@ -297,7 +291,7 @@
       ]),
       _: 1
       /* STABLE */
-    }, 8, ["is-open", "value", "onClose", "onSubmit"]);
+    }, 8, ["is-open", "value"]);
   }
 
   // packages/vue/src/components/CRatingModal/CRatingModal.vue
@@ -306,8 +300,8 @@
   var CRatingModal_default = CRatingModal_default2;
 
   // virtual-entry:./packages/vue/src/components/CRatingModal/examples/CRatingModalExample.vue
-  var import_vue12 = __require("vue");
-  var exampleComponent = (0, import_vue11.defineComponent)({
+  var import_vue13 = __require("vue");
+  var exampleComponent = (0, import_vue12.defineComponent)({
     name: "CRatingModalExample",
     components: { CRatingModal: CRatingModal_default },
     data() {
@@ -331,27 +325,27 @@
     }
   });
   function render4(_ctx, _cache, $props, $setup, $data, $options) {
-    const _component_c_rating_modal = (0, import_vue12.resolveComponent)("c-rating-modal");
-    return (0, import_vue12.openBlock)(), (0, import_vue12.createElementBlock)(
-      import_vue12.Fragment,
+    const _component_c_rating_modal = (0, import_vue13.resolveComponent)("c-rating-modal");
+    return (0, import_vue13.openBlock)(), (0, import_vue13.createElementBlock)(
+      import_vue13.Fragment,
       null,
       [
-        (0, import_vue12.createElementVNode)("button", {
+        (0, import_vue13.createElementVNode)("button", {
           type: "button",
           class: "button button--primary",
           onClick: _cache[0] || (_cache[0] = (...args) => _ctx.onClick && _ctx.onClick(...args))
         }, "\xD6ppna betygsmodal"),
-        (0, import_vue12.createVNode)(_component_c_rating_modal, {
+        (0, import_vue13.createVNode)(_component_c_rating_modal, {
           title: _ctx.title,
           "rating-text": _ctx.ratingText,
           "is-open": _ctx.modalOpen,
           onClose: _ctx.onClose,
           onSubmit: _ctx.onSubmit
         }, null, 8, ["title", "rating-text", "is-open", "onClose", "onSubmit"]),
-        (0, import_vue12.createElementVNode)(
+        (0, import_vue13.createElementVNode)(
           "pre",
           null,
-          (0, import_vue12.toDisplayString)(_ctx.result),
+          (0, import_vue13.toDisplayString)(_ctx.result),
           1
           /* TEXT */
         )
