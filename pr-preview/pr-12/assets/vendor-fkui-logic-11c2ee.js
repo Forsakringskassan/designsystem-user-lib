@@ -43,6 +43,7 @@
     formatNumber: () => formatNumber,
     formatPercent: () => formatPercent,
     formatPersonnummer: () => formatPersonnummer,
+    formatPersonnummerToDate: () => formatPersonnummerToDate,
     formatPostalCode: () => formatPostalCode,
     getErrorMessages: () => getErrorMessages,
     handleTab: () => handleTab,
@@ -1351,7 +1352,7 @@ Caused by: ${cause.stack}`;
   var FDate = class _FDate {
     value;
     constructor(value) {
-      this.value = dayjs(value, ISO8601_YYYY_MM_DD, true);
+      this.value = dayjs(value, ISO8601_YYYY_MM_DD, true).startOf("day");
     }
     /**
      * Create {@link FDate} with an invalid state.
@@ -1647,7 +1648,7 @@ Caused by: ${cause.stack}`;
       if (typeof rhs === "string") {
         rhs = _FDate.fromIso(rhs);
       }
-      return this.value.isBefore(rhs.value);
+      return this.value.isBefore(rhs.value, "day");
     }
     /**
      * Returns true if this date is after given date.
@@ -1658,7 +1659,7 @@ Caused by: ${cause.stack}`;
       if (typeof rhs === "string") {
         rhs = _FDate.fromIso(rhs);
       }
-      return this.value.isAfter(rhs.value);
+      return this.value.isAfter(rhs.value, "day");
     }
     /**
      * Compares two {@link FDate} objects. Returns and integer indicating whenever
@@ -1695,9 +1696,9 @@ Caused by: ${cause.stack}`;
           return -1;
         }
       }
-      if (a.value.isSame(b.value)) {
+      if (a.equals(b)) {
         return 0;
-      } else if (a.value.isBefore(b.value)) {
+      } else if (a.isBefore(b)) {
         return -1;
       } else {
         return 1;
@@ -1866,6 +1867,13 @@ Caused by: ${cause.stack}`;
       return value.substring(2).replace("-", "+");
     }
     return value.substring(2);
+  }
+  function formatPersonnummerToDate(value) {
+    const datePart = parseDate(parsePersonnummer(value)?.slice(0, 8) || "");
+    if (!datePart) {
+      return void 0;
+    }
+    return FDate.fromIso(datePart);
   }
   var PLUSGIRO_REGEXP = /^\d{1,7}[-]?\d{1}$/;
   function hyphenShouldBeAdded(value) {
@@ -2239,7 +2247,7 @@ Caused by: ${cause.stack}`;
     }
   };
   function getErrorMessages() {
-    return ValidationErrorMessageBuilder.create().map("bankAccountNumber", "Kontonumret \xE4r inte r\xE4tt ifyllt. Kolla att det st\xE4mmer.").mapCombined("required", "bankAccountNumber", "Fyll i ett kontonummer.").map("bankgiro", "Skriv bankgironumret med sju eller \xE5tta siffror och bindestreck.").mapCombined("required", "bankgiro", "Fyll i bankgironumret.").mapCombined("maxLength", "bankgiro", "Bankgironumret kan inte ha mer \xE4n 9 tecken.").map("clearingNumber", "Clearingnumret \xE4r inte r\xE4tt ifyllt. Kolla att det st\xE4mmer.").mapCombined("required", "clearingNumber", "Fyll i ett clearingnummer.").map("currency", "Fyll i ett belopp.").mapCombined("required", "currency", "Fyll i ett belopp.").map("date", "Du har skrivit ett felaktigt datum.").mapCombined("required", "date", "V\xE4lj ett datum.").map("dateFormat", "Skriv datumet med \xE5tta siffror.").map("decimal", "Fyll i ett v\xE4rde med r\xE4tt antal decimaler.").map("email", "Mejladressen \xE4r inte korrekt ifylld.").mapCombined("required", "email", "Fyll i en mejladress.").mapCombined("matches", "email", "Kolla att mejladressen st\xE4mmer.").map("greaterThan", "Fyll i en h\xF6gre siffra.").map("integer", "Fyll i siffror utan decimal.").mapCombined("required", "integer", "Fyll i en siffra.").map("lessThan", "Du har fyllt i en f\xF6r h\xF6g siffra.").map("minDate", "Datumet ligger f\xF6r l\xE5ngt bak i tiden.").mapCombined("minDate", "date", "Datumet ligger f\xF6r l\xE5ngt bak i tiden.").map("maxDate", "Datumet ligger f\xF6r l\xE5ngt fram i tiden.").mapCombined("maxDate", "date", "Datumet ligger f\xF6r l\xE5ngt fram i tiden.").map("maxValue", "Du har fyllt i en f\xF6r h\xF6g siffra.").map("minValue", "Fyll i en h\xF6gre siffra.").map("number", "Du har fyllt i ett ogiltigt tecken. Fyll i siffror.").mapCombined("required", "number", "Fyll i en siffra.").mapCombined("minValue", "number", "Fyll i en h\xF6gre siffra.").mapCombined("maxValue", "number", "Du har fyllt i en f\xF6r h\xF6g siffra.").map("organisationsnummer", "Fyll i organisationsnumret med 10 siffror, till exempel 999999-9999.").mapCombined("required", "organisationsnummer", "Fyll i organisationsnumret med 10 siffror, till exempel 999999-9999.").mapCombined("maxLength", "organisationsnummer", "Organisationsnumret kan inte ha mer \xE4n 11 tecken.").map("percent", "Fyll i procent med en siffra.").mapCombined("integer", "percent", "Fyll i procent utan decimal.").mapCombined("required", "percent", "Fyll i en siffra.").mapCombined("minValue", "percent", "Fyll i en h\xF6gre siffra.").mapCombined("maxValue", "percent", "Fyll i en l\xE4gre siffra.").map("personnummerFormat", "Skriv personnumret med 10 siffror.").mapCombined("required", "personnummerFormat", "Skriv personnumret med 10 siffror.").mapCombined("maxLength", "personnummerFormat", "Skriv personnumret med 10 siffror.").map("personnummerLuhn", "Kolla att personnumret st\xE4mmer.").map("postalCode", "Fyll i postnumret med fem siffror.").mapCombined("required", "postalCode", "Fyll i ett postnummer.").mapCombined("maxLength", "postalCode", "Postnumret kan inte ha mer \xE4n 13 tecken.").map("phoneNumber", "Telefonnumret \xE4r inte r\xE4tt ifyllt.").mapCombined("required", "phoneNumber", "Fyll i ett telefonnummer.").mapCombined("matches", "phoneNumber", "Kolla att telefonnumret st\xE4mmer.").map("plusgiro", "Skriv plusgironumret med siffror och bindestreck.").mapCombined("required", "plusgiro", "Fyll i plusgironumret.").mapCombined("maxLength", "plusgiro", "Plusgironumret kan inte ha mer \xE4n 11 tecken.").map("matches", "F\xE4lten st\xE4mmer inte \xF6verens.").map("required", "Fyll i text.").map("required", "V\xE4lj minst ett alternativ.", "checkbox").map("required", "V\xE4lj ett av alternativen.", "radio").map("required", "V\xE4lj ett av alternativen.", "select").map("invalidDates", "Du kan inte v\xE4lja det h\xE4r datumet.").map("invalidWeekdays", "Du kan inte v\xE4lja det h\xE4r datumet.").map("whitelist", 'F\xE4ltet inneh\xE5ller otill\xE5tna tecken. Exempel p\xE5 ogiltiga tecken \xE4r /, % och ".').build();
+    return ValidationErrorMessageBuilder.create().map("bankAccountNumber", "Kontonumret \xE4r inte r\xE4tt ifyllt. Kolla att det st\xE4mmer.").mapCombined("required", "bankAccountNumber", "Fyll i ett kontonummer.").map("bankgiro", "Fyll i bankgironumret med sju eller \xE5tta siffror och bindestreck.").mapCombined("required", "bankgiro", "Fyll i bankgironumret.").mapCombined("maxLength", "bankgiro", "Bankgironumret kan inte ha mer \xE4n 9 tecken.").map("clearingNumber", "Clearingnumret \xE4r inte r\xE4tt ifyllt. Kolla att det st\xE4mmer.").mapCombined("required", "clearingNumber", "Fyll i ett clearingnummer.").map("currency", "Fyll i ett belopp.").mapCombined("required", "currency", "Fyll i ett belopp.").map("date", "Du har fyllt i ett felaktigt datum.").mapCombined("required", "date", "V\xE4lj ett datum.").map("dateFormat", "Fyll i datumet med \xE5tta siffror.").map("decimal", "Fyll i ett v\xE4rde med r\xE4tt antal decimaler.").map("email", "Mejladressen \xE4r inte korrekt ifylld.").mapCombined("required", "email", "Fyll i en mejladress.").mapCombined("matches", "email", "Kolla att mejladressen st\xE4mmer.").map("greaterThan", "Fyll i en h\xF6gre siffra.").map("integer", "Fyll i siffror utan decimal.").mapCombined("required", "integer", "Fyll i en siffra.").map("lessThan", "Du har fyllt i en f\xF6r h\xF6g siffra.").map("minDate", "Datumet ligger f\xF6r l\xE5ngt bak i tiden.").mapCombined("minDate", "date", "Datumet ligger f\xF6r l\xE5ngt bak i tiden.").map("maxDate", "Datumet ligger f\xF6r l\xE5ngt fram i tiden.").mapCombined("maxDate", "date", "Datumet ligger f\xF6r l\xE5ngt fram i tiden.").map("maxValue", "Du har fyllt i en f\xF6r h\xF6g siffra.").map("minValue", "Fyll i en h\xF6gre siffra.").map("number", "Du har fyllt i ett ogiltigt tecken. Fyll i siffror.").mapCombined("required", "number", "Fyll i en siffra.").mapCombined("minValue", "number", "Fyll i en h\xF6gre siffra.").mapCombined("maxValue", "number", "Du har fyllt i en f\xF6r h\xF6g siffra.").map("organisationsnummer", "Fyll i organisationsnumret med 10 siffror, till exempel 999999-9999.").mapCombined("required", "organisationsnummer", "Fyll i organisationsnumret med 10 siffror, till exempel 999999-9999.").mapCombined("maxLength", "organisationsnummer", "Organisationsnumret kan inte ha mer \xE4n 11 tecken.").map("percent", "Fyll i procent med en siffra.").mapCombined("integer", "percent", "Fyll i procent utan decimal.").mapCombined("required", "percent", "Fyll i en siffra.").mapCombined("minValue", "percent", "Fyll i en h\xF6gre siffra.").mapCombined("maxValue", "percent", "Fyll i en l\xE4gre siffra.").map("personnummerFormat", "Fyll i personnumret med 10 siffror.").mapCombined("required", "personnummerFormat", "Fyll i personnumret med 10 siffror.").mapCombined("maxLength", "personnummerFormat", "Fyll i personnumret med 10 siffror.").map("personnummerLuhn", "Kolla att personnumret st\xE4mmer.").map("postalCode", "Fyll i postnumret med fem siffror.").mapCombined("required", "postalCode", "Fyll i ett postnummer.").mapCombined("maxLength", "postalCode", "Postnumret kan inte ha mer \xE4n 13 tecken.").map("phoneNumber", "Telefonnumret \xE4r inte r\xE4tt ifyllt.").mapCombined("required", "phoneNumber", "Fyll i ett telefonnummer.").mapCombined("matches", "phoneNumber", "Kolla att telefonnumret st\xE4mmer.").map("plusgiro", "Fyll i plusgironumret med siffror och bindestreck.").mapCombined("required", "plusgiro", "Fyll i plusgironumret.").mapCombined("maxLength", "plusgiro", "Plusgironumret kan inte ha mer \xE4n 11 tecken.").map("matches", "F\xE4lten st\xE4mmer inte \xF6verens.").map("required", "Fyll i text.").map("required", "V\xE4lj minst ett alternativ.", "checkbox").map("required", "V\xE4lj ett av alternativen.", "radio").map("required", "V\xE4lj ett av alternativen.", "select").map("invalidDates", "Du kan inte v\xE4lja det h\xE4r datumet.").map("invalidWeekdays", "Du kan inte v\xE4lja det h\xE4r datumet.").map("whitelist", 'F\xE4ltet inneh\xE5ller otill\xE5tna tecken. Exempel p\xE5 ogiltiga tecken \xE4r /, % och ".').map("allowList", "V\xE4lj ett av alternativen i listan.").build();
   }
   function createFieldsetValidator(element, validationService) {
     new FieldsetValidationHandler(element, validationService);
@@ -2326,6 +2334,9 @@ Caused by: ${cause.stack}`;
     }
   }
   function isValidatableHTMLElement(element) {
+    if (element.classList.contains("card")) {
+      return true;
+    }
     return element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement || element instanceof HTMLSelectElement || element instanceof HTMLFieldSetElement;
   }
   function isFieldset(element) {
@@ -2698,10 +2709,17 @@ Caused by: ${cause.stack}`;
           return this.hasValue(fieldsetInputElement);
         });
       }
+      if (element instanceof HTMLDivElement) {
+        return false;
+      }
       return Boolean(isRadiobuttonOrCheckbox(element) ? element.checked : element.value);
     }
     getValue(element) {
-      return element instanceof HTMLFieldSetElement || !element.value ? "" : element.value.trim();
+      if ("value" in element) {
+        return element.value.trim();
+      } else {
+        return "";
+      }
     }
     validateAll(element, validationState, validators, validatorConfigs) {
       if (validationState.serverError) {
@@ -2710,7 +2728,7 @@ Caused by: ${cause.stack}`;
           validationMessage: validationState.serverError
         };
       }
-      if (element.disabled) {
+      if ("disabled" in element && element.disabled) {
         return {
           isValid: true,
           validationMessage: ""
@@ -2763,7 +2781,9 @@ Caused by: ${cause.stack}`;
         detail: validityEvent
       });
       for (const affectedElement of affectedElements) {
-        affectedElement.setCustomValidity(validityEvent.validationMessage);
+        if ("setCustomValidity" in affectedElement) {
+          affectedElement.setCustomValidity(validityEvent.validationMessage);
+        }
         affectedElement.setAttribute("aria-invalid", validField.toString());
       }
       element.dispatchEvent(event);
@@ -2773,6 +2793,15 @@ Caused by: ${cause.stack}`;
     }
   };
   var ValidationService = new ValidationServiceImpl();
+  var allowListValidator = {
+    name: "allowList",
+    validation(value, element, config) {
+      if (isEmpty(value) || config.list === void 0 || config.list.length === 0) {
+        return true;
+      }
+      return config.list.includes(value);
+    }
+  };
   var bankAccountNumberValidator = {
     name: "bankAccountNumber",
     validation(value) {
@@ -2785,10 +2814,34 @@ Caused by: ${cause.stack}`;
       return isEmpty(value) || isSet(parseBankgiro(value));
     }
   };
+  function toArray(value) {
+    if (Array.isArray(value)) {
+      return value;
+    } else {
+      return [value];
+    }
+  }
+  var blacklistValidator = {
+    name: "blacklist",
+    validation(value, _element, config) {
+      if (!config.values) {
+        throw new Error("config.exclude must have values");
+      }
+      const values = toArray(config.values);
+      const found = values.some((it) => String(it) === value);
+      return !found;
+    }
+  };
   var clearingNumberValidator = {
     name: "clearingNumber",
     validation(value) {
       return isEmpty(value) || isSet(parseClearingNumber(value));
+    }
+  };
+  var currencyValidator = {
+    name: "currency",
+    validation(value) {
+      return isEmpty(value) || isSet(parseNumber(value));
     }
   };
   var dateValidator = {
@@ -2833,30 +2886,36 @@ Caused by: ${cause.stack}`;
       return isEmpty(valueWithoutWhitespace) || createNumberRegexp(minDecimalsAsNumber, maxDecimalsAsNumber).test(valueWithoutWhitespace);
     }
   };
-  function toArray(value) {
-    if (Array.isArray(value)) {
-      return value;
-    } else {
-      return [value];
-    }
-  }
-  var blacklistValidator = {
-    name: "blacklist",
-    validation(value, _element, config) {
-      if (!config.values) {
-        throw new Error("config.exclude must have values");
-      }
-      const values = toArray(config.values);
-      const found = values.some((it) => String(it) === value);
-      return !found;
-    }
-  };
   var emailValidator = {
     name: "email",
     validation(value, _element, config) {
       const maxLength = config.maxLength || 254;
       const EMAIL_REGEXP = new RegExp(`^(?=.{1,${maxLength}}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_\`a-z{|}~\xE5\xE4\xF6\xC5\xC4\xD6]+(\\.[-!#$%&'*+/0-9=?A-Z^_\`a-z{|}~\xE5\xE4\xF6\xC5\xC4\xD6]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$`);
       return isEmpty(value) || EMAIL_REGEXP.test(value);
+    }
+  };
+  function numberValidator$1(value, config, name, compare) {
+    if (value === "") {
+      return true;
+    }
+    const limit = config[name];
+    if (!isSet(limit)) {
+      return false;
+    }
+    const limitAsNumber = parseNumber(String(config[name]));
+    if (limitAsNumber === void 0) {
+      throw new Error(`config.${String(name)} must be a number`);
+    }
+    const valueAsNumber = parseNumber(value);
+    if (valueAsNumber === void 0) {
+      return false;
+    }
+    return compare(valueAsNumber, limitAsNumber);
+  }
+  var greaterThanValidator = {
+    name: "greaterThan",
+    validation(value, _element, config) {
+      return numberValidator$1(value, config, "limit", (value2, limit) => value2 > limit);
     }
   };
   var NUMBER_REGEXP = /^([-−]?[0-9]+)?$/;
@@ -2898,30 +2957,6 @@ Caused by: ${cause.stack}`;
       return !config.days.includes(day);
     }
   };
-  function numberValidator$1(value, config, name, compare) {
-    if (value === "") {
-      return true;
-    }
-    const limit = config[name];
-    if (!isSet(limit)) {
-      return false;
-    }
-    const limitAsNumber = parseNumber(String(config[name]));
-    if (limitAsNumber === void 0) {
-      throw new Error(`config.${String(name)} must be a number`);
-    }
-    const valueAsNumber = parseNumber(value);
-    if (valueAsNumber === void 0) {
-      return false;
-    }
-    return compare(valueAsNumber, limitAsNumber);
-  }
-  var greaterThanValidator = {
-    name: "greaterThan",
-    validation(value, _element, config) {
-      return numberValidator$1(value, config, "limit", (value2, limit) => value2 > limit);
-    }
-  };
   var lessThanValidator = {
     name: "lessThan",
     validation(value, _element, config) {
@@ -2936,6 +2971,21 @@ Caused by: ${cause.stack}`;
       }
       const el = document.getElementById(config.id);
       return el.value === value;
+    }
+  };
+  var maxDateValidator = {
+    name: "maxDate",
+    validation(value, _element, config) {
+      if (isEmpty(value)) {
+        return true;
+      }
+      const normalizedValue = normalizeDateFormat(value);
+      if (!normalizedValue) {
+        return false;
+      }
+      const parsed = FDate.fromIso(normalizedValue);
+      const limit = FDate.fromIso(validLimit(config.limit));
+      return parsed.equals(limit) || parsed.isBefore(limit);
     }
   };
   var maxLengthValidator = {
@@ -2965,21 +3015,6 @@ Caused by: ${cause.stack}`;
       return parsed.equals(limit) || parsed.isAfter(limit);
     }
   };
-  var maxDateValidator = {
-    name: "maxDate",
-    validation(value, _element, config) {
-      if (isEmpty(value)) {
-        return true;
-      }
-      const normalizedValue = normalizeDateFormat(value);
-      if (!normalizedValue) {
-        return false;
-      }
-      const parsed = FDate.fromIso(normalizedValue);
-      const limit = FDate.fromIso(validLimit(config.limit));
-      return parsed.equals(limit) || parsed.isBefore(limit);
-    }
-  };
   var minLengthValidator = {
     name: "minLength",
     validation(value, _element, config) {
@@ -2994,12 +3029,6 @@ Caused by: ${cause.stack}`;
   };
   var numberValidator = {
     name: "number",
-    validation(value) {
-      return isEmpty(value) || isSet(parseNumber(value));
-    }
-  };
-  var currencyValidator = {
-    name: "currency",
     validation(value) {
       return isEmpty(value) || isSet(parseNumber(value));
     }
@@ -3028,6 +3057,45 @@ Caused by: ${cause.stack}`;
     name: "personnummerLuhn",
     validation(value) {
       return isEmpty(value) || isSet(parsePersonnummerLuhn(value));
+    }
+  };
+  var personnummerNotSame = {
+    name: "personnummerNotSame",
+    validation(value, _element, config) {
+      const valuePnr = parsePersonnummer(String(value));
+      if (!valuePnr) {
+        return true;
+      }
+      const otherFieldPnr = parsePersonnummer(String(config.otherField));
+      if (!otherFieldPnr) {
+        return true;
+      }
+      if (valuePnr === otherFieldPnr) {
+        return false;
+      }
+      return true;
+    }
+  };
+  var personnummerOlder = {
+    name: "personnummerOlder",
+    validation(value, _element, config) {
+      const valueAsDate = formatPersonnummerToDate(value);
+      const otherAsDate = formatPersonnummerToDate(String(config.otherField));
+      if (!valueAsDate || !otherAsDate) {
+        return true;
+      }
+      return FDate.compare(valueAsDate, otherAsDate) !== 1;
+    }
+  };
+  var personnummerYounger = {
+    name: "personnummerYounger",
+    validation(value, _element, config) {
+      const valueAsDate = formatPersonnummerToDate(value);
+      const otherAsDate = formatPersonnummerToDate(String(config.otherField));
+      if (!valueAsDate || !otherAsDate) {
+        return true;
+      }
+      return FDate.compare(valueAsDate, otherAsDate) !== -1;
     }
   };
   var PHONE_NUMBER_REGEXP = /^(\+?[-_/() ]*(\d[-_/() ]*?){3,17})$/;
@@ -3089,32 +3157,36 @@ Caused by: ${cause.stack}`;
       return isEmpty(value) || WHITELIST_REGEXP.test(value);
     }
   };
+  ValidationService.registerValidator(allowListValidator);
   ValidationService.registerValidator(bankAccountNumberValidator);
   ValidationService.registerValidator(bankgiroValidator);
+  ValidationService.registerValidator(blacklistValidator);
   ValidationService.registerValidator(clearingNumberValidator);
+  ValidationService.registerValidator(currencyValidator);
   ValidationService.registerValidator(dateFormatValidator);
   ValidationService.registerValidator(dateValidator);
   ValidationService.registerValidator(decimalValidator);
-  ValidationService.registerValidator(blacklistValidator);
   ValidationService.registerValidator(emailValidator);
-  ValidationService.registerValidator(integerValidator);
   ValidationService.registerValidator(greaterThanValidator);
+  ValidationService.registerValidator(integerValidator);
   ValidationService.registerValidator(invalidDatesValidator);
   ValidationService.registerValidator(invalidWeekdaysValidator);
   ValidationService.registerValidator(lessThanValidator);
-  ValidationService.registerValidator(minLengthValidator);
   ValidationService.registerValidator(matchesValidator);
+  ValidationService.registerValidator(maxDateValidator);
   ValidationService.registerValidator(maxLengthValidator);
-  ValidationService.registerValidator(minValueValidator);
   ValidationService.registerValidator(maxValueValidator);
   ValidationService.registerValidator(minDateValidator);
-  ValidationService.registerValidator(maxDateValidator);
+  ValidationService.registerValidator(minLengthValidator);
+  ValidationService.registerValidator(minValueValidator);
   ValidationService.registerValidator(numberValidator);
-  ValidationService.registerValidator(currencyValidator);
   ValidationService.registerValidator(organisationsnummerValidator);
   ValidationService.registerValidator(percentValidator);
   ValidationService.registerValidator(personnummerFormatValidator);
   ValidationService.registerValidator(personnummerLuhnValidator);
+  ValidationService.registerValidator(personnummerNotSame);
+  ValidationService.registerValidator(personnummerOlder);
+  ValidationService.registerValidator(personnummerYounger);
   ValidationService.registerValidator(phoneNumberValidator);
   ValidationService.registerValidator(plusgiroValidator);
   ValidationService.registerValidator(postalCodeValidator);
