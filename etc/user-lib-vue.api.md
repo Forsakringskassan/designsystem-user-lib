@@ -5,10 +5,10 @@
 ```ts
 
 import { ComponentOptionsMixin } from 'vue';
+import { ComponentProvideOptions } from 'vue';
 import { DefineComponent } from 'vue';
 import { ExtractPropTypes } from 'vue';
 import { ModelRef } from 'vue';
-import { PropType } from 'vue';
 import { PublicProps } from 'vue';
 
 // Warning: (ae-forgotten-export) The symbol "__VLS_WithTemplateSlots" needs to be exported by the entry point index.d.ts
@@ -19,7 +19,7 @@ import { PublicProps } from 'vue';
 export const CRating: __VLS_WithTemplateSlots<typeof __VLS_component, __VLS_TemplateResult["slots"]>;
 
 // @public (undocumented)
-export const CRatingModal: DefineComponent<    {
+export const CRatingModal: DefineComponent<ExtractPropTypes<    {
 isOpen: {
 type: BooleanConstructor;
 required: false;
@@ -35,17 +35,10 @@ type: StringConstructor;
 required: false;
 default: string;
 };
-}, unknown, {
-value: {
-score: undefined;
-comment: string;
-};
-}, {}, {
-onSubmit(event: {
-data: unknown;
-}): void;
-onClose(): void;
-}, ComponentOptionsMixin, ComponentOptionsMixin, ("submit" | "close")[], "submit" | "close", PublicProps, Readonly<ExtractPropTypes<    {
+}>, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
+close: () => any;
+submit: (args_0: CRatingModalResult) => any;
+}, string, PublicProps, Readonly<ExtractPropTypes<    {
 isOpen: {
 type: BooleanConstructor;
 required: false;
@@ -61,25 +54,25 @@ type: StringConstructor;
 required: false;
 default: string;
 };
-}>> & {
-onSubmit?: ((...args: any[]) => any) | undefined;
-onClose?: ((...args: any[]) => any) | undefined;
-}, {
+}>> & Readonly<{
+onClose?: (() => any) | undefined;
+onSubmit?: ((args_0: CRatingModalResult) => any) | undefined;
+}>, {
 title: string;
 isOpen: boolean;
 ratingText: string;
-}, {}>;
+}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 
 // @public (undocumented)
 export interface CRatingModalResult {
     // (undocumented)
     comment: string;
     // (undocumented)
-    score: number;
+    score: number | undefined;
 }
 
 // @public (undocumented)
-export const FBadge: DefineComponent<    {
+export const FBadge: DefineComponent<ExtractPropTypes<    {
 status: {
 type: StringConstructor;
 default: string;
@@ -89,7 +82,7 @@ inverted: {
 type: BooleanConstructor;
 default: boolean;
 };
-}, unknown, unknown, {
+}>, {}, {}, {
 badgeClass(): string;
 }, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
 status: {
@@ -101,10 +94,10 @@ inverted: {
 type: BooleanConstructor;
 default: boolean;
 };
-}>>, {
+}>> & Readonly<{}>, {
 status: string;
 inverted: boolean;
-}, {}>;
+}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
 
 // (No @packageDocumentation comment for this package)
 

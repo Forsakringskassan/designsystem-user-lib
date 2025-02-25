@@ -2,6 +2,6 @@
  * @public
  */
 export interface CRatingModalResult {
-    score: number;
+    score: number | undefined;
     comment: string;
 }
