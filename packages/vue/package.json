@@ -57,12 +57,12 @@
     ]
   },
   "devDependencies": {
-    "@fkui/css-variables": "5.37.0",
+    "@fkui/css-variables": "5.46.0",
     "@fkui/user-lib-design": "1.1.0",
-    "@fkui/design": "5.37.0",
-    "@fkui/icon-lib-default": "5.37.0",
-    "@fkui/logic": "5.37.0",
-    "@fkui/vue": "5.37.1",
+    "@fkui/design": "5.46.0",
+    "@fkui/icon-lib-default": "5.46.0",
+    "@fkui/logic": "5.46.0",
+    "@fkui/vue": "5.46.2",
     "@forsakringskassan/vite-lib-config": "3.4.3",
     "@vue/test-utils": "2.4.6",
     "flush-promises": "1.0.2",
