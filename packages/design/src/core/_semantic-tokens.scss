@@ -1,0 +1,22 @@
+@mixin css-variables {
+    // ACTION - BACKGROUND
+    --fkds-color-action-background-primary-default: #6e0e50;
+    --fkds-color-action-background-primary-hover: #940e5c;
+    --fkds-color-action-background-primary-active: rgb(110 14 80 / 50%);
+    --fkds-color-action-background-primary-focus: rgb(110 14 80 / 50%);
+    --fkds-color-action-background-secondary-default: #ffffff;
+    --fkds-color-action-background-secondary-hover: #f7e3ed;
+    --fkds-color-action-background-secondary-active: #f7e3ed;
+    --fkds-color-action-background-secondary-focus: #f7e3ed;
+    --fkds-color-action-background-accent-default: #6e0e50;
+    --fkds-color-action-background-accent-hover: rgb(110 14 80 / 50%);
+    --fkds-color-action-background-accent-active: rgb(110 14 80 / 50%);
+    --fkds-color-action-background-accent-focus: rgb(110 14 80 / 50%);
+    --fkds-color-action-background-disabled: #8d8e91;
+
+    // ACTION - BORDER
+    --fkds-color-action-border-primary-default: #6e0e50;
+
+    // ACTION - TEXT
+    --fkds-color-action-text-primary-default: #6e0e50;
+}

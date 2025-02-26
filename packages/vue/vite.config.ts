@@ -8,7 +8,7 @@ export default defineConfig({
         alias: {
             "@fkui/user-lib-vue": "src/index.ts",
             "~@fkui/design": "@fkui/design",
-            "~@fkui/css-variables": "@fkui/css-variables",
+            "~@fkui/theme-default": "@fkui/theme-default",
         },
     },
 });

@@ -1,1 +1,15 @@
-@use "css-variables";
+@use "semantic-tokens" as semantic-tokens;
+@use "css-variables" as css-variables;
+
+$global: true !default;
+
+@mixin css-variables {
+    @include semantic-tokens.css-variables;
+    @include css-variables.css-variables;
+}
+
+@if $global {
+    :root {
+        @include css-variables;
+    }
+}
