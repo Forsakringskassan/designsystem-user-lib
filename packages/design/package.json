@@ -25,7 +25,7 @@
   },
   "peerDependencies": {
     "@fkui/css-variables": "^5.37.0",
-    "@fkui/design": "^5.37.0",
+    "@fkui/design": "^5.37.0 || ^6.0.0",
     "sass": "^1.40"
   },
   "peerDependenciesMeta": {
