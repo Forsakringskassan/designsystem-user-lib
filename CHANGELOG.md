@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.2.1 (2025-02-28)
+
+### Bug Fixes
+
+* test to set a github app as git user 88d0119
+
 ## 1.2.0 (2025-02-28)
 
 ### Features
