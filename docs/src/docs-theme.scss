@@ -1,14 +1,15 @@
-@use "@fkui/css-variables/dist/fkui-exp-css-variables";
+@use "@fkui/theme-default";
 @use "@forsakringskassan/docs-live-example/dist/main";
 @use "@fkui/user-lib-design";
 @use "@forsakringskassan/docs-generator/style";
 
 :root {
-    --f-border-color-menu-horizontal-hover: #6e0e50;
-    --f-border-color-menu-horizontal-highlight: #6e0e50;
+    --docs-topnav-border-color-hover: #6e0e50;
+    --docs-topnav-border-color-highlight: #6e0e50;
     --highlight-color: #6e0e50;
     --f-color-brand-a-strong: #6e0e50;
 }
+
 header {
     .page-header__logo--small {
         background: #6e0e50;

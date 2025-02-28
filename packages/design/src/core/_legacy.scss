@@ -1,5 +1,5 @@
-@use "~@fkui/css-variables/dist/fkui-exp-css-variables.css";
-
+// As FKUI does not yet have semantic variables for everything, we also need to customize these legacy variables.
+// The idea is that this file will be deprecated and fully replaced by `_theme.scss`.
 :root {
     --f-text-color-link: #6e0e50;
     --f-text-color-link-hover: #6e0e50;
@@ -24,6 +24,7 @@
     --f-background-heading-expandable-panel: #ffffff;
     --f-background-heading-expandable-panel-hover: #eeeeee;
     --f-background-expandable-panel: #fff9ec;
+    --f-background-badge-error: #ca1515;
     --f-background-button-standard: rgb(110 14 80 / 50%);
     --f-background-button-standard-hover: rgb(110 14 80 / 25%);
     --f-background-button-primary: #6e0e50;
