@@ -9,11 +9,16 @@ jobs:
         name: Release
         runs-on: ubuntu-latest
         steps:
+            - uses: actions/create-github-app-token@v1
+              id: app-token
+              with:
+                  app-id: ${{ vars.RELEASE_APP_ID }}
+                  private-key: ${{ secrets.RELEASE_APP_KEY }}
             - name: Checkout
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
-                  ssh-key: "${{ secrets.RELEASE_KEY }}"
+                  token: ${{ steps.app-token.outputs.token }}
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
@@ -24,6 +29,7 @@ jobs:
               run: npm run build
             - name: Release
               env:
+                  GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
               run: |
                   npm config set access public
