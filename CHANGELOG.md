@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.2.2 (2025-02-28)
+
+### Bug Fixes
+
+* correct env variable 5053657
+
 ## 1.2.1 (2025-02-28)
 
 ### Bug Fixes
