@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 1.2.0 (2025-02-28)
+
+### Features
+
+* **deps:** update [@fkui](undefined/fkui) packages to v6 10a0fd2
+
+### Bug Fixes
+
+* **deps:** update [@fkui](undefined/fkui) packages 14b89d9
+* **deps:** update dependency @forsakringskassan/docs-live-example to v1.5.6 4ecccc5
+
 ## 1.1.0 (2024-10-07)
 
 
