@@ -9,24 +9,18 @@
   // node_modules/@fkui/logic/lib/esm/index.js
   var esm_exports = {};
   __export(esm_exports, {
-    DATE_REGEXP_WITH_DASH: () => DATE_REGEXP_WITH_DASH,
     DecoratedError: () => DecoratedError,
     DomUtils: () => index,
     ElementIdService: () => ElementIdService,
-    FORMAT_3_DIGITS_GROUPS: () => FORMAT_3_DIGITS_GROUPS,
     MissingValueError: () => MissingValueError,
-    POSTAL_CODE_REGEXP: () => POSTAL_CODE_REGEXP,
     PersistenceService: () => PersistenceService,
-    Reference: () => Reference,
     SCREEN_READER_DELAY: () => SCREEN_READER_DELAY,
     SimplePersistenceService: () => SimplePersistenceService,
     TranslationService: () => TranslationService,
     ValidationErrorMessageBuilder: () => ValidationErrorMessageBuilder,
     ValidationService: () => ValidationService,
-    WHITESPACE_PATTERN: () => WHITESPACE_PATTERN,
     addFocusListener: () => addFocusListener,
     alertScreenReader: () => alertScreenReader,
-    applyValidationMessages: () => applyValidationMessages,
     configLogic: () => configLogic,
     debounce: () => debounce,
     deepClone: () => deepClone,
@@ -48,7 +42,6 @@
     getErrorMessages: () => getErrorMessages,
     handleTab: () => handleTab,
     isEmpty: () => isEmpty,
-    isFieldset: () => isFieldset,
     isFocusable: () => isFocusable,
     isInvalidDatesConfig: () => isInvalidDatesConfig,
     isInvalidWeekdaysConfig: () => isInvalidWeekdaysConfig,
@@ -56,7 +49,6 @@
     isSet: () => isSet,
     isString: () => isString,
     isTabbable: () => isTabbable,
-    isValidDate: () => isValidDate,
     isValidatableFormElement: () => isValidatableFormElement,
     isValidatableHTMLElement: () => isValidatableHTMLElement,
     isVisible: () => isVisible,
@@ -99,8 +91,6 @@
   function isString(value) {
     return typeof value === "string" || value instanceof String;
   }
-  var WHITESPACE_PATTERN = /\s/g;
-  var FORMAT_3_DIGITS_GROUPS = /\B(?=(\d{3})+(?!\d))/g;
   function fromEntries(iterable) {
     return iterable.reduce((obj, [key, value]) => {
       obj[key] = value;
@@ -823,14 +813,13 @@ Caused by: ${cause.stack}`;
   }
   var TWELVE_HOURS = 12 * 60 * 60;
   function setCookie(options) {
-    const shouldKeepTheExistingCookie = options.keepAnyExistingCookie && findCookie(options.name);
+    const { name, value, keepAnyExistingCookie, timeLimitSeconds } = options;
+    const shouldKeepTheExistingCookie = keepAnyExistingCookie && findCookie(name);
     if (shouldKeepTheExistingCookie) {
       return;
     }
-    let cookieString = `${options.name}=${encodeURIComponent(options.value)}; path=/;`;
-    const timeLimitSeconds = options.timeLimitMillis ? Math.round(options.timeLimitMillis / 1e3) : options.timeLimitSeconds;
     const timeout = timeLimitSeconds ?? TWELVE_HOURS;
-    cookieString += `max-age=${timeout};`;
+    const cookieString = `${name}=${encodeURIComponent(value)}; path=/; max-age=${timeout};`;
     document.cookie = cookieString;
   }
   function deleteCookie(name) {
@@ -2339,9 +2328,6 @@ Caused by: ${cause.stack}`;
     }
     return element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement || element instanceof HTMLSelectElement || element instanceof HTMLFieldSetElement;
   }
-  function isFieldset(element) {
-    return element instanceof HTMLFieldSetElement;
-  }
   function hasValidators(element) {
     return typeof element.dataset.validation === "string";
   }
@@ -2410,12 +2396,6 @@ Caused by: ${cause.stack}`;
         createFieldsetValidator(element, this);
       }
       this.setRequiredAttribute(element, validatorConfigs);
-      if (validatorConfigs["personnummer"] !== void 0) {
-        const oldConfig = validatorConfigs["personnummer"];
-        validatorConfigs["personnummerFormat"] = oldConfig;
-        validatorConfigs["personnummerLuhn"] = oldConfig;
-        delete validatorConfigs.personnummer;
-      }
       const foundValidators = this.getValidators(validatorConfigs);
       if (foundValidators.length > 0) {
         element.dataset.validation = "";
@@ -3192,8 +3172,6 @@ Caused by: ${cause.stack}`;
   ValidationService.registerValidator(postalCodeValidator);
   ValidationService.registerValidator(requiredValidator);
   ValidationService.registerValidator(whitelistValidator);
-  function applyValidationMessages() {
-  }
   var ElementIdServiceImpl = class {
     elementIdMap = /* @__PURE__ */ new Map();
     generateElementId(prefix = "fkui") {
@@ -3299,12 +3277,6 @@ Caused by: ${cause.stack}`;
     }
     remove() {
       this.persistenceService.remove(this.key);
-    }
-  };
-  var Reference = class {
-    ref = {};
-    constructor(ref) {
-      Object.assign(this.ref, ref);
     }
   };
   var SCREEN_READER_DELAY = 100;
