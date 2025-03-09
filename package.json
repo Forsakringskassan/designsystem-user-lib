@@ -85,7 +85,7 @@
     "@vue/server-renderer": "3.5.13",
     "autoprefixer": "10.4.20",
     "cli-table": "0.3.11",
-    "core-js": "3.40.0",
+    "core-js": "3.41.0",
     "esbuild": "0.25.0",
     "flush-promises": "1.0.2",
     "fs-extra": "11.3.0",
