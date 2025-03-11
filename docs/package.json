@@ -21,7 +21,7 @@
     "@fkui/design": "6.2.0"
   },
   "devDependencies": {
-    "@forsakringskassan/docs-generator": "2.21.1",
+    "@forsakringskassan/docs-generator": "2.21.2",
     "express": "4.21.2",
     "vue": "3.5.13"
   }
