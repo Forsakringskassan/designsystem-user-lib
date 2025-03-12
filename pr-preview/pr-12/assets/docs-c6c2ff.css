@@ -1,9 +1,9 @@
 @charset "UTF-8";
 :root {
-  --fkui-theme-default-version: "6.2.0";
-  --fkds-color-text-primary: #1b1e23;
+  --fkui-theme-default-version: "6.3.0";
+  --fkds-color-text-primary: #1b1e23; /* Standard text färg */
   --fkds-color-text-secondary: #5f6165;
-  --fkds-color-text-inverted: #ffffff;
+  --fkds-color-text-inverted: #ffffff; /* Inverterad text färg */
   --fkds-color-text-disabled: #8d8e91;
   --fkds-color-background-primary: #ffffff;
   --fkds-color-background-secondary: #f4f4f4;
@@ -64,6 +64,7 @@
   --fkds-color-feedback-border-positive: #35805b;
   --fkds-color-feedback-border-warning: #ffbe10;
   --fkds-color-feedback-border-negative: #ca1515;
+  --fkds-color-feedback-text-negative: #ca1515;
   --fkds-color-select-background-primary-default: #35805b;
   --fkds-color-select-background-primary-hover: #dbe9e2;
   --fkds-color-select-background-primary-active: #dbe9e2;
@@ -340,6 +341,9 @@
   --f-logo-image-large: none;
   --f-logo-size-small: 0.8rem;
   --f-logo-size-large: 0.8rem 6.195rem;
+  --size: 0;
+  --min: 0;
+  --max: 0;
 }
 
 /* sfc-style:/home/runner/work/docs-live-example/docs-live-example/src/LiveExampleSourcecode.vue?type=style&index=0 */
@@ -2686,7 +2690,7 @@ input[type=search]:focus,
   color: var(--f-text-color-link, #4a52b6);
   text-decoration: underline;
   text-decoration-thickness: 2px;
-  text-underline-offset: 0.25rem;
+  text-underline-offset: 0.25em;
   text-decoration-color: var(--f-text-color-link, #4a52b6);
   font-weight: var(--f-font-weight-medium, 700);
 }
@@ -4458,7 +4462,7 @@ input[type=search]:focus,
 }
 
 .label {
-  color: var(--f-text-color-default, #1b1e23);
+  color: var(--fkds-color-text-primary, #1b1e23);
   display: inline-block;
   font-size: var(--f-font-size-standard, 1rem);
   font-weight: var(--f-font-weight-medium, 700);
@@ -4474,7 +4478,7 @@ input[type=search]:focus,
 }
 
 .label__message--error {
-  color: var(--f-text-color-error, #d23838);
+  color: var(--fkds-color-feedback-text-negative, #ca1515);
 }
 
 .label__icon-wrapper {
@@ -4489,10 +4493,11 @@ input[type=search]:focus,
 .label__description {
   display: block;
   font-weight: var(--f-font-weight-normal, 400);
+  color: var(--fkds-color-text-primary, #1b1e23);
 }
 
 .label__description--format {
-  color: var(--f-text-color-discrete, #5f6165);
+  color: var(--fkds-color-text-secondary, #5f6165);
 }
 
 .layout-application-template {
