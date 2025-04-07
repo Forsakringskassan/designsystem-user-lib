@@ -22,7 +22,7 @@
       "require": "./dist/cjs/index.cjs.js",
       "import": "./dist/esm/index.esm.js"
     },
-    "./htmlvalidate": "./htmlvalidate/index.js"
+    "./htmlvalidate": "./htmlvalidate/index.cjs"
   },
   "main": "dist/cjs/index.cjs.js",
   "module": "dist/esm/index.esm.js",
