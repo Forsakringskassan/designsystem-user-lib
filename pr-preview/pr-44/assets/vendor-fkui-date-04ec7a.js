@@ -358,7 +358,7 @@ var Locale;
 function getDefaultLocale() {
   return Locale.SWEDISH;
 }
-var _locale = getDefaultLocale();
+var _locale = /* @__PURE__ */ getDefaultLocale();
 function resetLocale() {
   _locale = getDefaultLocale();
 }
