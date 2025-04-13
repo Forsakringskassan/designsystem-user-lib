@@ -14,7 +14,7 @@
     "clean": "rimraf -g *.tsbuildinfo"
   },
   "dependencies": {
-    "@forsakringskassan/docs-live-example": "1.5.6",
+    "@forsakringskassan/docs-live-example": "2.0.0",
     "@fkui/icon-lib-default": "6.4.0",
     "@fkui/vue": "6.4.0",
     "@fkui/date": "6.4.0",
