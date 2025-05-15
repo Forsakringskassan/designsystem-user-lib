@@ -16,9 +16,9 @@
   "dependencies": {
     "@forsakringskassan/docs-live-example": "2.0.0",
     "@fkui/icon-lib-default": "6.7.0",
-    "@fkui/vue": "6.7.0",
+    "@fkui/vue": "6.7.1",
     "@fkui/date": "6.7.0",
-    "@fkui/design": "6.7.0"
+    "@fkui/design": "6.7.1"
   },
   "devDependencies": {
     "@forsakringskassan/docs-generator": "2.27.1",
