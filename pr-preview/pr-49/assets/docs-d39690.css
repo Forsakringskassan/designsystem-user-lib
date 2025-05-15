@@ -3698,6 +3698,7 @@ input[type=search]:focus,
 .fieldset {
   border: 0;
   margin: 0 0 calc(var(--f-margin-component-bottom) * var(--f-density-factor));
+  min-width: 0;
   padding: 0;
   width: var(--f-width-full);
 }
