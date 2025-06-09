@@ -1,9 +1,9 @@
 name: Lint
 
-on:
-    push:
-        branches:
-            - "**"
+on: [push, pull_request]
+
+permissions:
+    contents: read
 
 jobs:
     lint:
@@ -23,13 +23,13 @@ jobs:
               run: npm run prettier:check
             - name: ESLint
               if: success() || failure()
-              run: npm run eslint || false
+              run: npm run eslint -- --max-warnings 0 || false
             - name: HTML Validate
               if: success() || failure()
-              run: npm run html-validate || false
+              run: npm run html-validate -- --max-warnings 0 || false
             - name: Stylelint
               if: success() || failure()
-              run: npm run stylelint
+              run: npm run stylelint -- --max-warnings 0
             - name: pnr-scanner
               if: success() || failure()
               run: |
@@ -38,3 +38,15 @@ jobs:
                       echo "Found ${errors} potential personnummer. Rerun `npx pnr-scanner .` locally for more information."
                       exit 1
                   fi
+    npm-pkg-lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Use Node.js
+              uses: actions/setup-node@v4
+            - name: Install Dependencies
+              run: npm ci
+            - name: npm-pkg-lint
+              uses: ext/npm-pkg-lint@master
+              with:
+                  folders: packages/*
