@@ -82,7 +82,7 @@
     "esbuild": "0.25.5",
     "flush-promises": "1.0.2",
     "fs-extra": "11.3.0",
-    "glob": "11.0.2",
+    "glob": "11.0.3",
     "highlight.js": "11.11.1",
     "html-validate": "9.6.1",
     "html-validate-markdown": "5.0.0",
