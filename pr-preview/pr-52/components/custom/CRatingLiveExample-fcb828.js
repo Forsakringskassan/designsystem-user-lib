@@ -102,7 +102,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                     { d: "M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM240 80a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM208 208a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm-64-64a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" },
                     null,
                     -1
-                    /* HOISTED */
+                    /* CACHED */
                   ))
                 ],
                 2
@@ -165,21 +165,21 @@ function render2(_ctx, _cache, $props, $setup, $data, $options) {
             { value: 3 },
             "3",
             -1
-            /* HOISTED */
+            /* CACHED */
           )),
           _cache[3] || (_cache[3] = _createElementVNode2(
             "option",
             { value: void 0 },
             "5 (default)",
             -1
-            /* HOISTED */
+            /* CACHED */
           )),
           _cache[4] || (_cache[4] = _createElementVNode2(
             "option",
             { value: 10 },
             "10",
             -1
-            /* HOISTED */
+            /* CACHED */
           ))
         ]),
         _: 1,

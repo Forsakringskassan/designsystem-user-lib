@@ -187,7 +187,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             { value: "" },
             "Nuvarande m\xE5nad (standard)",
             -1
-            /* HOISTED */
+            /* CACHED */
           )),
           _createElementVNode("option", {
             value: _ctx.getDateWithOffset(-6)
