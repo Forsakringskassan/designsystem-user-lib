@@ -34,7 +34,7 @@
   "scripts": {
     "prebuild": "run-s clean",
     "build": "run-s build:lib build:dts build:api",
-    "build:api": "fk-api-extractor api-extractor.json",
+    "build:api": "fk-api-extractor --patch-augmentations --patch-declare-var-vls api-extractor.json",
     "build:dts": "vue-tsc -b",
     "build:lib": "fk-build-vue-lib",
     "clean": "rimraf -g .jest-cache *.tsbuildinfo coverage dist public temp test-results",
