@@ -27,7 +27,7 @@ function setup(options) {
   };
 }
 
-// virtual-entry:virtual:packages/vue/src/components/c-rating/examples/CRatingLiveExample.vue:CRatingLiveExample-fcb828.js
+// virtual-entry:virtual:packages/vue/src/components/c-rating/examples/CRatingLiveExample.vue:CRatingLiveExample-a0dad2.js
 import { defineComponent } from "vue";
 import { FSelectField } from "@fkui/vue";
 import { LiveExample } from "@forsakringskassan/docs-live-example";
@@ -125,7 +125,7 @@ c_rating_default.render = render;
 c_rating_default.__file = "packages/vue/src/components/c-rating/c-rating.vue";
 var c_rating_default2 = c_rating_default;
 
-// virtual-entry:virtual:packages/vue/src/components/c-rating/examples/CRatingLiveExample.vue:CRatingLiveExample-fcb828.js
+// virtual-entry:virtual:packages/vue/src/components/c-rating/examples/CRatingLiveExample.vue:CRatingLiveExample-a0dad2.js
 import { createTextVNode as _createTextVNode, createElementVNode as _createElementVNode2, resolveComponent as _resolveComponent, withCtx as _withCtx2, createVNode as _createVNode2, openBlock as _openBlock2, createBlock as _createBlock } from "vue";
 var exampleComponent = defineComponent({
   name: "FBadgeLiveExample",
@@ -193,7 +193,7 @@ function render2(_ctx, _cache, $props, $setup, $data, $options) {
 exampleComponent.render = render2;
 setup({
   rootComponent: exampleComponent,
-  selector: "#example-fcb828"
+  selector: "#example-a0dad2"
 });
 export {
   render2 as render
