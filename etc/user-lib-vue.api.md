@@ -11,12 +11,12 @@ import { ExtractPropTypes } from 'vue';
 import { ModelRef } from 'vue';
 import { PublicProps } from 'vue';
 
-// Warning: (ae-forgotten-export) The symbol "__VLS_WithTemplateSlots" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_WithSlots" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "__VLS_component" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "__VLS_TemplateResult" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_Slots" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const CRating: __VLS_WithTemplateSlots<typeof __VLS_component, __VLS_TemplateResult["slots"]>;
+export const CRating: __VLS_WithSlots<typeof __VLS_component, __VLS_Slots>;
 
 // @public (undocumented)
 export const CRatingModal: DefineComponent<ExtractPropTypes<    {
