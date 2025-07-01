@@ -27,7 +27,7 @@ function setup(options) {
   };
 }
 
-// virtual-entry:virtual:packages/vue/src/components/CRatingModal/examples/CRatingModalExample.vue:CRatingModalExample-8262a1.js
+// virtual-entry:virtual:packages/vue/src/components/CRatingModal/examples/CRatingModalExample.vue:CRatingModalExample-1be604.js
 import { defineComponent as defineComponent2 } from "vue";
 
 // sfc-script:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/CRatingModal/CRatingModal.vue?type=script
@@ -297,7 +297,7 @@ CRatingModal_default2.render = render3;
 CRatingModal_default2.__file = "packages/vue/src/components/CRatingModal/CRatingModal.vue";
 var CRatingModal_default = CRatingModal_default2;
 
-// virtual-entry:virtual:packages/vue/src/components/CRatingModal/examples/CRatingModalExample.vue:CRatingModalExample-8262a1.js
+// virtual-entry:virtual:packages/vue/src/components/CRatingModal/examples/CRatingModalExample.vue:CRatingModalExample-1be604.js
 import { createElementVNode as _createElementVNode2, resolveComponent as _resolveComponent, createVNode as _createVNode3, toDisplayString as _toDisplayString2, Fragment as _Fragment2, openBlock as _openBlock4, createElementBlock as _createElementBlock3 } from "vue";
 var exampleComponent = defineComponent2({
   name: "CRatingModalExample",
@@ -355,7 +355,7 @@ function render4(_ctx, _cache, $props, $setup, $data, $options) {
 exampleComponent.render = render4;
 setup({
   rootComponent: exampleComponent,
-  selector: "#example-8262a1"
+  selector: "#example-1be604"
 });
 export {
   render4 as render

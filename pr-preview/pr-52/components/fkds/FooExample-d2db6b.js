@@ -27,7 +27,7 @@ function setup(options) {
   };
 }
 
-// virtual-entry:virtual:docs/components/fkds/FooExample.vue:FooExample-2f06cc.js
+// virtual-entry:virtual:docs/components/fkds/FooExample.vue:FooExample-d2db6b.js
 import { defineComponent } from "vue";
 import { FDatepickerField, FSelectField, FTooltip } from "@fkui/vue";
 import { LiveExample } from "@forsakringskassan/docs-live-example";
@@ -204,7 +204,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 exampleComponent.render = render;
 setup({
   rootComponent: exampleComponent,
-  selector: "#example-2f06cc"
+  selector: "#example-d2db6b"
 });
 export {
   render
