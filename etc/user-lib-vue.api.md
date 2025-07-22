@@ -35,7 +35,7 @@ type: StringConstructor;
 required: false;
 default: string;
 };
-}>, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
+}>, void, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
 close: () => any;
 submit: (args_0: CRatingModalResult) => any;
 }, string, PublicProps, Readonly<ExtractPropTypes<    {
