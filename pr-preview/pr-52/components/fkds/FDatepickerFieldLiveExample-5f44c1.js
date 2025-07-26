@@ -183,7 +183,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => _ctx.monthToShow = $event)
       }, {
         label: _withCtx(() => _cache[11] || (_cache[11] = [
-          _createTextVNode(" Visa m\xE5nad ")
+          _createTextVNode(
+            " Visa m\xE5nad ",
+            -1
+            /* CACHED */
+          )
         ])),
         default: _withCtx(() => [
           _cache[12] || (_cache[12] = _createElementVNode(
@@ -205,7 +209,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.minDateLimit = $event)
       }, {
         label: _withCtx(() => _cache[13] || (_cache[13] = [
-          _createTextVNode(" Tidigaste valbara datum ")
+          _createTextVNode(
+            " Tidigaste valbara datum ",
+            -1
+            /* CACHED */
+          )
         ])),
         default: _withCtx(() => [
           _cache[14] || (_cache[14] = _createElementVNode(
@@ -227,7 +235,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => _ctx.maxDateLimit = $event)
       }, {
         label: _withCtx(() => _cache[15] || (_cache[15] = [
-          _createTextVNode(" Senaste valbara datum ")
+          _createTextVNode(
+            " Senaste valbara datum ",
+            -1
+            /* CACHED */
+          )
         ])),
         default: _withCtx(() => [
           _cache[16] || (_cache[16] = _createElementVNode(
@@ -249,7 +261,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => _ctx.invalidWeekdays = $event)
       }, {
         label: _withCtx(() => _cache[17] || (_cache[17] = [
-          _createTextVNode(" Ej valbara veckodagar ")
+          _createTextVNode(
+            " Ej valbara veckodagar ",
+            -1
+            /* CACHED */
+          )
         ])),
         default: _withCtx(() => [
           _cache[18] || (_cache[18] = _createElementVNode(
@@ -275,7 +291,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => _ctx.invalidDates = $event)
       }, {
         label: _withCtx(() => _cache[20] || (_cache[20] = [
-          _createTextVNode(" Ej valbara datum ")
+          _createTextVNode(
+            " Ej valbara datum ",
+            -1
+            /* CACHED */
+          )
         ])),
         default: _withCtx(() => [
           _cache[21] || (_cache[21] = _createElementVNode(
@@ -298,7 +318,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         value: true
       }, {
         default: _withCtx(() => _cache[22] || (_cache[22] = [
-          _createTextVNode(" Markera dagens datum i kalendern ")
+          _createTextVNode(
+            " Markera dagens datum i kalendern ",
+            -1
+            /* CACHED */
+          )
         ])),
         _: 1,
         __: [22]
@@ -309,7 +333,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         value: true
       }, {
         default: _withCtx(() => _cache[23] || (_cache[23] = [
-          _createTextVNode(" Obligatorisk f\xE4lt ")
+          _createTextVNode(
+            " Obligatorisk f\xE4lt ",
+            -1
+            /* CACHED */
+          )
         ])),
         _: 1,
         __: [23]
@@ -320,7 +348,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         value: true
       }, {
         default: _withCtx(() => _cache[24] || (_cache[24] = [
-          _createTextVNode(" Inaktivt f\xE4lt ")
+          _createTextVNode(
+            " Inaktivt f\xE4lt ",
+            -1
+            /* CACHED */
+          )
         ])),
         _: 1,
         __: [24]
@@ -331,14 +363,22 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         value: true
       }, {
         default: _withCtx(() => _cache[25] || (_cache[25] = [
-          _createTextVNode(" Kalendern visas alltid inline ")
+          _createTextVNode(
+            " Kalendern visas alltid inline ",
+            -1
+            /* CACHED */
+          )
         ])),
         _: 1,
         __: [25]
       }, 8, ["modelValue"]),
       _createVNode(_component_f_fieldset, { name: "etikett" }, {
         label: _withCtx(() => _cache[26] || (_cache[26] = [
-          _createTextVNode(" Etiketten ")
+          _createTextVNode(
+            " Etiketten ",
+            -1
+            /* CACHED */
+          )
         ])),
         default: _withCtx(() => [
           _createVNode(_component_f_checkbox_field, {
@@ -347,7 +387,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             value: true
           }, {
             default: _withCtx(() => _cache[27] || (_cache[27] = [
-              _createTextVNode(" Tooltip ")
+              _createTextVNode(
+                " Tooltip ",
+                -1
+                /* CACHED */
+              )
             ])),
             _: 1,
             __: [27]
@@ -358,7 +402,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             value: true
           }, {
             default: _withCtx(() => _cache[28] || (_cache[28] = [
-              _createTextVNode(" Hj\xE4lptext ")
+              _createTextVNode(
+                " Hj\xE4lptext ",
+                -1
+                /* CACHED */
+              )
             ])),
             _: 1,
             __: [28]

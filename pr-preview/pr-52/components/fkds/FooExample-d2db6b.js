@@ -173,13 +173,21 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     livedata: _ctx.livedata
   }, {
     default: _withCtx(() => [
-      _cache[3] || (_cache[3] = _createTextVNode(" asdfadf ")),
+      _cache[3] || (_cache[3] = _createTextVNode(
+        " asdfadf ",
+        -1
+        /* CACHED */
+      )),
       _createVNode(_component_f_select_field, {
         modelValue: _ctx.monthToShow,
         "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => _ctx.monthToShow = $event)
       }, {
         label: _withCtx(() => _cache[1] || (_cache[1] = [
-          _createTextVNode(" Visa m\xE5nad ")
+          _createTextVNode(
+            " Visa m\xE5nad ",
+            -1
+            /* CACHED */
+          )
         ])),
         default: _withCtx(() => [
           _cache[2] || (_cache[2] = _createElementVNode(
