@@ -1,7 +1,4 @@
 // node_modules/@fkui/logic/lib/esm/index.js
-var configLogic = {
-  production: true
-};
 function isEmpty(value) {
   return !value;
 }
@@ -11,6 +8,31 @@ function isSet(value) {
 function isString(value) {
   return typeof value === "string" || value instanceof String;
 }
+var MissingValueError = class _MissingValueError extends Error {
+  constructor(message) {
+    super(message);
+    Object.setPrototypeOf(this, _MissingValueError.prototype);
+  }
+};
+function ensureSet(value, message = "") {
+  if (!isSet(value)) {
+    throw new MissingValueError(message);
+  }
+  return value;
+}
+function assertRef(ref, message = "Expected ref to have a non-null value, but it did not") {
+  if (!isSet(ref?.value)) {
+    throw new MissingValueError(message);
+  }
+}
+function assertSet(value, message = "Expected value to be set, but it was not") {
+  if (!isSet(value)) {
+    throw new MissingValueError(message);
+  }
+}
+var configLogic = {
+  production: true
+};
 function fromEntries(iterable) {
   return iterable.reduce((obj, [key, value]) => {
     obj[key] = value;
@@ -675,18 +697,6 @@ var lodash_clonedeepExports = requireLodash_clonedeep();
 var cloneDeep = /* @__PURE__ */ getDefaultExportFromCjs$1(lodash_clonedeepExports);
 function deepClone(value) {
   return cloneDeep(value);
-}
-var MissingValueError = class _MissingValueError extends Error {
-  constructor(message) {
-    super(message);
-    Object.setPrototypeOf(this, _MissingValueError.prototype);
-  }
-};
-function ensureSet(value, message = "") {
-  if (!isSet(value)) {
-    throw new MissingValueError(message);
-  }
-  return value;
 }
 function flatten(src, destination, prefix = "") {
   destination = destination || {};
@@ -2372,7 +2382,7 @@ var ValidationServiceImpl = class {
   elementValidatorsReferences = {};
   validationErrorMessages = {};
   constructor() {
-    this.addValidationErrorMessages(getErrorMessages());
+    this.setErrorMessages(getErrorMessages());
   }
   getElementsAndValidators() {
     return this.elementValidatorsReferences;
@@ -2381,10 +2391,18 @@ var ValidationServiceImpl = class {
     return Object.values(this.validationStates).some((item) => item.touched === true);
   }
   addValidationErrorMessages(validationErrorMessages) {
-    this.validationErrorMessages = {
-      ...this.validationErrorMessages,
-      ...validationErrorMessages
-    };
+    this.setErrorMessages(validationErrorMessages);
+  }
+  setErrorMessages(messages, options = {}) {
+    const { clear = false } = options;
+    if (clear) {
+      this.clearErrorMessages();
+    }
+    const current = this.validationErrorMessages;
+    this.validationErrorMessages = { ...current, ...messages };
+  }
+  clearErrorMessages() {
+    this.validationErrorMessages = {};
   }
   registerValidator(validator) {
     const { name } = validator;
@@ -3279,6 +3297,8 @@ export {
   ValidationService,
   addFocusListener,
   alertScreenReader,
+  assertRef,
+  assertSet,
   availableValidators,
   configLogic,
   debounce,
