@@ -24,8 +24,8 @@
     "@fkui/theme-default": "6.15.0"
   },
   "peerDependencies": {
-    "@fkui/theme-default": "^6.0.0",
     "@fkui/design": "^6.0.0",
+    "@fkui/theme-default": "^6.0.0",
     "sass": "^1.40"
   },
   "peerDependenciesMeta": {
