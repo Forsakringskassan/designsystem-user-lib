@@ -36,8 +36,8 @@ required: false;
 default: string;
 };
 }>, void, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-close: () => any;
 submit: (args_0: CRatingModalResult) => any;
+close: () => any;
 }, string, PublicProps, Readonly<ExtractPropTypes<    {
 isOpen: {
 type: BooleanConstructor;
@@ -55,8 +55,8 @@ required: false;
 default: string;
 };
 }>> & Readonly<{
-onClose?: (() => any) | undefined;
 onSubmit?: ((args_0: CRatingModalResult) => any) | undefined;
+onClose?: (() => any) | undefined;
 }>, {
 title: string;
 isOpen: boolean;
