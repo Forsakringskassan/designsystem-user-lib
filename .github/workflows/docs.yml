@@ -17,7 +17,7 @@ jobs:
             DST_BRANCH: gh-pages
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v5
             - name: Configure git
               run: |
                   git config --global user.email "sbutvecklinggithub@forsakringskassan.se"
