@@ -79,7 +79,7 @@
     "autoprefixer": "10.4.21",
     "cli-table": "0.3.11",
     "core-js": "3.45.0",
-    "esbuild": "0.25.8",
+    "esbuild": "0.25.9",
     "flush-promises": "1.0.2",
     "fs-extra": "11.3.1",
     "glob": "11.0.3",
