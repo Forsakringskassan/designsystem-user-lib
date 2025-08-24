@@ -156,13 +156,13 @@ function render2(_ctx, _cache, $props, $setup, $data, $options) {
         modelValue: _ctx.count,
         "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => _ctx.count = $event)
       }, {
-        label: _withCtx2(() => _cache[1] || (_cache[1] = [
+        label: _withCtx2(() => [..._cache[1] || (_cache[1] = [
           _createTextVNode(
             " Maxbetyg ",
             -1
             /* CACHED */
           )
-        ])),
+        ])]),
         default: _withCtx2(() => [
           _cache[2] || (_cache[2] = _createElementVNode2(
             "option",
@@ -186,8 +186,8 @@ function render2(_ctx, _cache, $props, $setup, $data, $options) {
             /* CACHED */
           ))
         ]),
-        _: 1,
-        __: [2, 3, 4]
+        _: 1
+        /* STABLE */
       }, 8, ["modelValue"])
     ]),
     _: 1

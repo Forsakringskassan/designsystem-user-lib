@@ -182,13 +182,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         modelValue: _ctx.monthToShow,
         "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => _ctx.monthToShow = $event)
       }, {
-        label: _withCtx(() => _cache[1] || (_cache[1] = [
+        label: _withCtx(() => [..._cache[1] || (_cache[1] = [
           _createTextVNode(
             " Visa m\xE5nad ",
             -1
             /* CACHED */
           )
-        ])),
+        ])]),
         default: _withCtx(() => [
           _cache[2] || (_cache[2] = _createElementVNode(
             "option",
@@ -201,12 +201,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             value: _ctx.getDateWithOffset(-6)
           }, "Exempel: " + _toDisplayString(_ctx.getMonthYearString(_ctx.getDateWithOffset(-6))), 9, _hoisted_1)
         ]),
-        _: 1,
-        __: [2]
+        _: 1
+        /* STABLE */
       }, 8, ["modelValue"])
     ]),
-    _: 1,
-    __: [3]
+    _: 1
+    /* STABLE */
   }, 8, ["components", "template", "livedata"]);
 }
 exampleComponent.render = render;

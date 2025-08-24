@@ -280,15 +280,15 @@ function render3(_ctx, _cache, $props, $setup, $data, $options) {
         modelValue: $setup.value.comment,
         "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => $setup.value.comment = $event)
       }, {
-        default: _withCtx2(() => _cache[2] || (_cache[2] = [
+        default: _withCtx2(() => [..._cache[2] || (_cache[2] = [
           _createTextVNode(
             " L\xE4gg till en kommentar ",
             -1
             /* CACHED */
           )
-        ])),
-        _: 1,
-        __: [2]
+        ])]),
+        _: 1
+        /* STABLE */
       }, 8, ["modelValue"])
     ]),
     _: 1
