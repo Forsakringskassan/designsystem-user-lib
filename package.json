@@ -57,7 +57,7 @@
     "@babel/core": "7.28.3",
     "@babel/preset-env": "7.28.3",
     "@forsakringskassan/commitlint-config": "3.0.4",
-    "@forsakringskassan/docs-generator": "2.29.1",
+    "@forsakringskassan/docs-generator": "2.29.2",
     "@forsakringskassan/eslint-config": "12.0.8",
     "@forsakringskassan/eslint-config-cli": "12.0.3",
     "@forsakringskassan/eslint-config-jest": "12.0.9",
