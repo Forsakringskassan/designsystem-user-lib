@@ -54,7 +54,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "7.28.3",
+    "@babel/core": "7.28.4",
     "@babel/preset-env": "7.28.3",
     "@forsakringskassan/commitlint-config": "3.0.7",
     "@forsakringskassan/docs-generator": "2.29.2",
