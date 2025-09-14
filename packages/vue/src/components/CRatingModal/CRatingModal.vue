@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { FFormModal, FTextareaField } from "@fkui/vue";
-import { CRating, CRatingModalResult } from "..";
+import { type CRatingModalResult, CRating } from "..";
 
 const value = ref<CRatingModalResult>({
     score: undefined,

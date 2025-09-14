@@ -2,23 +2,24 @@
 import { defineComponent } from "vue";
 import { FSelectField } from "@fkui/vue";
 import { LiveExample } from "@forsakringskassan/docs-live-example";
-import { CRating } from "..";
+import CRating from "../c-rating.vue";
 
 export default defineComponent({
     name: "FBadgeLiveExample",
     components: { LiveExample, FSelectField },
     data() {
         return {
-            count: undefined,
+            count: undefined as undefined | number,
         };
     },
     computed: {
-        components(): object {
+        components() {
+            /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- technical debt */
             return { CRating };
         },
         template(): string {
             return this.count
-                ? ` <c-rating :count=${this.count}> Betyg </c-rating> `
+                ? ` <c-rating :count=${String(this.count)}> Betyg </c-rating> `
                 : ` <c-rating> Betyg </c-rating> `;
         },
     },
