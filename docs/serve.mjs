@@ -6,6 +6,7 @@ const port = process.env.HTTP_PORT
     : defaultPort;
 const folders = process.argv.slice(2);
 
+/* eslint-disable-next-line sonarjs/x-powered-by -- for internal testing only */
 const app = express();
 
 for (const folder of folders) {
