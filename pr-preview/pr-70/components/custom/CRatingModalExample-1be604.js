@@ -52,7 +52,7 @@ var FBadge_default = defineComponent({
     status: {
       type: String,
       default: "default",
-      validator: function(value) {
+      validator(value) {
         return statuses.includes(value);
       }
     },

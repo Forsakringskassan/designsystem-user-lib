@@ -27,7 +27,7 @@ function setup(options) {
   };
 }
 
-// virtual-entry:virtual:from-fkui/components/fkds/FDatepickerFieldLiveExample.vue:FDatepickerFieldLiveExample-5f44c1.js
+// virtual-entry:virtual:from-fkui/components/fkds/FDatepickerFieldLiveExample.vue:FDatepickerFieldLiveExample-fac688.js
 import { defineComponent } from "vue";
 import { FDatepickerField, FFieldset, FCheckboxField, FSelectField, FTooltip } from "@fkui/vue";
 import { LiveExample } from "@forsakringskassan/docs-live-example";
@@ -423,7 +423,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 exampleComponent.render = render;
 setup({
   rootComponent: exampleComponent,
-  selector: "#example-5f44c1"
+  selector: "#example-fac688"
 });
 export {
   render
