@@ -76,7 +76,7 @@ export const FBadge: DefineComponent<ExtractPropTypes<    {
 status: {
 type: StringConstructor;
 default: string;
-validator: (value: string) => boolean;
+validator(value: string): boolean;
 };
 inverted: {
 type: BooleanConstructor;
@@ -88,7 +88,7 @@ badgeClass(): string;
 status: {
 type: StringConstructor;
 default: string;
-validator: (value: string) => boolean;
+validator(value: string): boolean;
 };
 inverted: {
 type: BooleanConstructor;

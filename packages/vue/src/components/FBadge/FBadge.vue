@@ -12,7 +12,7 @@ export default defineComponent({
         status: {
             type: String,
             default: "default",
-            validator: function (value: string) {
+            validator(value: string) {
                 return statuses.includes(value);
             },
         },
