@@ -11,57 +11,15 @@ import { ExtractPropTypes } from 'vue';
 import { ModelRef } from 'vue';
 import { PublicProps } from 'vue';
 
-// Warning: (ae-forgotten-export) The symbol "__VLS_WithSlots" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "__VLS_component" needs to be exported by the entry point index.d.ts
-// Warning: (ae-forgotten-export) The symbol "__VLS_Slots" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "__VLS_export_2" needs to be exported by the entry point index.d.ts
 //
 // @public (undocumented)
-export const CRating: __VLS_WithSlots<typeof __VLS_component, __VLS_Slots>;
+export const CRating: typeof __VLS_export_2;
 
+// Warning: (ae-forgotten-export) The symbol "__VLS_export_3" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
-export const CRatingModal: DefineComponent<ExtractPropTypes<    {
-isOpen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-title: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-ratingText: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-}>, {}, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {
-submit: (args_0: CRatingModalResult) => any;
-close: () => any;
-}, string, PublicProps, Readonly<ExtractPropTypes<    {
-isOpen: {
-type: BooleanConstructor;
-required: false;
-default: boolean;
-};
-title: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-ratingText: {
-type: StringConstructor;
-required: false;
-default: string;
-};
-}>> & Readonly<{
-onSubmit?: ((args_0: CRatingModalResult) => any) | undefined;
-onClose?: (() => any) | undefined;
-}>, {
-title: string;
-isOpen: boolean;
-ratingText: string;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
+export const CRatingModal: typeof __VLS_export_3;
 
 // @public (undocumented)
 export interface CRatingModalResult {
@@ -71,33 +29,10 @@ export interface CRatingModalResult {
     score: number | undefined;
 }
 
+// Warning: (ae-forgotten-export) The symbol "__VLS_export" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
-export const FBadge: DefineComponent<ExtractPropTypes<    {
-status: {
-type: StringConstructor;
-default: string;
-validator(value: string): boolean;
-};
-inverted: {
-type: BooleanConstructor;
-default: boolean;
-};
-}>, {}, {}, {
-badgeClass(): string;
-}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, Readonly<ExtractPropTypes<    {
-status: {
-type: StringConstructor;
-default: string;
-validator(value: string): boolean;
-};
-inverted: {
-type: BooleanConstructor;
-default: boolean;
-};
-}>> & Readonly<{}>, {
-status: string;
-inverted: boolean;
-}, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>;
+export const FBadge: typeof __VLS_export;
 
 // (No @packageDocumentation comment for this package)
 
