@@ -27,11 +27,11 @@ function setup(options) {
   };
 }
 
-// virtual-entry:virtual:from-fkui/components/fkds/FDatepickerFieldLiveExample.vue:FDatepickerFieldLiveExample-fac688.js
+// virtual-entry:virtual:from-fkui/components/fkds/FDatepickerFieldLiveExample.vue:FDatepickerFieldLiveExample-526bb2.js
 import { defineComponent } from "vue";
-import { FDatepickerField, FFieldset, FCheckboxField, FSelectField, FTooltip } from "@fkui/vue";
-import { LiveExample } from "@forsakringskassan/docs-live-example";
 import { DateFormat, FDate, Weekday } from "@fkui/date";
+import { FCheckboxField, FDatepickerField, FFieldset, FSelectField, FTooltip } from "@fkui/vue";
+import { LiveExample } from "@forsakringskassan/docs-live-example";
 import { createTextVNode as _createTextVNode, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, resolveComponent as _resolveComponent, withCtx as _withCtx, createVNode as _createVNode, openBlock as _openBlock, createBlock as _createBlock } from "vue";
 var exampleComponent = defineComponent({
   name: "FDatepickerFieldLiveExample",
@@ -423,7 +423,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 exampleComponent.render = render;
 setup({
   rootComponent: exampleComponent,
-  selector: "#example-fac688"
+  selector: "#example-526bb2"
 });
 export {
   render

@@ -27,7 +27,7 @@ function setup(options) {
   };
 }
 
-// virtual-entry:virtual:packages/vue/src/components/CRatingModal/examples/CRatingModalExample.vue:CRatingModalExample-1be604.js
+// virtual-entry:virtual:packages/vue/src/components/CRatingModal/examples/CRatingModalExample.vue:CRatingModalExample-04e9c7.js
 import { defineComponent as defineComponent2 } from "vue";
 
 // sfc-script:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/CRatingModal/CRatingModal.vue?type=script
@@ -58,10 +58,10 @@ var FBadge_default = defineComponent({
     },
     /**
      * If badge should be inverted.
-     *
      */
     inverted: {
       type: Boolean,
+      /* eslint-disable-next-line vue/no-boolean-default -- technical debt */
       default: false
     }
   },
@@ -197,6 +197,7 @@ var CRatingModal_default2 = /* @__PURE__ */ _defineComponent2({
     isOpen: {
       type: Boolean,
       required: false,
+      /* eslint-disable-next-line vue/no-boolean-default -- technical debt */
       default: false
     },
     /**
@@ -219,19 +220,19 @@ var CRatingModal_default2 = /* @__PURE__ */ _defineComponent2({
   emits: ["close", "submit"],
   setup(__props, { expose: __expose, emit: __emit }) {
     __expose();
+    const props = __props;
+    const emits = __emit;
     const value = ref({
       score: void 0,
       comment: ""
     });
-    const props = __props;
-    const emits = __emit;
     function onSubmit(event) {
       emits("submit", event.data);
     }
     function onClose() {
       emits("close");
     }
-    const __returned__ = { value, props, emits, onSubmit, onClose, get FFormModal() {
+    const __returned__ = { props, emits, value, onSubmit, onClose, get FFormModal() {
       return FFormModal;
     }, get FTextareaField() {
       return FTextareaField;
@@ -301,7 +302,7 @@ CRatingModal_default2.render = render3;
 CRatingModal_default2.__file = "packages/vue/src/components/CRatingModal/CRatingModal.vue";
 var CRatingModal_default = CRatingModal_default2;
 
-// virtual-entry:virtual:packages/vue/src/components/CRatingModal/examples/CRatingModalExample.vue:CRatingModalExample-1be604.js
+// virtual-entry:virtual:packages/vue/src/components/CRatingModal/examples/CRatingModalExample.vue:CRatingModalExample-04e9c7.js
 import { createElementVNode as _createElementVNode2, resolveComponent as _resolveComponent, createVNode as _createVNode3, toDisplayString as _toDisplayString2, Fragment as _Fragment2, openBlock as _openBlock4, createElementBlock as _createElementBlock3 } from "vue";
 var exampleComponent = defineComponent2({
   name: "CRatingModalExample",
@@ -359,7 +360,7 @@ function render4(_ctx, _cache, $props, $setup, $data, $options) {
 exampleComponent.render = render4;
 setup({
   rootComponent: exampleComponent,
-  selector: "#example-1be604"
+  selector: "#example-04e9c7"
 });
 export {
   render4 as render
