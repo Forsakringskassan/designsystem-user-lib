@@ -3,11 +3,7 @@ import { ref } from "vue";
 import { FFormModal, FTextareaField } from "@fkui/vue";
 import { type CRatingModalResult, CRating } from "..";
 
-const value = ref<CRatingModalResult>({
-    score: undefined,
-    comment: "",
-});
-
+/* eslint-disable-next-line vue/define-props-declaration -- technical debt */
 const props = defineProps({
     /**
      * If the modal is open.
@@ -16,6 +12,7 @@ const props = defineProps({
     isOpen: {
         type: Boolean,
         required: false,
+        /* eslint-disable-next-line vue/no-boolean-default -- technical debt */
         default: false,
     },
     /**
@@ -48,6 +45,11 @@ const emits = defineEmits<{
     submit: [CRatingModalResult];
 }>();
 
+const value = ref<CRatingModalResult>({
+    score: undefined,
+    comment: "",
+});
+
 function onSubmit(event: { data: CRatingModalResult }): void {
     emits("submit", event.data);
 }
@@ -57,7 +59,7 @@ function onClose(): void {
 }
 </script>
 <template>
-    <f-form-modal :is-open="props.isOpen" :value="value" :use-error-list="false" @close="onClose" @submit="onSubmit">
+    <f-form-modal :is-open="props.isOpen" :value :use-error-list="false" @close="onClose" @submit="onSubmit">
         <template #header> {{ title }} </template>
         <template #input-text-fields>
             <c-rating v-model="value.score" :count="5"> {{ ratingText }} </c-rating>

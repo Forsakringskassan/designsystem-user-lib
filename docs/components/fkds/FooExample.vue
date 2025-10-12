@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { DateFormat, FDate, Weekday } from "@fkui/date";
 import { FDatepickerField, FSelectField, FTooltip } from "@fkui/vue";
 import { LiveExample } from "@forsakringskassan/docs-live-example";
-import { DateFormat, FDate, Weekday } from "@fkui/date";
 
 export default defineComponent({
     name: "FDatepickerFieldLiveExample",
@@ -136,7 +136,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <live-example :components="components" :template="template" :livedata="livedata">
+    <live-example :components :template :livedata>
         asdfadf
         <f-select-field v-model="monthToShow">
             <template #label> Visa månad </template>

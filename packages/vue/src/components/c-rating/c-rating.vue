@@ -2,12 +2,12 @@
 import { ElementIdService } from "@fkui/logic";
 import { FLabel } from "@fkui/vue";
 
+const selected = defineModel({ type: Number });
+
 withDefaults(defineProps<{ id?: string; count?: number }>(), {
     id: () => ElementIdService.generateElementId(),
     count: 5,
 });
-
-const selected = defineModel({ type: Number });
 </script>
 
 <template>

@@ -18,10 +18,10 @@ export default defineComponent({
         },
         /**
          * If badge should be inverted.
-         *
          */
         inverted: {
             type: Boolean,
+            /* eslint-disable-next-line vue/no-boolean-default -- technical debt */
             default: false,
         },
     },
