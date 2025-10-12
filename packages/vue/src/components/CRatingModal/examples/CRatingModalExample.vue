@@ -30,13 +30,7 @@ export default defineComponent({
 <template>
     <button type="button" class="button button--primary" @click="onClick">Öppna betygsmodal</button>
 
-    <c-rating-modal
-        :title="title"
-        :rating-text="ratingText"
-        :is-open="modalOpen"
-        @close="onClose"
-        @submit="onSubmit"
-    />
+    <c-rating-modal :title :rating-text :is-open="modalOpen" @close="onClose" @submit="onSubmit" />
 
     <pre>{{ result }}</pre>
 </template>

@@ -1,5 +1,5 @@
-import path from "node:path";
 import module from "node:module";
+import path from "node:path";
 import {
     Generator,
     searchProcessor,

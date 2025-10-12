@@ -1,4 +1,10 @@
 import { createApp } from "vue";
+import {
+    TestPlugin,
+    TranslationPlugin,
+    ValidationPlugin,
+    setRunningContext,
+} from "@fkui/vue";
 import { type SetupOptions } from "@forsakringskassan/vite-lib-config";
 import "@fkui/icon-lib-default/dist/f";
 
@@ -6,13 +12,6 @@ import "@fkui/icon-lib-default/dist/f";
  * Workaround for issue https://github.com/Forsakringskassan/vite-lib-config/issues/23
  */
 import "../../design";
-
-import {
-    TestPlugin,
-    TranslationPlugin,
-    ValidationPlugin,
-    setRunningContext,
-} from "@fkui/vue";
 
 export function setup(options: SetupOptions): void {
     const { rootComponent, selector } = options;

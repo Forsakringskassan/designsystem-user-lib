@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { FDatepickerField, FFieldset, FCheckboxField, FSelectField, FTooltip } from "@fkui/vue";
-import { LiveExample } from "@forsakringskassan/docs-live-example";
 import { DateFormat, FDate, Weekday } from "@fkui/date";
+import { FCheckboxField, FDatepickerField, FFieldset, FSelectField, FTooltip } from "@fkui/vue";
+import { LiveExample } from "@forsakringskassan/docs-live-example";
 
 export default defineComponent({
     name: "FDatepickerFieldLiveExample",
@@ -136,7 +136,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <live-example :components="components" :template="template" :livedata="livedata">
+    <live-example :components :template :livedata>
         <f-select-field v-model="monthToShow">
             <template #label> Visa månad </template>
             <option value="">Nuvarande månad (standard)</option>

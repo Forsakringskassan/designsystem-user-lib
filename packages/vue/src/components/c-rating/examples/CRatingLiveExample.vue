@@ -27,7 +27,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <live-example :components="components" :template="template">
+    <live-example :components :template>
         <f-select-field v-model="count">
             <template #label> Maxbetyg </template>
             <option :value="3">3</option>
