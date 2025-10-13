@@ -1,0 +1,12 @@
+name: Bundle NPM Release
+
+on:
+    workflow_dispatch:
+    schedule:
+        - cron: "0 0 * * 5"
+
+jobs:
+  call-workflow:
+    uses: Forsakringskassan/.github/.github/workflows/bundle-npm-release.yaml@main
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
