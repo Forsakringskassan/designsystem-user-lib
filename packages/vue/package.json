@@ -67,7 +67,7 @@
     "@forsakringskassan/vite-lib-config": "4.2.2",
     "@vue/test-utils": "2.4.6",
     "flush-promises": "1.0.2",
-    "html-validate": "10.1.2",
+    "html-validate": "10.2.1",
     "vite": "7.1.12",
     "vue": "3.5.22"
   },
