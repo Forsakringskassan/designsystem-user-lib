@@ -121,7 +121,7 @@ var hasRequiredLodash_clonedeep;
 function requireLodash_clonedeep() {
   if (hasRequiredLodash_clonedeep) return lodash_clonedeep.exports;
   hasRequiredLodash_clonedeep = 1;
-  (function(module, exports) {
+  (function(module, exports$1) {
     var LARGE_ARRAY_SIZE = 200;
     var HASH_UNDEFINED = "__lodash_hash_undefined__";
     var MAX_SAFE_INTEGER = 9007199254740991;
@@ -137,7 +137,7 @@ function requireLodash_clonedeep() {
     var freeGlobal = typeof commonjsGlobal == "object" && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
     var freeSelf = typeof self == "object" && self && self.Object === Object && self;
     var root = freeGlobal || freeSelf || Function("return this")();
-    var freeExports = exports && !exports.nodeType && exports;
+    var freeExports = exports$1 && !exports$1.nodeType && exports$1;
     var freeModule = freeExports && true && module && !module.nodeType && module;
     var moduleExports = freeModule && freeModule.exports === freeExports;
     function addMapEntry(map, pair) {
@@ -813,7 +813,7 @@ var hasRequiredDayjs_min;
 function requireDayjs_min() {
   if (hasRequiredDayjs_min) return dayjs_min$1.exports;
   hasRequiredDayjs_min = 1;
-  (function(module, exports) {
+  (function(module, exports$1) {
     !(function(t, e) {
       module.exports = e();
     })(dayjs_min, (function() {
@@ -1098,7 +1098,7 @@ var hasRequiredSv;
 function requireSv() {
   if (hasRequiredSv) return sv$1.exports;
   hasRequiredSv = 1;
-  (function(module, exports) {
+  (function(module, exports$1) {
     !(function(e, t) {
       module.exports = t(requireDayjs_min());
     })(sv, (function(e) {
@@ -1121,7 +1121,7 @@ var hasRequiredWeekOfYear;
 function requireWeekOfYear() {
   if (hasRequiredWeekOfYear) return weekOfYear$2.exports;
   hasRequiredWeekOfYear = 1;
-  (function(module, exports) {
+  (function(module, exports$1) {
     !(function(e, t) {
       module.exports = t();
     })(weekOfYear$1, (function() {
@@ -1711,7 +1711,7 @@ function formatNumber(value, decimals) {
   }
   return formatSwedishNotation(value, decimals);
 }
-function parseNumber(value) {
+function parseNumber(value, fractionDigits) {
   if (isEmpty(value)) {
     return void 0;
   }
@@ -1721,7 +1721,15 @@ function parseNumber(value) {
     return void 0;
   }
   const number = Number(numberString);
-  return isNaN(number) ? void 0 : number;
+  const parsedNumber = isSet(fractionDigits) ? getNumberWithFraction(number, fractionDigits) : number;
+  return isNaN(parsedNumber) ? void 0 : parsedNumber;
+}
+function getNumberWithFraction(value, fractionDigits) {
+  if (fractionDigits < 0) {
+    return NaN;
+  }
+  const exp = 10 ** fractionDigits;
+  return Math.sign(value) * (Math.round(Math.abs(value) * exp) / exp);
 }
 function getNowDetails(now) {
   const nowIso = now.toString();
@@ -1861,8 +1869,8 @@ function parseOrganisationsnummer(value) {
 function formatPercent(modelValue, decimals) {
   return formatNumber(modelValue, decimals);
 }
-function parsePercent(viewValue) {
-  return parseNumber(viewValue);
+function parsePercent(viewValue, fractionDigits) {
+  return parseNumber(viewValue, fractionDigits);
 }
 function addFocusListener(elements, listener) {
   for (const element of elements) {
