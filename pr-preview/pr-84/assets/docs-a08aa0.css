@@ -6650,7 +6650,7 @@ input[type=search]:focus,
 
 .docs-badge--component {
   background: var(--docs-badge-component-background);
-  border-color: var(--docs-badge-component-background);
+  border-color: var(--docs-badge-component-border);
   color: var(--docs-badge-component-color);
 }
 
@@ -8035,6 +8035,7 @@ kbd {
   --docs-error-background: #fcf3f3;
   --docs-badge-component-color: var(--docs-text-color-default);
   --docs-badge-component-background: #ddddde;
+  --docs-badge-component-border: #ddddde;
   --docs-contextmenu-background-color: #ffffff;
   --docs-contextmenu-border-color: #ddddde;
   --docs-contextmenu-highlight-color: #e7f0e9;
