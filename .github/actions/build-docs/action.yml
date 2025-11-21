@@ -1,0 +1,21 @@
+name: Build documentation
+
+inputs:
+    git-remote:
+        required: false
+        default: origin
+    git-branch:
+        required: false
+        default: gh-pages
+
+runs:
+    using: composite
+    steps:
+        - name: Build library (minimal)
+          shell: bash
+          run: |
+              npm run build
+              npm exec lerna -- run build:docs
+        - name: Build documentation
+          shell: bash
+          run: node generate-docs.mjs
