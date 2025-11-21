@@ -1,10 +1,6 @@
 name: Build
 
-on:
-    push:
-        branches:
-            - "**"
-    pull_request:
+on: [push, pull_request]
 
 permissions:
     contents: read
@@ -16,18 +12,20 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v5
-            - name: Use Node.js 20.x
+            - name: Use Node.js 22.x
               uses: actions/setup-node@v6
               with:
-                  node-version: 20.x
+                  node-version: 22.x
             - name: Install dependencies
               run: npm ci
             - name: Build packages
               run: npm run build
             - name: Build documentation
               run: npm run build:docs
-            - name: Jest
-              run: npm --ignore-scripts test
+            - name: Tests
+              run: |
+                  npm pkg delete scripts.pretest
+                  npm test
             - name: Publish test results
               if: github.event_name == 'push' && (success() || failure())
               uses: mikepenz/action-junit-report@v6
@@ -43,10 +41,10 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v5
-            - name: Use Node.js 20.x
+            - name: Use Node.js 22.x
               uses: actions/setup-node@v6
               with:
-                  node-version: 20.x
+                  node-version: 22.x
             - name: Install dependencies
               run: npm ci
             - name: Build (minimal)
