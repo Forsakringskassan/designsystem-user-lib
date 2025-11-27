@@ -56,8 +56,8 @@
   "devDependencies": {
     "@babel/core": "7.28.5",
     "@babel/preset-env": "7.28.5",
-    "@fkui/date": "6.28.0",
-    "@fkui/vue": "6.28.0",
+    "@fkui/date": "6.29.0",
+    "@fkui/vue": "6.29.0",
     "@forsakringskassan/commitlint-config": "3.2.1",
     "@forsakringskassan/docs-generator": "2.34.0",
     "@forsakringskassan/docs-live-example": "2.2.0",
