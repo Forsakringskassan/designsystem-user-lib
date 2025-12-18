@@ -15,9 +15,9 @@
   },
   "dependencies": {
     "@fkui/date": "6.31.0",
-    "@fkui/design": "6.31.0",
+    "@fkui/design": "6.31.1",
     "@fkui/icon-lib-default": "6.31.0",
-    "@fkui/vue": "6.31.0",
+    "@fkui/vue": "6.31.1",
     "@forsakringskassan/docs-live-example": "2.3.0"
   },
   "devDependencies": {
