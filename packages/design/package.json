@@ -21,7 +21,7 @@
     "src"
   ],
   "devDependencies": {
-    "@fkui/theme-default": "6.33.0"
+    "@fkui/theme-default": "6.34.0"
   },
   "peerDependencies": {
     "@fkui/design": "^6.0.0",
