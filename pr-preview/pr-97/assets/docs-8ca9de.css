@@ -181,7 +181,7 @@
   --fkds-color-navigation-background-hover: #dbe9e2;
   --fkds-color-navigation-background-selected: #35805b;
   --fkds-color-header-background-primary: #116a3e;
-  --fkui-theme-default-version: "6.34.1";
+  --fkui-theme-default-version: "6.35.0";
 }
 
 /* sfc-style:/home/runner/work/docs-live-example/docs-live-example/src/LiveExampleSourcecode.vue?type=style&index=0 */
@@ -3272,6 +3272,7 @@ input[type=search]:focus,
   align-self: flex-start;
   top: 0;
   width: 100%;
+  background-color: var(--fkds-color-background-primary);
 }
 .layout-application-template__footer {
   flex-shrink: 0;
