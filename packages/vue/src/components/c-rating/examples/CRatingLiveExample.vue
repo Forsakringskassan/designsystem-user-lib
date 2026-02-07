@@ -14,7 +14,6 @@ export default defineComponent({
     },
     computed: {
         components() {
-            /* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- technical debt */
             return { CRating };
         },
         template(): string {
