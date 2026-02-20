@@ -70,7 +70,7 @@
     "@forsakringskassan/jest-config": "29.9.0",
     "@forsakringskassan/jest-config-vue": "29.9.0",
     "@forsakringskassan/prettier-config": "3.3.4",
-    "@forsakringskassan/stylelint-config": "3.3.2",
+    "@forsakringskassan/stylelint-config": "3.3.3",
     "@forsakringskassan/vite-lib-config": "4.3.4",
     "@html-validate/release-scripts": "7.1.0",
     "@types/estree": "1.0.8",
