@@ -56,7 +56,7 @@ jobs:
                   browser: chrome
                   component: true
                   quiet: true
-            - uses: actions/upload-artifact@v6
+            - uses: actions/upload-artifact@v7
               if: always()
               with:
                   name: cypress-screenshots
