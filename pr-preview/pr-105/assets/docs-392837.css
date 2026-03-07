@@ -6933,9 +6933,32 @@ h6:not(.code-preview h6) {
   font-family: var(--docs-heading-font-family);
   line-height: var(--docs-heading-line-height);
   margin-top: 0;
-  margin-bottom: 0.25rem;
   text-wrap: balance;
   text-wrap: pretty;
+}
+
+h1:not(.code-preview h1) {
+  margin-bottom: var(--docs-heading-margin-bottom-h1);
+}
+
+h2:not(.code-preview h2) {
+  margin-bottom: var(--docs-heading-margin-bottom-h2);
+}
+
+h3:not(.code-preview h3) {
+  margin-bottom: var(--docs-heading-margin-bottom-h3);
+}
+
+h4:not(.code-preview h4) {
+  margin-bottom: var(--docs-heading-margin-bottom-h4);
+}
+
+h5:not(.code-preview h5) {
+  margin-bottom: var(--docs-heading-margin-bottom-h5);
+}
+
+h6:not(.code-preview h6) {
+  margin-bottom: var(--docs-heading-margin-bottom-h6);
 }
 
 h1 {
@@ -8298,6 +8321,12 @@ kbd {
   --docs-heading-letter-spacing-h3: -0.3px;
   --docs-heading-letter-spacing-h4: -0.3px;
   --docs-heading-line-height: 1.4;
+  --docs-heading-margin-bottom-h1: 1.5rem;
+  --docs-heading-margin-bottom-h2: 1rem;
+  --docs-heading-margin-bottom-h3: 1rem;
+  --docs-heading-margin-bottom-h4: 0.5rem;
+  --docs-heading-margin-bottom-h5: 0.5rem;
+  --docs-heading-margin-bottom-h6: 0.5rem;
   --docs-header-text-color-default: #1b1e23;
   --docs-header-text-color-discrete: #5f6165;
   --docs-header-background-color: transparent;
