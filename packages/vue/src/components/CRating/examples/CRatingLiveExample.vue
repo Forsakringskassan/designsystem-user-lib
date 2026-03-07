@@ -2,7 +2,7 @@
 import { defineComponent } from "vue";
 import { FSelectField } from "@fkui/vue";
 import { LiveExample } from "@forsakringskassan/docs-live-example";
-import CRating from "../c-rating.vue";
+import CRating from "../CRating.vue";
 
 export default defineComponent({
     name: "FBadgeLiveExample",
