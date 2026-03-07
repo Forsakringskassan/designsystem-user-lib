@@ -2,7 +2,7 @@ import express from "express";
 
 const defaultPort = 8080;
 const port = process.env.HTTP_PORT
-    ? parseInt(process.env.HTTP_PORT, 10)
+    ? Number.parseInt(process.env.HTTP_PORT, 10)
     : defaultPort;
 const folders = process.argv.slice(2);
 

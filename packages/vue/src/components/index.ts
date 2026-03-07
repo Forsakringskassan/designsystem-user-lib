@@ -1,3 +1,3 @@
 export { FBadge } from "./FBadge";
-export { CRating } from "./c-rating";
+export { CRating } from "./CRating";
 export { type CRatingModalResult, CRatingModal } from "./CRatingModal";
