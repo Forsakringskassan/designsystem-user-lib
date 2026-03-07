@@ -93,12 +93,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 FBadge_default.render = render;
 FBadge_default.__file = "packages/vue/src/components/FBadge/FBadge.vue";
 
-// sfc-script:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/c-rating/c-rating.vue?type=script
+// sfc-script:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/CRating/CRating.vue?type=script
 import { useModel as _useModel, mergeModels as _mergeModels, defineComponent as _defineComponent } from "vue";
 import { ElementIdService } from "@fkui/logic";
 import { FLabel } from "@fkui/vue";
-var c_rating_default = /* @__PURE__ */ _defineComponent({
-  __name: "c-rating",
+var CRating_default = /* @__PURE__ */ _defineComponent({
+  __name: "CRating",
   props: /* @__PURE__ */ _mergeModels({
     id: { type: String, required: false, default: () => ElementIdService.generateElementId() },
     count: { type: Number, required: false, default: 5 }
@@ -118,7 +118,7 @@ var c_rating_default = /* @__PURE__ */ _defineComponent({
   }
 });
 
-// sfc-template:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/c-rating/c-rating.vue?type=template
+// sfc-template:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/CRating/CRating.vue?type=template
 import { renderSlot as _renderSlot2, withCtx as _withCtx, createVNode as _createVNode, renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock2, createElementBlock as _createElementBlock2, createCommentVNode as _createCommentVNode2, createElementVNode as _createElementVNode, normalizeClass as _normalizeClass2 } from "vue";
 var _hoisted_1 = ["id"];
 var _hoisted_2 = ["aria-label", "onClick"];
@@ -181,10 +181,10 @@ function render2(_ctx, _cache, $props, $setup, $data, $options) {
   );
 }
 
-// packages/vue/src/components/c-rating/c-rating.vue
-c_rating_default.render = render2;
-c_rating_default.__file = "packages/vue/src/components/c-rating/c-rating.vue";
-var c_rating_default2 = c_rating_default;
+// packages/vue/src/components/CRating/CRating.vue
+CRating_default.render = render2;
+CRating_default.__file = "packages/vue/src/components/CRating/CRating.vue";
+var CRating_default2 = CRating_default;
 
 // sfc-script:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/CRatingModal/CRatingModal.vue?type=script
 var CRatingModal_default2 = /* @__PURE__ */ _defineComponent2({
@@ -237,7 +237,7 @@ var CRatingModal_default2 = /* @__PURE__ */ _defineComponent2({
     }, get FTextareaField() {
       return FTextareaField;
     }, get CRating() {
-      return c_rating_default2;
+      return CRating_default2;
     } };
     Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
     return __returned__;

@@ -27,17 +27,17 @@ function setup(options) {
   };
 }
 
-// virtual-entry:virtual:packages/vue/src/components/c-rating/examples/CRatingLiveExample.vue:CRatingLiveExample-e70da1.js
+// virtual-entry:virtual:packages/vue/src/components/CRating/examples/CRatingLiveExample.vue:CRatingLiveExample-bdafc4.js
 import { defineComponent } from "vue";
 import { FSelectField } from "@fkui/vue";
 import { LiveExample } from "@forsakringskassan/docs-live-example";
 
-// sfc-script:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/c-rating/c-rating.vue?type=script
+// sfc-script:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/CRating/CRating.vue?type=script
 import { useModel as _useModel, mergeModels as _mergeModels, defineComponent as _defineComponent } from "vue";
 import { ElementIdService } from "@fkui/logic";
 import { FLabel } from "@fkui/vue";
-var c_rating_default = /* @__PURE__ */ _defineComponent({
-  __name: "c-rating",
+var CRating_default = /* @__PURE__ */ _defineComponent({
+  __name: "CRating",
   props: /* @__PURE__ */ _mergeModels({
     id: { type: String, required: false, default: () => ElementIdService.generateElementId() },
     count: { type: Number, required: false, default: 5 }
@@ -57,7 +57,7 @@ var c_rating_default = /* @__PURE__ */ _defineComponent({
   }
 });
 
-// sfc-template:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/c-rating/c-rating.vue?type=template
+// sfc-template:/home/runner/work/designsystem-user-lib/designsystem-user-lib/packages/vue/src/components/CRating/CRating.vue?type=template
 import { renderSlot as _renderSlot, withCtx as _withCtx, createVNode as _createVNode, renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, createElementVNode as _createElementVNode, normalizeClass as _normalizeClass } from "vue";
 var _hoisted_1 = ["id"];
 var _hoisted_2 = ["aria-label", "onClick"];
@@ -120,12 +120,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   );
 }
 
-// packages/vue/src/components/c-rating/c-rating.vue
-c_rating_default.render = render;
-c_rating_default.__file = "packages/vue/src/components/c-rating/c-rating.vue";
-var c_rating_default2 = c_rating_default;
+// packages/vue/src/components/CRating/CRating.vue
+CRating_default.render = render;
+CRating_default.__file = "packages/vue/src/components/CRating/CRating.vue";
+var CRating_default2 = CRating_default;
 
-// virtual-entry:virtual:packages/vue/src/components/c-rating/examples/CRatingLiveExample.vue:CRatingLiveExample-e70da1.js
+// virtual-entry:virtual:packages/vue/src/components/CRating/examples/CRatingLiveExample.vue:CRatingLiveExample-bdafc4.js
 import { createTextVNode as _createTextVNode, createElementVNode as _createElementVNode2, resolveComponent as _resolveComponent, withCtx as _withCtx2, createVNode as _createVNode2, openBlock as _openBlock2, createBlock as _createBlock } from "vue";
 var exampleComponent = defineComponent({
   name: "FBadgeLiveExample",
@@ -137,7 +137,7 @@ var exampleComponent = defineComponent({
   },
   computed: {
     components() {
-      return { CRating: c_rating_default2 };
+      return { CRating: CRating_default2 };
     },
     template() {
       return this.count ? ` <c-rating :count=${String(this.count)}> Betyg </c-rating> ` : ` <c-rating> Betyg </c-rating> `;
@@ -197,7 +197,7 @@ function render2(_ctx, _cache, $props, $setup, $data, $options) {
 exampleComponent.render = render2;
 setup({
   rootComponent: exampleComponent,
-  selector: "#example-e70da1"
+  selector: "#example-bdafc4"
 });
 export {
   render2 as render
