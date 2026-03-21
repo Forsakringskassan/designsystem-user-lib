@@ -19,8 +19,8 @@
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "require": "./dist/cjs/index.cjs.js",
-      "import": "./dist/esm/index.esm.js"
+      "import": "./dist/esm/index.esm.js",
+      "require": "./dist/cjs/index.cjs.js"
     },
     "./htmlvalidate": "./htmlvalidate/index.cjs"
   },
