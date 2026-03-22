@@ -6,9 +6,9 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>Betyg - Användaranpassat DS</title><link
             rel="stylesheet"
-            href="../../assets/docs-8dd4a4.css"
+            href="../../assets/docs-bf8749.css"
             crossorigin
-            integrity="sha384-rPyWOGSDRPZFrdORjApUtYB+g1Ve6Ql5mqUUmGFK32IgpmRrpdZwvL02UELynjAB"
+            integrity="sha384-uu7X5l1qKZFhqUjaKzgeQKMxXThy92nW/QTKaEf41SJnH3zCRBHBOfESefcExzdM"
             
         />
 
@@ -377,35 +377,45 @@
             />
         </symbol>
     </svg>
-</div><dialog id="search-dialog">
+</div><dialog class="docs-modal" id="search-dialog">
+    <div class="docs-modal__header">
+        <h1 class="docs-modal__title" id="search-dialog-title">Sök</h1>
+        <button type="button" class="docs-modal__close">
+            <span>Stäng</span>
+            <svg class="icon" focusable="false" aria-hidden="true">
+                <use xlink:href="#docs-icon-close"></use>
+            </svg>
+        </button>
+    </div>
+
     <!-- [html-validate-disable-next wcag/h32 -- handled via script] -->
-    <form id="search-form">
-        <div class="text-field">
-            <label for="search-field" class="label">Sök</label>
-            <div class="text-field__input-wrapper">
-                <div class="text-field__icon-wrapper">
-                    <input
-                        autofocus
-                        autocomplete="off"
-                        autocapitalize="off"
-                        autocorrect="off"
-                        id="search-field"
-                        type="text"
-                        class="text-field__input"
-                        maxlength="50"
-                        placeholder="Skriv för att börja söka"
-                    />
-                </div>
-            </div>
-        </div>
-        <div id="search-results"></div>
+    <form class="docs-modal__body" id="search-form">
+        <input
+            autofocus
+            autocomplete="off"
+            autocapitalize="off"
+            autocorrect="off"
+            id="search-field"
+            type="search"
+            class="docs-search-dialog__input"
+            maxlength="50"
+            placeholder="Skriv för att börja söka"
+            aria-labelledby="search-dialog-title"
+        />
+        <ul class="docs-search-result__list" id="search-results"></ul>
         <p><kbd>Esc</kbd> för att stänga <kbd>Pil upp/ner</kbd> för att navigera <kbd>Enter</kbd> för att välja</p>
     </form>
-</dialog><script
-            src="../../assets/main-3dc046.js"
+</dialog>
+
+<template id="search-result-item">
+    <li class="docs-search-result__item">
+        <a class="docs-search-result__link"></a>
+    </li>
+</template><script
+            src="../../assets/main-3dfd95.js"
             type="module"
             crossorigin
-            integrity="sha384-3QBk48DB+hpPlodTJAYSTSzAqYnnM/yU/H2BiqnNFC0Viod5dPoiWZfP/qi/jVQo"
+            integrity="sha384-yAt6OfPpqMw5wXKw/CItILqI6R3yMPAz+mpMwcqF68ExDNfK0lRvvomYRNg6wQMO"
             
         ></script>
     </body>
