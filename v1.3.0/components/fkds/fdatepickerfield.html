@@ -6,9 +6,9 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>Datumväljare - Användaranpassat DS</title><link
             rel="stylesheet"
-            href="../../assets/docs-90064e.css"
+            href="../../assets/docs-835fbd.css"
             crossorigin
-            integrity="sha384-bhzoy6+HTkdblTV/zaKbKZGE710Ovy/mnW3xjz6kfemPUeJySNdy/v0olwAUUMWz"
+            integrity="sha384-GYfhuhERv6KSdG10dp8PtLSdQeo26/tmBYl6Zl5TMKGL014rmdnHt1Zdvcq0KpVH"
             
         />
 
@@ -173,7 +173,7 @@
 </nav>
 </div><main>
                     <!-- [html-validate-disable-next heading-level, no-unused-disable -- allowed sectioning root] -->
-                    <h1 id="title">Datumväljare</h1>
+                    <h1 class="docs-heading docs-heading--h1" id="title">Datumväljare</h1>
 
                     
                     <div id="aside"><dl>
@@ -261,20 +261,20 @@
 <li>Ett datum som hen kommer ihåg, till exempel en födelsedag</li>
 <li>Ett datum som finns i ett dokument som användaren har till hands, till exempel ett inflyttningsdatum i ett hyreskontrakt</li>
 </ul>
-<h2 id="visning"><a class="header-anchor" href="#visning">Visning</a></h2><ul>
+<h2 id="visning" class="docs-heading docs-heading--h2"><a class="header-anchor" href="#visning">Visning</a></h2><ul>
 <li>Om inget datum är valt visas innevarande månad när kalendern öppnas.</li>
 <li>Det går att välja vilket år och månad som ska visas som standard.</li>
 <li>Visning av veckonummer kan döljas.</li>
 <li>Dagens datum är markerat som standard.</li>
 </ul>
-<h3 id="format"><a class="header-anchor" href="#format">Format</a></h3><p class="docs-paragraph">Användaren kan skriva in följande format i inmatningsfältet:</p>
+<h3 id="format" class="docs-heading docs-heading--h3"><a class="header-anchor" href="#format">Format</a></h3><p class="docs-paragraph">Användaren kan skriva in följande format i inmatningsfältet:</p>
 <ul>
 <li>åååå-mm-dd</li>
 <li>ååååmmdd</li>
 <li>åååå/mm/dd</li>
 </ul>
 <p class="docs-paragraph">Inmatningsfältet använder inte <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode">inputmode</a> = numeric eftersom det inte garanterar att tangentbordet innehåller bindestreck (minustecken).</p>
-<h3 id="manad_som_visas_nar_inget_datum_ar_valt"><a class="header-anchor" href="#manad_som_visas_nar_inget_datum_ar_valt">Månad som visas när inget datum är valt</a></h3><p class="docs-paragraph">Använd initialMonth för att bestämma vilken månad som ska visas när inget datum är valt. Närmst efterföljande månad med valbara datum visas om du
+<h3 id="manad_som_visas_nar_inget_datum_ar_valt" class="docs-heading docs-heading--h3"><a class="header-anchor" href="#manad_som_visas_nar_inget_datum_ar_valt">Månad som visas när inget datum är valt</a></h3><p class="docs-paragraph">Använd initialMonth för att bestämma vilken månad som ska visas när inget datum är valt. Närmst efterföljande månad med valbara datum visas om du
 har valt en månad som inte har några valbara datum.</p>
 
                 <div
@@ -291,13 +291,13 @@ har valt en månad som inte har några valbara datum.</p>
  &gt;&lt;/f-datepicker-field&gt;
 </code></pre>
                 </div>
-            <h2 id="responsivitet"><a class="header-anchor" href="#responsivitet">Responsivitet</a></h2><ul>
+            <h2 id="responsivitet" class="docs-heading docs-heading--h2"><a class="header-anchor" href="#responsivitet">Responsivitet</a></h2><ul>
 <li>På små skärmar (&lt;640 px bredd) visas kalendern som en del av webbsidan (inline)</li>
 <li>På större skärmar visas kalendern i en pop-up och täcker en del av sidan.</li>
 <li>Kalenderns bredd anpassas utifrån skärmens bredd.</li>
 <li>För att ge tillräcklig plats för datumen visas inte veckonummer på skärmar som är 325 px eller smalare.</li>
 </ul>
-<h2 id="begransa_valbara_dagar"><a class="header-anchor" href="#begransa_valbara_dagar">Begränsa valbara dagar</a></h2><p class="docs-paragraph">Det går att styra vilka dagar som är valbara genom att:</p>
+<h2 id="begransa_valbara_dagar" class="docs-heading docs-heading--h2"><a class="header-anchor" href="#begransa_valbara_dagar">Begränsa valbara dagar</a></h2><p class="docs-paragraph">Det går att styra vilka dagar som är valbara genom att:</p>
 <ul>
 <li>Sätta begräsningar framåt och bakåt i tiden.</li>
 <li>Ange enskilda datum som inte är valbara</li>
@@ -305,7 +305,7 @@ har valt en månad som inte har några valbara datum.</p>
 </ul>
 <p class="docs-paragraph">Som standard är datumväljaren begränsad till att bara tillåta val av datum 10 år tillbaka och framåt i tiden. Alla veckodagar och datum är valbara som standard.</p>
 <p class="docs-paragraph">Validatorer används för att sätta begränsningar av valbara dagar.</p>
-<h3 id="min_och_maxdatum"><a class="header-anchor" href="#min_och_maxdatum">Min- och maxdatum</a></h3>
+<h3 id="min_och_maxdatum" class="docs-heading docs-heading--h3"><a class="header-anchor" href="#min_och_maxdatum">Min- och maxdatum</a></h3>
                 <div
                     id="example-6defbf"
                     class="code-preview code-preview--default"
@@ -323,7 +323,7 @@ har valt en månad som inte har några valbara datum.</p>
 &gt;&lt;/f-datepicker-field&gt;
 </code></pre>
                 </div>
-            <h3 id="begransa_valbara_datum"><a class="header-anchor" href="#begransa_valbara_datum">Begränsa valbara datum</a></h3>
+            <h3 id="begransa_valbara_datum" class="docs-heading docs-heading--h3"><a class="header-anchor" href="#begransa_valbara_datum">Begränsa valbara datum</a></h3>
                 <div
                     id="example-8d074c"
                     class="code-preview code-preview--default"
@@ -338,7 +338,7 @@ har valt en månad som inte har några valbara datum.</p>
  &gt;&lt;/f-datepicker-field&gt;
 </code></pre>
                 </div>
-            <h3 id="begransa_valbara_veckodagar"><a class="header-anchor" href="#begransa_valbara_veckodagar">Begränsa valbara veckodagar</a></h3>
+            <h3 id="begransa_valbara_veckodagar" class="docs-heading docs-heading--h3"><a class="header-anchor" href="#begransa_valbara_veckodagar">Begränsa valbara veckodagar</a></h3>
                 <div
                     id="example-aed847"
                     class="code-preview code-preview--default"
@@ -353,7 +353,7 @@ har valt en månad som inte har några valbara datum.</p>
  &gt;&lt;/f-datepicker-field&gt;
 </code></pre>
                 </div>
-            <h2 id="bredd_pa_inmatningsfalt_och_etikett"><a class="header-anchor" href="#bredd_pa_inmatningsfalt_och_etikett">Bredd på inmatningsfält och etikett</a></h2><p class="docs-paragraph">För att få plats med en längre text i etiketten går det att ha olika bredder på kalenderns etikett och inmatningsfält. Bredden för inmatningsfältet och etiketten anges i antal kolumner vid en viss skärmbredd.</p>
+            <h2 id="bredd_pa_inmatningsfalt_och_etikett" class="docs-heading docs-heading--h2"><a class="header-anchor" href="#bredd_pa_inmatningsfalt_och_etikett">Bredd på inmatningsfält och etikett</a></h2><p class="docs-paragraph">För att få plats med en längre text i etiketten går det att ha olika bredder på kalenderns etikett och inmatningsfält. Bredden för inmatningsfältet och etiketten anges i antal kolumner vid en viss skärmbredd.</p>
 
                 <div
                     id="example-1bdb1d"
@@ -370,7 +370,7 @@ har valt en månad som inte har några valbara datum.</p>
  &gt;&lt;/f-datepicker-field&gt;
 </code></pre>
                 </div>
-            <h2 id="inaktiv"><a class="header-anchor" href="#inaktiv">Inaktiv</a></h2><p class="docs-paragraph">Inaktiva komponenter ska undvikas.</p>
+            <h2 id="inaktiv" class="docs-heading docs-heading--h2"><a class="header-anchor" href="#inaktiv">Inaktiv</a></h2><p class="docs-paragraph">Inaktiva komponenter ska undvikas.</p>
 <ul>
 <li>Om användaren försöker interagera med en inaktiv komponent ges ingen information om varför komponenten är inaktiv.</li>
 <li>Användare av skärmläsare får inte veta att komponenten finns eftersom skärmläsare hoppar över inaktiva komponenter.</li>
@@ -391,7 +391,7 @@ har valt en månad som inte har några valbara datum.</p>
  &gt;&lt;/f-datepicker-field&gt;
 </code></pre>
                 </div>
-            <h2 id="visa_inline"><a class="header-anchor" href="#visa_inline">Visa inline</a></h2><p class="docs-paragraph">Använd alwaysInline om kalendern ska visas inline oavsett skärmbredd.</p>
+            <h2 id="visa_inline" class="docs-heading docs-heading--h2"><a class="header-anchor" href="#visa_inline">Visa inline</a></h2><p class="docs-paragraph">Använd alwaysInline om kalendern ska visas inline oavsett skärmbredd.</p>
 
                 <div
                     id="example-33a316"
@@ -407,7 +407,7 @@ har valt en månad som inte har några valbara datum.</p>
  &gt;&lt;/f-datepicker-field&gt;
 </code></pre>
                 </div>
-            <h2 id="dolj_markering_av_dagens_datum"><a class="header-anchor" href="#dolj_markering_av_dagens_datum">Dölj markering av dagens datum</a></h2>
+            <h2 id="dolj_markering_av_dagens_datum" class="docs-heading docs-heading--h2"><a class="header-anchor" href="#dolj_markering_av_dagens_datum">Dölj markering av dagens datum</a></h2>
                 <div
                     id="example-a51015"
                     class="code-preview code-preview--default"
@@ -422,7 +422,7 @@ har valt en månad som inte har några valbara datum.</p>
  &gt;&lt;/f-datepicker-field&gt;
 </code></pre>
                 </div>
-            <h2 id="api"><a class="header-anchor" href="#api">API</a></h2>
+            <h2 id="api" class="docs-heading docs-heading--h2"><a class="header-anchor" href="#api">API</a></h2>
 
                     </div>
                 </main>
@@ -527,10 +527,10 @@ har valt en månad som inte har några valbara datum.</p>
         <a class="docs-search-result__link"></a>
     </li>
 </template><script
-            src="../../assets/main-eced42.js"
+            src="../../assets/main-0577f8.js"
             type="module"
             crossorigin
-            integrity="sha384-jGeV3vO1ePjrL3nYRgvz4/zsXCZxjSbA6DsOZS/SBJDtFGDi3fVi/lOo7xRvvW+q"
+            integrity="sha384-HrbzbElrqi1Y3utqeVzJBCZ5cQzeCcbvJaTbcoh4Jnwt55eChZxMyqob+eQXoPq7"
             
         ></script>
     </body>
