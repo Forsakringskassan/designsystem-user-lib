@@ -8117,7 +8117,7 @@ main #aside dd {
   outline: 3px solid transparent;
 }
 
-.code-preview .code-preview__button .icon {
+.code-preview .code-preview__button .docs-icon {
   margin-right: 0.25rem;
 }
 
@@ -8788,13 +8788,37 @@ body {
   border: 0;
 }
 
-.icon {
+@property --docs-icon-size {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 16px;
+}
+.docs-icon {
   display: inline-block;
-  height: 1rem;
+  height: var(--docs-icon-size);
   max-height: 100%;
   max-width: 100%;
   pointer-events: none;
-  width: 1rem;
+  width: var(--docs-icon-size);
+}
+
+.docs-icon-stack {
+  display: inline-block;
+  height: var(--docs-icon-size);
+  max-height: 100%;
+  max-width: 100%;
+  pointer-events: none;
+  width: var(--docs-icon-size);
+  position: relative;
+}
+
+.docs-icon-stack .icon {
+  position: absolute;
+}
+
+.docs-icon-stack--info .f-icon-circle {
+  color: #ffffff;
+  fill: #4a52b6;
 }
 
 :root {
