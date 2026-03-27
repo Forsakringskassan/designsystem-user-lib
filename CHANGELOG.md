@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.2 (2026-03-27)
+
+### Bug Fixes
+
+* **deps:** update [@fkui](undefined/fkui) packages to v6.40.0 c08e21a
+
 ## 1.3.1 (2026-03-26)
 
 ### Bug Fixes
