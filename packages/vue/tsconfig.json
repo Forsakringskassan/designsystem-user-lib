@@ -3,6 +3,8 @@
      * other file or config */
     "extends": ["@fkui/tsconfig/recommended", "@fkui/tsconfig/vue"],
     "compilerOptions": {
+        /* ts-jest hardcodes deprecated moduleResultion node10 */
+        "ignoreDeprecations": "6.0",
         "declarationDir": "temp/jest",
         "paths": {
             "@fkui/user-lib-vue": ["./src/index.ts"]
