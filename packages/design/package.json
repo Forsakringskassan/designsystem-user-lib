@@ -17,8 +17,10 @@
   "license": "MIT",
   "author": "Försäkringskassan",
   "main": "src/user-lib.scss",
+  "types": "stub.d.ts",
   "files": [
-    "src"
+    "src",
+    "stub.d.ts"
   ],
   "devDependencies": {
     "@fkui/theme-default": "6.41.0"

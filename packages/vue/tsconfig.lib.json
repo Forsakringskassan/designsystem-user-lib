@@ -2,6 +2,7 @@
     "extends": ["@fkui/tsconfig/recommended", "@fkui/tsconfig/vue"],
     "compilerOptions": {
         "composite": true,
+        "types": ["jest"],
         "paths": {
             "@fkui/user-lib-vue": ["./src/index.ts"]
         }
