@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.3.4 (2026-04-08)
+
+### Bug Fixes
+
+* **deps:** update [@fkui](undefined/fkui) packages to v6.42.0 ea98bda
+
 ## 1.3.3 (2026-04-01)
 
 ### Bug Fixes
