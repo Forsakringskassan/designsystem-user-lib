@@ -68,7 +68,7 @@
     "@vue/test-utils": "2.4.6",
     "flush-promises": "1.0.2",
     "html-validate": "10.11.3",
-    "vite": "8.0.7",
+    "vite": "8.0.8",
     "vue": "3.5.32"
   },
   "peerDependencies": {
