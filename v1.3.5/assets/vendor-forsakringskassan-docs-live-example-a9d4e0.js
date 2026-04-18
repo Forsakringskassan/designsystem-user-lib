@@ -5486,7 +5486,7 @@ Yt2(wu, { builders: () => Wa2, printer: () => $a2, utils: () => Va2 });
 var Wa2 = { join: Ie2, line: ut2, softline: or2, hardline: V2, literalline: Qe2, group: Kt2, conditionalGroup: tr2, fill: er2, lineSuffix: ve2, lineSuffixBoundary: ar2, cursor: ee2, breakParent: ce2, ifBreak: ur2, trim: ir2, indent: ae2, indentIfBreak: rr2, align: De2, addAlignmentToDoc: tt2, markAsRoot: et2, dedentToRoot: Qu, dedent: Zu, hardlineWithoutBreakParent: ke2, literallineWithoutBreakParent: Gt2, label: nr2, concat: (e) => e };
 var $a2 = { printDocToString: Ce };
 var Va2 = { willBreak: Ku, traverseDoc: we2, findInDoc: Xe2, mapDoc: Pe2, removeLines: zu, stripTrailingHardline: qe, replaceEndOfLine: Ju, canBreak: Hu };
-var Mn2 = "3.8.2";
+var Mn2 = "3.8.3";
 var Pu = {};
 Yt2(Pu, { addDanglingComment: () => ue2, addLeadingComment: () => fe2, addTrailingComment: () => le2, getAlignmentSize: () => he2, getIndentSize: () => Yn2, getMaxContinuousCount: () => jn2, getNextNonSpaceNonCommentCharacter: () => Un2, getNextNonSpaceNonCommentCharacterIndex: () => ni2, getPreferredQuote: () => Vn2, getStringWidth: () => Re2, hasNewline: () => z, hasNewlineInRange: () => Kn2, hasSpaces: () => Gn2, isNextLineEmpty: () => Di2, isNextLineEmptyAfterIndex: () => kt2, isPreviousLineEmpty: () => ai2, makeString: () => si2, skip: () => ye2, skipEverythingButNewLine: () => ot, skipInlineComment: () => xe2, skipNewline: () => K2, skipSpaces: () => Y2, skipToLineEnd: () => nt2, skipTrailingComment: () => Be3, skipWhitespace: () => Fr2 });
 function Ka2(e, t) {
