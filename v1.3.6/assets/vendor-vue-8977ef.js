@@ -653,7 +653,18 @@ var EffectScope = class {
    */
   off() {
     if (this._on > 0 && --this._on === 0) {
-      activeEffectScope = this.prevScope;
+      if (activeEffectScope === this) {
+        activeEffectScope = this.prevScope;
+      } else {
+        let current = activeEffectScope;
+        while (current) {
+          if (current.prevScope === this) {
+            current.prevScope = this.prevScope;
+            break;
+          }
+          current = current.prevScope;
+        }
+      }
       this.prevScope = void 0;
     }
   }
@@ -3405,7 +3416,7 @@ var TeleportImpl = {
       mc: mountChildren,
       pc: patchChildren,
       pbc: patchBlockChildren,
-      o: { insert, querySelector, createText, createComment }
+      o: { insert, querySelector, createText, createComment, parentNode }
     } = internals;
     const disabled = isTeleportDisabled(n2.props);
     let { dynamicChildren } = n2;
@@ -3453,7 +3464,8 @@ var TeleportImpl = {
         if (pendingMounts.get(vnode) !== mountJob) return;
         pendingMounts.delete(vnode);
         if (isTeleportDisabled(vnode.props)) {
-          mount(vnode, container, vnode.anchor);
+          const mountContainer = parentNode(vnode.el) || container;
+          mount(vnode, mountContainer, vnode.anchor);
           updateCssVars(vnode, true);
         }
         mountToTarget(vnode);
@@ -3615,7 +3627,7 @@ function moveTeleport(vnode, container, parentAnchor, { o: { insert }, m: move }
   if (isReorder) {
     insert(el, container, parentAnchor);
   }
-  if (!isReorder || isTeleportDisabled(props)) {
+  if (!pendingMounts.has(vnode) && (!isReorder || isTeleportDisabled(props))) {
     if (shapeFlag & 16) {
       for (let i = 0; i < children.length; i++) {
         move(
@@ -3788,10 +3800,14 @@ var BaseTransitionImpl = {
     const state = useTransitionState();
     return () => {
       const children = slots.default && getTransitionRawChildren(slots.default(), true);
-      if (!children || !children.length) {
+      const child = children && children.length ? findNonCommentChild(children) : (
+        // Keep explicit default-slot conditionals on the same transition path
+        // as regular v-if branches, which render a comment placeholder.
+        instance.subTree ? createCommentVNode() : void 0
+      );
+      if (!child) {
         return;
       }
-      const child = findNonCommentChild(children);
       const rawProps = toRaw(props);
       const { mode } = rawProps;
       if (mode && mode !== "in-out" && mode !== "out-in" && mode !== "default") {
@@ -11049,7 +11065,7 @@ function isMemoSame(cached, memo) {
   }
   return true;
 }
-var version = "3.5.32";
+var version = "3.5.33";
 var warn2 = true ? warn$1 : NOOP;
 var ErrorTypeStrings = ErrorTypeStrings$1;
 var devtools = true ? devtools$1 : void 0;
@@ -11592,7 +11608,19 @@ function patchStyle(el, prev, next) {
       if (key === "display") {
         hasControlledDisplay = true;
       }
-      setStyle(style, key, next[key]);
+      const value = next[key];
+      if (value != null) {
+        if (!shouldPreserveTextareaResizeStyle(
+          el,
+          key,
+          !isString(prev) && prev ? prev[key] : void 0,
+          value
+        )) {
+          setStyle(style, key, value);
+        }
+      } else {
+        setStyle(style, key, "");
+      }
     }
   } else {
     if (isCssString) {
@@ -11664,6 +11692,9 @@ function autoPrefix(style, rawName) {
     }
   }
   return rawName;
+}
+function shouldPreserveTextareaResizeStyle(el, key, prev, next) {
+  return el.tagName === "TEXTAREA" && (key === "width" || key === "height") && isString(next) && prev === next;
 }
 var xlinkNS = "http://www.w3.org/1999/xlink";
 function patchAttr(el, key, value, isSVG, instance, isBoolean2 = isSpecialBooleanAttr(key)) {
@@ -19211,49 +19242,49 @@ export {
 
 @vue/shared/dist/shared.esm-bundler.js:
   (**
-  * @vue/shared v3.5.32
+  * @vue/shared v3.5.33
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/reactivity/dist/reactivity.esm-bundler.js:
   (**
-  * @vue/reactivity v3.5.32
+  * @vue/reactivity v3.5.33
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/runtime-core/dist/runtime-core.esm-bundler.js:
   (**
-  * @vue/runtime-core v3.5.32
+  * @vue/runtime-core v3.5.33
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/runtime-dom/dist/runtime-dom.esm-bundler.js:
   (**
-  * @vue/runtime-dom v3.5.32
+  * @vue/runtime-dom v3.5.33
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/compiler-core/dist/compiler-core.esm-bundler.js:
   (**
-  * @vue/compiler-core v3.5.32
+  * @vue/compiler-core v3.5.33
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/compiler-dom/dist/compiler-dom.esm-bundler.js:
   (**
-  * @vue/compiler-dom v3.5.32
+  * @vue/compiler-dom v3.5.33
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 vue/dist/vue.esm-bundler.js:
   (**
-  * vue v3.5.32
+  * vue v3.5.33
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
