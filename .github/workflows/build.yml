@@ -50,7 +50,7 @@ jobs:
             - name: Build (minimal)
               run: npm run build
             - name: Cypress Component Testing
-              uses: cypress-io/github-action@v7.1.9
+              uses: cypress-io/github-action@v7.1.10
               with:
                   summary-title: "Component tests"
                   browser: chrome
