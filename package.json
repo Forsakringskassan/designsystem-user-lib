@@ -59,7 +59,7 @@
     "@fkui/date": "6.44.0",
     "@fkui/vue": "6.44.0",
     "@forsakringskassan/commitlint-config": "3.3.12",
-    "@forsakringskassan/docs-generator": "2.42.0",
+    "@forsakringskassan/docs-generator": "2.43.0",
     "@forsakringskassan/docs-live-example": "2.4.2",
     "@forsakringskassan/eslint-config": "14.1.14",
     "@forsakringskassan/eslint-config-cli": "14.1.11",
