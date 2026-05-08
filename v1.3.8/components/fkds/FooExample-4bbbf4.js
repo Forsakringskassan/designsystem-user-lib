@@ -27,7 +27,7 @@ function setup(options) {
   };
 }
 
-// virtual-entry:virtual:docs/components/fkds/FooExample.vue:FooExample-9f146f.js
+// virtual-entry:virtual:docs/components/fkds/FooExample.vue:FooExample-4bbbf4.js
 import { defineComponent } from "vue";
 import { DateFormat, FDate, Weekday } from "@fkui/date";
 import { FDatepickerField, FSelectField, FTooltip } from "@fkui/vue";
@@ -212,7 +212,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 exampleComponent.render = render;
 setup({
   rootComponent: exampleComponent,
-  selector: "#example-9f146f"
+  selector: "#example-4bbbf4"
 });
 export {
   render
