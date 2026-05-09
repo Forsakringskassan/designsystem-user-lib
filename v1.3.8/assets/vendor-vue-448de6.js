@@ -580,12 +580,18 @@ var EffectScope = class {
     this.effects = [];
     this.cleanups = [];
     this._isPaused = false;
+    this._warnOnRun = true;
     this.__v_skip = true;
-    this.parent = activeEffectScope;
     if (!detached && activeEffectScope) {
-      this.index = (activeEffectScope.scopes || (activeEffectScope.scopes = [])).push(
-        this
-      ) - 1;
+      if (activeEffectScope.active) {
+        this.parent = activeEffectScope;
+        this.index = (activeEffectScope.scopes || (activeEffectScope.scopes = [])).push(
+          this
+        ) - 1;
+      } else {
+        this._active = false;
+        this._warnOnRun = false;
+      }
     }
   }
   get active() {
@@ -633,7 +639,7 @@ var EffectScope = class {
       } finally {
         activeEffectScope = currentEffectScope;
       }
-    } else if (true) {
+    } else if (this._warnOnRun) {
       warn(`cannot run an inactive effect scope.`);
     }
   }
@@ -723,8 +729,12 @@ var ReactiveEffect = class {
     this.next = void 0;
     this.cleanup = void 0;
     this.scheduler = void 0;
-    if (activeEffectScope && activeEffectScope.active) {
-      activeEffectScope.effects.push(this);
+    if (activeEffectScope) {
+      if (activeEffectScope.active) {
+        activeEffectScope.effects.push(this);
+      } else {
+        this.flags &= -2;
+      }
     }
   }
   pause() {
@@ -7655,7 +7665,7 @@ function getInvalidTypeMessage(name, value, expectedTypes) {
   const receivedType = toRawType(value);
   const expectedValue = styleValue(value, expectedType);
   const receivedValue = styleValue(value, receivedType);
-  if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
+  if (expectedTypes.length === 1 && isExplicable(expectedType) && isCoercible(expectedType, receivedType)) {
     message += ` with value ${expectedValue}`;
   }
   message += `, got ${receivedType} `;
@@ -7665,7 +7675,9 @@ function getInvalidTypeMessage(name, value, expectedTypes) {
   return message;
 }
 function styleValue(value, type) {
-  if (type === "String") {
+  if (isSymbol(value)) {
+    return value.toString();
+  } else if (type === "String") {
     return `"${value}"`;
   } else if (type === "Number") {
     return `${Number(value)}`;
@@ -7677,8 +7689,11 @@ function isExplicable(type) {
   const explicitTypes = ["string", "number", "boolean"];
   return explicitTypes.some((elem) => type.toLowerCase() === elem);
 }
-function isBoolean(...args) {
-  return args.some((elem) => elem.toLowerCase() === "boolean");
+function isCoercible(...args) {
+  return args.every((elem) => {
+    const value = elem.toLowerCase();
+    return value !== "boolean" && value !== "symbol";
+  });
 }
 var isInternalKey = (key) => key === "_" || key === "_ctx" || key === "$stable";
 var normalizeSlotValue = (value) => isArray(value) ? value.map(normalizeVNode) : [normalizeVNode(value)];
@@ -9733,13 +9748,14 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
         suspense.isHydrating = false;
       } else if (!resume) {
         delayEnter = activeBranch && pendingBranch.transition && pendingBranch.transition.mode === "out-in";
+        let hasUpdatedAnchor = false;
         if (delayEnter) {
           activeBranch.transition.afterLeave = () => {
             if (pendingId === suspense.pendingId) {
               move(
                 pendingBranch,
                 container2,
-                anchor === initialAnchor ? next(activeBranch) : anchor,
+                anchor === initialAnchor && !hasUpdatedAnchor ? next(activeBranch) : anchor,
                 0
               );
               queuePostFlushCb(effects);
@@ -9752,6 +9768,7 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
         if (activeBranch && !suspense.isFallbackMountPending) {
           if (parentNode(activeBranch.el) === container2) {
             anchor = next(activeBranch);
+            hasUpdatedAnchor = true;
           }
           unmount(activeBranch, parentComponent2, suspense, true);
           if (!delayEnter && isInFallback && vnode2.ssFallback) {
@@ -11065,7 +11082,7 @@ function isMemoSame(cached, memo) {
   }
   return true;
 }
-var version = "3.5.33";
+var version = "3.5.34";
 var warn2 = true ? warn$1 : NOOP;
 var ErrorTypeStrings = ErrorTypeStrings$1;
 var devtools = true ? devtools$1 : void 0;
@@ -11697,7 +11714,7 @@ function shouldPreserveTextareaResizeStyle(el, key, prev, next) {
   return el.tagName === "TEXTAREA" && (key === "width" || key === "height") && isString(next) && prev === next;
 }
 var xlinkNS = "http://www.w3.org/1999/xlink";
-function patchAttr(el, key, value, isSVG, instance, isBoolean2 = isSpecialBooleanAttr(key)) {
+function patchAttr(el, key, value, isSVG, instance, isBoolean = isSpecialBooleanAttr(key)) {
   if (isSVG && key.startsWith("xlink:")) {
     if (value == null) {
       el.removeAttributeNS(xlinkNS, key.slice(6, key.length));
@@ -11705,12 +11722,12 @@ function patchAttr(el, key, value, isSVG, instance, isBoolean2 = isSpecialBoolea
       el.setAttributeNS(xlinkNS, key, value);
     }
   } else {
-    if (value == null || isBoolean2 && !includeBooleanAttr(value)) {
+    if (value == null || isBoolean && !includeBooleanAttr(value)) {
       el.removeAttribute(key);
     } else {
       el.setAttribute(
         key,
-        isBoolean2 ? "" : isSymbol(value) ? String(value) : value
+        isBoolean ? "" : isSymbol(value) ? String(value) : value
       );
     }
   }
@@ -19242,49 +19259,49 @@ export {
 
 @vue/shared/dist/shared.esm-bundler.js:
   (**
-  * @vue/shared v3.5.33
+  * @vue/shared v3.5.34
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/reactivity/dist/reactivity.esm-bundler.js:
   (**
-  * @vue/reactivity v3.5.33
+  * @vue/reactivity v3.5.34
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/runtime-core/dist/runtime-core.esm-bundler.js:
   (**
-  * @vue/runtime-core v3.5.33
+  * @vue/runtime-core v3.5.34
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/runtime-dom/dist/runtime-dom.esm-bundler.js:
   (**
-  * @vue/runtime-dom v3.5.33
+  * @vue/runtime-dom v3.5.34
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/compiler-core/dist/compiler-core.esm-bundler.js:
   (**
-  * @vue/compiler-core v3.5.33
+  * @vue/compiler-core v3.5.34
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/compiler-dom/dist/compiler-dom.esm-bundler.js:
   (**
-  * @vue/compiler-dom v3.5.33
+  * @vue/compiler-dom v3.5.34
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 vue/dist/vue.esm-bundler.js:
   (**
-  * vue v3.5.33
+  * vue v3.5.34
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
