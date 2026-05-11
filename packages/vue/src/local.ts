@@ -11,7 +11,7 @@ import "@fkui/icon-lib-default/dist/f";
 /**
  * Workaround for issue https://github.com/Forsakringskassan/vite-lib-config/issues/23
  */
-import "../../design";
+import "../../design/src/user-lib.scss";
 
 export function setup(options: SetupOptions): void {
     const { rootComponent, selector } = options;
