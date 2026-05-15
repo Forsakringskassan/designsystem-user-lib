@@ -88,7 +88,7 @@
     "glob": "13.0.6",
     "highlight.js": "11.11.1",
     "html-validate": "11.1.0",
-    "html-validate-markdown": "5.2.0",
+    "html-validate-markdown": "6.0.0",
     "html-validate-vue": "9.1.0",
     "is-ci": "4.1.0",
     "lerna": "9.0.7",
