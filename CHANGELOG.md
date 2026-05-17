@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.5.0 (2026-05-17)
+
+### Features
+
+* **deps:** update dependency @forsakringskassan/docs-live-example to v3 ee0f5d3
+
 ## 1.4.0 (2026-05-15)
 
 ### Features
