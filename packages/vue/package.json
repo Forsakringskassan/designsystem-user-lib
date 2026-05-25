@@ -64,7 +64,7 @@
     "@fkui/tsconfig": "6.47.0",
     "@fkui/user-lib-design": "1.5.1",
     "@fkui/vue": "6.47.0",
-    "@forsakringskassan/vite-lib-config": "5.0.0",
+    "@forsakringskassan/vite-lib-config": "5.0.1",
     "@vue/test-utils": "2.4.10",
     "flush-promises": "1.0.2",
     "html-validate": "11.3.0",
