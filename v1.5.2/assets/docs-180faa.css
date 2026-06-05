@@ -7733,7 +7733,7 @@ main {
   border-color: var(--docs-navigation-highlight-color);
 }
 
-.navigation summary .icon {
+.navigation summary .docs-icon {
   transform: translateY(3px);
   transition: all 200ms cubic-bezier(0.46, 0.03, 0.52, 0.96) 0s;
   display: inline;
@@ -7743,7 +7743,7 @@ main {
   font-weight: 700;
 }
 
-.navigation details[open] > summary .icon {
+.navigation details[open] > summary .docs-icon {
   transform: rotate(180deg) translateY(-5px);
 }
 
@@ -7764,7 +7764,7 @@ main {
   display: flex;
 }
 
-#outline summary .icon {
+#outline summary .docs-icon {
   display: none;
 }
 
@@ -7788,13 +7788,13 @@ main {
     width: fit-content;
     cursor: pointer;
   }
-  #outline summary .icon {
+  #outline summary .docs-icon {
     display: block;
     transform: translateY(3px);
     transition: all 200ms cubic-bezier(0.46, 0.03, 0.52, 0.96) 0s;
     margin-left: 0.5rem;
   }
-  #outline[open] > summary .icon {
+  #outline[open] > summary .docs-icon {
     transform: rotate(180deg) translateY(-5px);
   }
 }
@@ -8658,8 +8658,8 @@ textarea {
   width: 1.5rem;
 }
 
-.docs-motd__icon .icon,
-.docs-motd__icon .icon-stack {
+.docs-motd__icon .docs-icon,
+.docs-motd__icon .docs-icon-stack {
   height: 1.5rem;
   width: 1.5rem;
 }
