@@ -67,7 +67,7 @@
     "@forsakringskassan/eslint-config-typescript": "15.0.13",
     "@forsakringskassan/eslint-config-typescript-typeinfo": "15.0.13",
     "@forsakringskassan/eslint-config-vue": "15.0.13",
-    "@forsakringskassan/jest-config": "29.11.2",
+    "@forsakringskassan/jest-config": "30.3.2",
     "@forsakringskassan/jest-config-vue": "29.9.0",
     "@forsakringskassan/prettier-config": "3.6.3",
     "@forsakringskassan/stylelint-config": "3.4.2",
