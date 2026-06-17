@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.5.5 (2026-06-17)
+
+### Bug Fixes
+
+* **deps:** update [@fkui](undefined/fkui) packages to v6.50.0 d1fcde9
+
 ## 1.5.4 (2026-06-14)
 
 ### Bug Fixes
