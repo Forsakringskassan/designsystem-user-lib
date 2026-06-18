@@ -31,6 +31,7 @@
     "link-all": "lerna exec npm link",
     "lint": "run-s prettier:check eslint stylelint html-validate",
     "lint:fix": "run-s prettier:write eslint:fix stylelint:fix",
+    "prepare": "commitlint-config",
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write .",
     "start": "node docs/serve.mjs public",
@@ -58,7 +59,7 @@
     "@babel/preset-env": "7.29.7",
     "@fkui/date": "6.50.0",
     "@fkui/vue": "6.50.0",
-    "@forsakringskassan/commitlint-config": "3.6.9",
+    "@forsakringskassan/commitlint-config": "4.0.0",
     "@forsakringskassan/docs-generator": "3.2.0",
     "@forsakringskassan/docs-live-example": "3.0.0",
     "@forsakringskassan/eslint-config": "15.0.18",
@@ -108,5 +109,13 @@
   "engines": {
     "node": "^22.16 || >= 24",
     "npm": ">= 7"
+  },
+  "allowScripts": {
+    "@parcel/watcher": false,
+    "core-js": false,
+    "esbuild": true,
+    "fsevents": false,
+    "nx": false,
+    "unrs-resolver": true
   }
 }
