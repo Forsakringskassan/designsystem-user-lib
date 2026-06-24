@@ -4,9 +4,9 @@ import defaultConfig, {
     sandboxConfig,
 } from "@forsakringskassan/eslint-config";
 import cliConfig from "@forsakringskassan/eslint-config-cli";
-import jestConfig from "@forsakringskassan/eslint-config-jest";
 import typescriptConfig from "@forsakringskassan/eslint-config-typescript";
 import typeinfoConfig from "@forsakringskassan/eslint-config-typescript-typeinfo";
+import vitestConfig from "@forsakringskassan/eslint-config-vitest";
 import vueConfig from "@forsakringskassan/eslint-config-vue";
 
 export default [
@@ -43,13 +43,13 @@ export default [
             "**/*.d.ts",
             "**/*.cy.ts",
             "**/*.spec.ts",
-            "**/jest.setup.ts",
-            "**/vite.config.ts",
+            "**/vitest.setup.mts",
+            "**/vite.config.mts",
             "**/docs/**",
         ],
     }),
     vueConfig(),
-    jestConfig(),
+    vitestConfig(),
     docsConfig(),
     examplesConfig(),
     sandboxConfig(),

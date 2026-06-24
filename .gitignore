@@ -5,15 +5,12 @@ node_modules/
 # Build artifacts
 .eslintcache
 build/
+coverage/
 dist/
 public/
 temp/
+test-results/
 *.tsbuildinfo
-
-# Jest output
-.jest-cache/
-coverage/
-jest-junit.xml
 
 # Local env files
 .env.local

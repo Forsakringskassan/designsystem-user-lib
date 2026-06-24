@@ -8,7 +8,6 @@ CHANGELOG.md
 *.api.md
 
 # build artifacts
-.jest-cache/
 build/
 coverage/
 dist/
@@ -17,6 +16,7 @@ public/
 temp/
 tests/e2e/screenshots/
 tests/e2e/videos/
+test-results/
 typedoc/
 
 .DS_Store

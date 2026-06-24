@@ -1,20 +1,5 @@
 {
-    /* this config is picked up by vue3-jest which just refuses to read any
-     * other file or config */
-    "extends": ["@fkui/tsconfig/recommended", "@fkui/tsconfig/vue"],
-    "compilerOptions": {
-        /* ts-jest hardcodes deprecated moduleResolution "node10" */
-        "ignoreDeprecations": "6.0",
-        "declarationDir": "temp/jest",
-        "paths": {
-            "@fkui/user-lib-vue": ["./src/index.ts"]
-        }
-    },
-
-    /* this is also needed for vue3-jest to allow typescript to handle *.vue
-     * files imported from the spec-files */
-    "include": ["src/@types/*.ts", "src/stub.ts"],
-
+    "files": [],
     "references": [
         {
             "path": "./tsconfig.lib.json"
