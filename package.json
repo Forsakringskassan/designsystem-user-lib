@@ -59,7 +59,7 @@
     "@babel/preset-env": "7.29.7",
     "@fkui/date": "6.51.0",
     "@fkui/vue": "6.51.0",
-    "@forsakringskassan/commitlint-config": "4.1.1",
+    "@forsakringskassan/commitlint-config": "4.1.2",
     "@forsakringskassan/docs-generator": "3.3.0",
     "@forsakringskassan/docs-live-example": "3.0.0",
     "@forsakringskassan/eslint-config": "15.1.1",
