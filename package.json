@@ -75,7 +75,7 @@
     "@types/estree": "1.0.9",
     "@types/node": "22.20.0",
     "@vue/server-renderer": "3.5.38",
-    "autoprefixer": "10.5.0",
+    "autoprefixer": "10.5.1",
     "cli-table": "0.3.11",
     "core-js": "3.49.0",
     "esbuild": "0.28.1",
