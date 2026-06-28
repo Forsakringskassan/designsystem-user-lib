@@ -1567,7 +1567,7 @@ var MutableReactiveHandler = class extends BaseReactiveHandler {
       value,
       /* @__PURE__ */ isRef2(target) ? target : receiver
     );
-    if (target === /* @__PURE__ */ toRaw(receiver)) {
+    if (target === /* @__PURE__ */ toRaw(receiver) && result) {
       if (!hadKey) {
         trigger(target, "add", key, value);
       } else if (hasChanged(value, oldValue)) {
@@ -3559,11 +3559,9 @@ var TeleportImpl = {
         }
       } else {
         if ((n2.props && n2.props.to) !== (n1.props && n1.props.to)) {
-          const nextTarget = n2.target = resolveTarget(
-            n2.props,
-            querySelector
-          );
+          const nextTarget = resolveTarget(n2.props, querySelector);
           if (nextTarget) {
+            n2.target = nextTarget;
             moveTeleport(
               n2,
               nextTarget,
@@ -3601,7 +3599,8 @@ var TeleportImpl = {
       target,
       props
     } = vnode;
-    const shouldRemove = doRemove || !isTeleportDisabled(props);
+    const disabled = isTeleportDisabled(props);
+    const shouldRemove = doRemove || !disabled;
     const pendingMount = pendingMounts.get(vnode);
     if (pendingMount) {
       pendingMount.flags |= 8;
@@ -3612,7 +3611,7 @@ var TeleportImpl = {
       hostRemove(targetAnchor);
     }
     doRemove && hostRemove(anchor);
-    if (!pendingMount && shapeFlag & 16) {
+    if (!pendingMount && (disabled || target) && shapeFlag & 16) {
       for (let i = 0; i < children.length; i++) {
         const child = children[i];
         unmount(
@@ -4251,7 +4250,12 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
     }
   }
   if (isFunction(ref2)) {
-    callWithErrorHandling(ref2, owner, 12, [value, refs]);
+    pauseTracking();
+    try {
+      callWithErrorHandling(ref2, owner, 12, [value, refs]);
+    } finally {
+      resetTracking();
+    }
   } else {
     const _isString = isString(ref2);
     const _isRef = isRef2(ref2);
@@ -4542,8 +4546,17 @@ function createHydrationFunctions(rendererInternals) {
   };
   const hydrateElement = (el, vnode, parentComponent, parentSuspense, slotScopeIds, optimized) => {
     optimized = optimized || !!vnode.dynamicChildren;
-    const { type, props, patchFlag, shapeFlag, dirs, transition } = vnode;
+    const {
+      type,
+      dynamicProps,
+      props,
+      patchFlag,
+      shapeFlag,
+      dirs,
+      transition
+    } = vnode;
     const forcePatch = type === "input" || type === "option";
+    const hasDynamicProps = !!dynamicProps;
     if (true) {
       if (dirs) {
         invokeDirectiveHook(vnode, null, parentComponent, "created");
@@ -4628,7 +4641,7 @@ Server rendered element contains more child nodes than client vdom.`
               logMismatchError();
             }
             if (forcePatch && (key.endsWith("value") || key === "indeterminate") || isOn(key) && !isReservedProp(key) || // force hydrate v-bind with .prop modifiers
-            key[0] === "." || isCustomElement && !isReservedProp(key)) {
+            key[0] === "." || isCustomElement && !isReservedProp(key) || dynamicProps && dynamicProps.includes(key)) {
               patchProp2(el, key, null, props[key], void 0, parentComponent);
             }
           }
@@ -4748,11 +4761,7 @@ Server rendered element contains fewer child nodes than client vdom.`
     }
   };
   const handleMismatch = (node, vnode, parentComponent, parentSuspense, slotScopeIds, isFragment) => {
-    if (!isMismatchAllowed(
-      node.parentElement,
-      1
-      /* CHILDREN */
-    )) {
+    if (!isNodeMismatchAllowed(node, vnode)) {
       warn$1(
         `Hydration node mismatch:
 - rendered on server:`,
@@ -4982,7 +4991,12 @@ function isMismatchAllowed(el, allowedType) {
       el = el.parentElement;
     }
   }
-  const allowedAttr = el && el.getAttribute(allowMismatchAttr);
+  return isMismatchAllowedByAttr(
+    el && el.getAttribute(allowMismatchAttr),
+    allowedType
+  );
+}
+function isMismatchAllowedByAttr(allowedAttr, allowedType) {
   if (allowedAttr == null) {
     return false;
   } else if (allowedAttr === "") {
@@ -4994,6 +5008,28 @@ function isMismatchAllowed(el, allowedType) {
     }
     return list.includes(MismatchTypeString[allowedType]);
   }
+}
+function isNodeMismatchAllowed(node, vnode) {
+  return isMismatchAllowed(
+    node.parentElement,
+    1
+    /* CHILDREN */
+  ) || isMismatchAllowedByNode(node) || isMismatchAllowedByVNode(vnode);
+}
+function isMismatchAllowedByNode(node) {
+  return node.nodeType === 1 && isMismatchAllowedByAttr(
+    node.getAttribute(allowMismatchAttr),
+    1
+    /* CHILDREN */
+  );
+}
+function isMismatchAllowedByVNode({ props }) {
+  const allowedAttr = props && props[allowMismatchAttr];
+  return typeof allowedAttr === "string" && isMismatchAllowedByAttr(
+    allowedAttr,
+    1
+    /* CHILDREN */
+  );
 }
 var requestIdleCallback = getGlobalThis().requestIdleCallback || ((cb) => setTimeout(cb, 1));
 var cancelIdleCallback = getGlobalThis().cancelIdleCallback || ((id) => clearTimeout(id));
@@ -6981,7 +7017,8 @@ function isEmitListener(options, key) {
   if (!options || !isOn(key)) {
     return false;
   }
-  key = key.slice(2).replace(/Once$/, "");
+  key = key.slice(2);
+  key = key === "Once" ? key : key.replace(/Once$/, "");
   return hasOwn(options, key[0].toLowerCase() + key.slice(1)) || hasOwn(options, hyphenate(key)) || hasOwn(options, key);
 }
 var accessedAttrs = false;
@@ -8237,7 +8274,12 @@ function baseCreateRenderer(options, createHydrationFns) {
       invokeDirectiveHook(n2, n1, parentComponent, "beforeUpdate");
     }
     parentComponent && toggleRecurse(parentComponent, true);
-    if (isHmrUpdating) {
+    if (
+      // HMR updated, force full diff
+      isHmrUpdating || // #6385 the old vnode may be a user-wrapped non-isomorphic block
+      // Force full diff when block metadata is unstable.
+      dynamicChildren && (!n1.dynamicChildren || n1.dynamicChildren.length !== dynamicChildren.length)
+    ) {
       patchFlag = 0;
       optimized = false;
       dynamicChildren = null;
@@ -10381,6 +10423,10 @@ function normalizeChildren(vnode, children) {
       }
     }
   } else if (isFunction(children)) {
+    if (shapeFlag & (1 | 64)) {
+      normalizeChildren(vnode, { default: children });
+      return;
+    }
     children = { default: children, _ctx: currentRenderingInstance };
     type = 32;
   } else {
@@ -11107,7 +11153,7 @@ function isMemoSame(cached, memo) {
   }
   return true;
 }
-var version = "3.5.38";
+var version = "3.5.39";
 var warn2 = true ? warn$1 : NOOP;
 var ErrorTypeStrings = ErrorTypeStrings$1;
 var devtools = true ? devtools$1 : void 0;
@@ -11833,16 +11879,15 @@ function patchEvent(el, rawName, prevValue, nextValue, instance = null) {
     }
   }
 }
-var optionsModifierRE = /(?:Once|Passive|Capture)$/;
+var optionsModifierRE = /(Once|Passive|Capture)$/;
+var optionsModifierEventRE = /^on:?(?:Once|Passive|Capture)$/;
 function parseName(name) {
   let options;
-  if (optionsModifierRE.test(name)) {
-    options = {};
-    let m;
-    while (m = name.match(optionsModifierRE)) {
-      name = name.slice(0, name.length - m[0].length);
-      options[m[0].toLowerCase()] = true;
-    }
+  let m;
+  while ((m = name.match(optionsModifierRE)) && !optionsModifierEventRE.test(name)) {
+    if (!options) options = {};
+    name = name.slice(0, name.length - m[1].length);
+    options[m[1].toLowerCase()] = true;
   }
   const event = name[2] === ":" ? name.slice(3) : hyphenate(name.slice(2));
   return [event, options];
@@ -18187,7 +18232,7 @@ function rewriteFilter(node, context) {
       if (child.type === 4) {
         parseFilter(child, context);
       } else if (child.type === 8) {
-        rewriteFilter(node, context);
+        rewriteFilter(child, context);
       } else if (child.type === 5) {
         rewriteFilter(child.content, context);
       }
@@ -19297,49 +19342,49 @@ export {
 
 @vue/shared/dist/shared.esm-bundler.js:
   (**
-  * @vue/shared v3.5.38
+  * @vue/shared v3.5.39
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/reactivity/dist/reactivity.esm-bundler.js:
   (**
-  * @vue/reactivity v3.5.38
+  * @vue/reactivity v3.5.39
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/runtime-core/dist/runtime-core.esm-bundler.js:
   (**
-  * @vue/runtime-core v3.5.38
+  * @vue/runtime-core v3.5.39
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/runtime-dom/dist/runtime-dom.esm-bundler.js:
   (**
-  * @vue/runtime-dom v3.5.38
+  * @vue/runtime-dom v3.5.39
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/compiler-core/dist/compiler-core.esm-bundler.js:
   (**
-  * @vue/compiler-core v3.5.38
+  * @vue/compiler-core v3.5.39
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/compiler-dom/dist/compiler-dom.esm-bundler.js:
   (**
-  * @vue/compiler-dom v3.5.38
+  * @vue/compiler-dom v3.5.39
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 vue/dist/vue.esm-bundler.js:
   (**
-  * vue v3.5.38
+  * vue v3.5.39
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
