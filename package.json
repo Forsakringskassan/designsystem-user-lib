@@ -62,7 +62,7 @@
     "@forsakringskassan/commitlint-config": "4.1.2",
     "@forsakringskassan/docs-generator": "3.3.0",
     "@forsakringskassan/docs-live-example": "3.0.0",
-    "@forsakringskassan/eslint-config": "15.1.6",
+    "@forsakringskassan/eslint-config": "15.1.7",
     "@forsakringskassan/eslint-config-cli": "15.1.1",
     "@forsakringskassan/eslint-config-typescript": "15.1.2",
     "@forsakringskassan/eslint-config-typescript-typeinfo": "15.1.2",
