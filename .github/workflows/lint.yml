@@ -23,7 +23,7 @@ jobs:
               run: npm run prettier:check
             - name: ESLint
               if: success() || failure()
-              uses: Forsakringskassan/eslint-config@8835d926545bb6ea272d49bc3fecdda3d8c9209a # v15.1.11
+              uses: Forsakringskassan/eslint-config@8742bcf2942a0d25f09593c949076ec9aaedc95a # v15.2.0
             - name: HTML Validate
               if: success() || failure()
               run: npm run html-validate -- --max-warnings 0 || false
