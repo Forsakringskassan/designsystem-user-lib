@@ -1,6 +1,6 @@
 {
   "name": "@fkui/user-lib-vue",
-  "version": "1.5.7",
+  "version": "1.5.8",
   "description": "Vue implementation of custom user components",
   "keywords": [
     "fkui",
