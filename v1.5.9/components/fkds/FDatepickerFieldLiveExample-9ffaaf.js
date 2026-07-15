@@ -27,7 +27,7 @@ function setup(options) {
   };
 }
 
-// virtual-entry:virtual:from-fkui/components/fkds/FDatepickerFieldLiveExample.vue:FDatepickerFieldLiveExample-526bb2.js
+// virtual-entry:virtual:from-fkui/components/fkds/FDatepickerFieldLiveExample.vue:FDatepickerFieldLiveExample-9ffaaf.js
 import { defineComponent } from "vue";
 import { DateFormat, FDate, Weekday } from "@fkui/date";
 import { FCheckboxField, FDatepickerField, FFieldset, FSelectField, FTooltip } from "@fkui/vue";
@@ -96,9 +96,8 @@ var exampleComponent = defineComponent({
       }
       if (settings.length > 0) {
         return validators ? `v-validation${validators}="{${settings.join(", ")}}"` : "";
-      } else {
-        return validators ? `v-validation${validators}` : "";
       }
+      return validators ? `v-validation${validators}` : "";
     },
     highlightToday() {
       return this.highlightTodayEnabled ? "" : `:highlight-today="false"`;
@@ -423,7 +422,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 exampleComponent.render = render;
 setup({
   rootComponent: exampleComponent,
-  selector: "#example-526bb2"
+  selector: "#example-9ffaaf"
 });
 export {
   render
