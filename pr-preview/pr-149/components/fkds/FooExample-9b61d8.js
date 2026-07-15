@@ -27,7 +27,7 @@ function setup(options) {
   };
 }
 
-// virtual-entry:virtual:docs/components/fkds/FooExample.vue:FooExample-4bbbf4.js
+// virtual-entry:virtual:docs/components/fkds/FooExample.vue:FooExample-9b61d8.js
 import { defineComponent } from "vue";
 import { DateFormat, FDate, Weekday } from "@fkui/date";
 import { FDatepickerField, FSelectField, FTooltip } from "@fkui/vue";
@@ -96,9 +96,8 @@ var exampleComponent = defineComponent({
       }
       if (settings.length > 0) {
         return validators ? `v-validation${validators}="{${settings.join(", ")}}"` : "";
-      } else {
-        return validators ? `v-validation${validators}` : "";
       }
+      return validators ? `v-validation${validators}` : "";
     },
     highlightToday() {
       return this.highlightTodayEnabled ? "" : `:highlight-today="false"`;
@@ -212,7 +211,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 exampleComponent.render = render;
 setup({
   rootComponent: exampleComponent,
-  selector: "#example-4bbbf4"
+  selector: "#example-9b61d8"
 });
 export {
   render
