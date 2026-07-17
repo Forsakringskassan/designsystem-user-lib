@@ -70,7 +70,7 @@
     "@forsakringskassan/eslint-config-vue": "15.3.12",
     "@forsakringskassan/prettier-config": "3.7.7",
     "@forsakringskassan/stylelint-config": "3.4.4",
-    "@forsakringskassan/vite-lib-config": "5.2.0",
+    "@forsakringskassan/vite-lib-config": "5.2.1",
     "@html-validate/release-scripts": "7.3.6",
     "@types/estree": "1.0.9",
     "@types/node": "22.20.1",
