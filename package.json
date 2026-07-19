@@ -74,7 +74,7 @@
     "@html-validate/release-scripts": "7.3.6",
     "@types/estree": "1.0.9",
     "@types/node": "22.20.1",
-    "@vue/server-renderer": "3.5.39",
+    "@vue/server-renderer": "3.5.40",
     "autoprefixer": "10.5.3",
     "cli-table": "0.3.11",
     "core-js": "3.49.0",
@@ -100,7 +100,7 @@
     "typescript": "6.0.3",
     "vite": "8.1.4",
     "vitest": "4.1.10",
-    "vue": "3.5.39",
+    "vue": "3.5.40",
     "vue-tsc": "3.3.7"
   },
   "engines": {
