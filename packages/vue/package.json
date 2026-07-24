@@ -59,7 +59,7 @@
     "vue": "3.5.40"
   },
   "peerDependencies": {
-    "@babel/runtime": "^7",
+    "@babel/runtime": "^7 || ^8.0.0",
     "@fkui/design": "^6.0.0",
     "@fkui/icon-lib-default": "^6.0.0",
     "@fkui/logic": "^6.0.0",
