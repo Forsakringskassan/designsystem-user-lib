@@ -436,7 +436,7 @@ var isVoidTag = /* @__PURE__ */ makeMap(VOID_TAGS);
 var specialBooleanAttrs = `itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly`;
 var isSpecialBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs);
 var isBooleanAttr = /* @__PURE__ */ makeMap(
-  specialBooleanAttrs + `,async,autofocus,autoplay,controls,default,defer,disabled,hidden,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected`
+  specialBooleanAttrs + `,async,autofocus,autoplay,controls,default,defer,disabled,inert,loop,open,required,reversed,scoped,seamless,checked,muted,multiple,selected`
 );
 function includeBooleanAttr(value) {
   return !!value || value === "";
@@ -2770,7 +2770,9 @@ function queuePostFlushCb(cb) {
       cb.flags |= 1;
     }
   } else {
-    pendingPostFlushCbs.push(...cb);
+    for (let i = 0; i < cb.length; i++) {
+      pendingPostFlushCbs.push(cb[i]);
+    }
   }
   queueFlush();
 }
@@ -2806,7 +2808,9 @@ function flushPostFlushCbs(seen2) {
     );
     pendingPostFlushCbs.length = 0;
     if (activePostFlushCbs) {
-      activePostFlushCbs.push(...deduped);
+      for (let i = 0; i < deduped.length; i++) {
+        activePostFlushCbs.push(deduped[i]);
+      }
       return;
     }
     activePostFlushCbs = deduped;
@@ -4100,7 +4104,11 @@ function getInnerChild$1(vnode) {
 function setTransitionHooks(vnode, hooks) {
   if (vnode.shapeFlag & 6 && vnode.component) {
     vnode.transition = hooks;
-    setTransitionHooks(vnode.component.subTree, hooks);
+    const subTree = vnode.component.subTree;
+    setTransitionHooks(
+      isTeleport(subTree.type) ? getInnerChild$1(subTree) || subTree : subTree,
+      hooks
+    );
   } else if (vnode.shapeFlag & 128) {
     vnode.ssContent.transition = hooks.clone(vnode.ssContent);
     vnode.ssFallback.transition = hooks.clone(vnode.ssFallback);
@@ -4644,6 +4652,9 @@ Server rendered element contains more child nodes than client vdom.`
             }
             if (forcePatch && (key.endsWith("value") || key === "indeterminate") || isOn(key) && !isReservedProp(key) || // force hydrate v-bind with .prop modifiers
             key[0] === "." || isCustomElement && !isReservedProp(key) || dynamicProps && dynamicProps.includes(key)) {
+              if (isUnchangedResourceProp(el, key, props[key])) {
+                continue;
+              }
               patchProp2(el, key, null, props[key], namespace, parentComponent);
             }
           }
@@ -4841,6 +4852,13 @@ Server rendered element contains fewer child nodes than client vdom.`
   };
   return [hydrate2, hydrateNode];
 }
+var resourceProps = /* @__PURE__ */ new Set(["src", "srcset", "href", "poster"]);
+function isUnchangedResourceProp(el, key, clientValue) {
+  if (!resourceProps.has(key)) {
+    return false;
+  }
+  return el.getAttribute(key) === (clientValue == null ? null : `${clientValue}`);
+}
 function propHasMismatch(el, key, clientValue, vnode, instance) {
   let mismatchType;
   let mismatchKey;
@@ -4878,7 +4896,10 @@ function propHasMismatch(el, key, clientValue, vnode, instance) {
       mismatchKey = "style";
     }
   } else if (el instanceof SVGElement && isKnownSvgAttr(key) || el instanceof HTMLElement && (isBooleanAttr(key) || isKnownHtmlAttr(key))) {
-    if (isBooleanAttr(key)) {
+    if (key === "hidden") {
+      actual = normalizeHiddenValue(el.getAttribute(key));
+      expected = normalizeHiddenValue(clientValue);
+    } else if (isBooleanAttr(key)) {
       actual = el.hasAttribute(key);
       expected = includeBooleanAttr(clientValue);
     } else if (clientValue == null) {
@@ -4913,6 +4934,15 @@ function propHasMismatch(el, key, clientValue, vnode, instance) {
     return true;
   }
   return false;
+}
+function normalizeHiddenValue(value) {
+  if (!isRenderableAttrValue(value)) {
+    return false;
+  }
+  if (isString(value)) {
+    return value.toLowerCase() === "until-found" ? "until-found" : "";
+  }
+  return includeBooleanAttr(value) ? "" : false;
 }
 function toClassSet(str) {
   return new Set(str.trim().split(/\s+/));
@@ -5749,7 +5779,8 @@ function createSlots(slots, dynamicSlots) {
   }
   return slots;
 }
-function renderSlot(slots, name, props = {}, fallback, noSlotted, branchKey) {
+function renderSlot(slots, name, props, fallback, noSlotted, branchKey) {
+  if (props == null) props = {};
   if (currentRenderingInstance.ce || currentRenderingInstance.parent && isAsyncWrapper(currentRenderingInstance.parent) && currentRenderingInstance.parent.ce) {
     const slotProps = branchKey != null && props.key == null ? extend({}, props, { key: branchKey }) : props;
     const hasProps = Object.keys(slotProps).length > 0;
@@ -7169,12 +7200,13 @@ function renderComponentRoot(instance) {
     root.dirs = root.dirs ? root.dirs.concat(vnode.dirs) : vnode.dirs;
   }
   if (vnode.transition) {
-    if (!isElementRoot(root)) {
+    const child = isTeleport(root.type) ? getInnerChild$1(root) || root : root;
+    if (!isElementRoot(child)) {
       warn$1(
         `Component inside <Transition> renders non-element root node that cannot be animated.`
       );
     }
-    setTransitionHooks(root, vnode.transition);
+    setTransitionHooks(child, vnode.transition);
   }
   if (setRoot) {
     setRoot(root);
@@ -9867,7 +9899,9 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
       let hasUnresolvedAncestor = false;
       while (parent) {
         if (parent.pendingBranch) {
-          parent.effects.push(...effects);
+          for (let i = 0; i < effects.length; i++) {
+            parent.effects.push(effects[i]);
+          }
           hasUnresolvedAncestor = true;
           break;
         }
@@ -10231,6 +10265,14 @@ function createBaseVNode(type, props = null, children = null, patchFlag = 0, dyn
   if (vnode.key !== vnode.key) {
     warn$1(`VNode created with invalid key (NaN). VNode type:`, vnode.type);
   }
+  if (props && vnode.shapeFlag & 1) {
+    const overwritingProp = props.innerHTML != null ? "innerHTML" : props.textContent != null ? "textContent" : null;
+    if (overwritingProp && hasContentChildren(vnode.children)) {
+      warn$1(
+        `The \`${overwritingProp}\` prop on <${vnode.type}> will override its children. Remove either the \`${overwritingProp}\` prop or the children.`
+      );
+    }
+  }
   if (isBlockTreeEnabled > 0 && // avoid a block node from tracking itself
   !isBlockNode && // has current parent block
   currentBlock && // presence of a patch flag indicates this node needs patching on updates.
@@ -10243,6 +10285,11 @@ function createBaseVNode(type, props = null, children = null, patchFlag = 0, dyn
     currentBlock.push(vnode);
   }
   return vnode;
+}
+function hasContentChildren(children) {
+  if (isString(children)) return children !== "";
+  if (isArray(children)) return children.length > 0;
+  return false;
 }
 var createVNode = true ? createVNodeWithArgsTransform : _createVNode;
 function _createVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, isBlockNode = false) {
@@ -10693,7 +10740,12 @@ function setupStatefulComponent(instance, isSSR) {
       setupResult.then(unsetCurrentInstance, unsetCurrentInstance);
       if (isSSR) {
         return setupResult.then((resolvedResult) => {
-          handleSetupResult(instance, resolvedResult, isSSR);
+          setInSSRSetupState(true);
+          try {
+            handleSetupResult(instance, resolvedResult, isSSR);
+          } finally {
+            setInSSRSetupState(false);
+          }
         }).catch((e) => {
           handleError(e, instance, 0);
         });
@@ -11166,7 +11218,7 @@ function isMemoSame(cached, memo) {
   }
   return true;
 }
-var version = "3.5.40";
+var version = "3.5.41";
 var warn2 = true ? warn$1 : NOOP;
 var ErrorTypeStrings = ErrorTypeStrings$1;
 var devtools = true ? devtools$1 : void 0;
@@ -12118,7 +12170,9 @@ var VueElement = class _VueElement extends BaseClass {
         if (parent && parent._pendingResolve) {
           this._pendingResolve = parent._pendingResolve.then(() => {
             this._pendingResolve = void 0;
-            this._resolveDef();
+            if (this.isConnected) {
+              return this._resolveDef();
+            }
           });
         } else {
           this._resolveDef();
@@ -12168,7 +12222,7 @@ var VueElement = class _VueElement extends BaseClass {
    */
   _resolveDef() {
     if (this._pendingResolve) {
-      return;
+      return this._pendingResolve;
     }
     for (let i = 0; i < this.attributes.length; i++) {
       this._setAttr(this.attributes[i].name);
@@ -12208,6 +12262,7 @@ var VueElement = class _VueElement extends BaseClass {
         def2.configureApp = this._def.configureApp;
         resolve2(this._def = def2, true);
       });
+      return this._pendingResolve;
     } else {
       resolve2(this._def);
     }
@@ -12245,6 +12300,11 @@ var VueElement = class _VueElement extends BaseClass {
       }
     }
     for (const key of declaredPropKeys.map(camelize)) {
+      if (key in Object.getPrototypeOf(this)) {
+        warn2(
+          `Custom element prop "${key}" conflicts with an existing property on the element and will overwrite it.`
+        );
+      }
       Object.defineProperty(this, key, {
         get() {
           return this._getProp(key);
@@ -12726,6 +12786,7 @@ function onCompositionEnd(e) {
   }
 }
 var assignKey = /* @__PURE__ */ Symbol("_assign");
+var initialValueKey = /* @__PURE__ */ Symbol("_initialValue");
 function castValue(value, trim, number) {
   if (trim) value = value.trim();
   if (number) value = looseToNumber(value);
@@ -12733,6 +12794,13 @@ function castValue(value, trim, number) {
 }
 var vModelText = {
   created(el, { modifiers: { lazy, trim, number } }, vnode) {
+    if (el.parentNode) {
+      if (el.type === "text") {
+        el[initialValueKey] = el.defaultValue.replace(/[\r\n]/g, "");
+      } else if (el.type === "textarea") {
+        el[initialValueKey] = el.defaultValue.replace(/\r\n?/g, "\n");
+      }
+    }
     el[assignKey] = getModelAssigner(vnode);
     const castToNumber = number || vnode.props && vnode.props.type === "number";
     addEventListener(el, lazy ? "change" : "input", (e) => {
@@ -12751,8 +12819,15 @@ var vModelText = {
     }
   },
   // set value on mounted so it's after min/max for type="range"
-  mounted(el, { value }) {
-    el.value = value == null ? "" : value;
+  mounted(el, { value, modifiers: { trim, number } }) {
+    const newValue = value == null ? "" : value;
+    const initialValue = el[initialValueKey];
+    delete el[initialValueKey];
+    if (initialValue !== void 0 && (el.type === "text" || el.type === "textarea") && el.value !== initialValue) {
+      el[assignKey](castValue(el.value, trim, number));
+    } else {
+      el.value = newValue;
+    }
   },
   beforeUpdate(el, { value, oldValue, modifiers: { lazy, trim, number } }, vnode) {
     el[assignKey] = getModelAssigner(vnode);
@@ -16911,6 +16986,7 @@ var transformFor = createStructuralDirectiveTransform(
         node.loc
       );
       return () => {
+        var _a;
         let childBlock;
         const { children } = forNode;
         if (isTemplate) {
@@ -16954,7 +17030,8 @@ var transformFor = createStructuralDirectiveTransform(
           if (isTemplate && keyProperty) {
             injectProp(childBlock, keyProperty, context);
           }
-          if (childBlock.isBlock !== !isStableFragment) {
+          const shouldUseBlock = !isStableFragment || childBlock.isBlockRequired === true;
+          if (childBlock.isBlock !== shouldUseBlock) {
             if (childBlock.isBlock) {
               removeHelper(OPEN_BLOCK);
               removeHelper(
@@ -16966,12 +17043,15 @@ var transformFor = createStructuralDirectiveTransform(
               );
             }
           }
-          childBlock.isBlock = !isStableFragment;
+          childBlock.isBlock = shouldUseBlock;
           if (childBlock.isBlock) {
             helper(OPEN_BLOCK);
             helper(getVNodeBlockHelper(context.inSSR, childBlock.isComponent));
           } else {
             helper(getVNodeHelper(context.inSSR, childBlock.isComponent));
+            if (childBlock.needsPatch) {
+              childBlock.patchFlag = ((_a = childBlock.patchFlag) != null ? _a : 0) | 512;
+            }
           }
         }
         if (memo) {
@@ -17348,6 +17428,8 @@ var transformElement = (node, context) => {
     let vnodeDynamicProps;
     let dynamicPropNames;
     let vnodeDirectives;
+    let needsPatch = false;
+    let isBlockRequired = false;
     let shouldUseBlock = (
       // dynamic component may resolve to plain elements
       isDynamicComponent || vnodeTag === TELEPORT || vnodeTag === SUSPENSE || !isComponent2 && // <svg> and <foreignObject> must be forced into blocks so that block
@@ -17367,6 +17449,8 @@ var transformElement = (node, context) => {
       vnodeProps = propsBuildResult.props;
       patchFlag = propsBuildResult.patchFlag;
       dynamicPropNames = propsBuildResult.dynamicPropNames;
+      needsPatch = propsBuildResult.needsPatch;
+      isBlockRequired = propsBuildResult.isBlockRequired;
       const directives = propsBuildResult.directives;
       vnodeDirectives = directives && directives.length ? createArrayExpression(
         directives.map((dir) => buildDirectiveArgs(dir, context))
@@ -17417,7 +17501,7 @@ var transformElement = (node, context) => {
     if (dynamicPropNames && dynamicPropNames.length) {
       vnodeDynamicProps = stringifyDynamicPropNames(dynamicPropNames);
     }
-    node.codegenNode = createVNodeCall(
+    const vnodeCall = node.codegenNode = createVNodeCall(
       context,
       vnodeTag,
       vnodeProps,
@@ -17430,6 +17514,13 @@ var transformElement = (node, context) => {
       isComponent2,
       node.loc
     );
+    needsPatch = needsPatch && (patchFlag === 0 || patchFlag === 32);
+    if (needsPatch) {
+      vnodeCall.needsPatch = true;
+    }
+    if (isBlockRequired) {
+      vnodeCall.isBlockRequired = true;
+    }
   };
 };
 function resolveComponentType(node, context, ssr = false) {
@@ -17481,6 +17572,7 @@ function buildProps(node, context, props = node.props, isComponent2, isDynamicCo
   const runtimeDirectives = [];
   const hasChildren = children.length > 0;
   let shouldUseBlock = false;
+  let isBlockRequired = false;
   let patchFlag = 0;
   let hasRef = false;
   let hasClassBinding = false;
@@ -17522,19 +17614,20 @@ function buildProps(node, context, props = node.props, isComponent2, isDynamicCo
       if (isEventHandler && isReservedProp(name)) {
         hasVnodeHook = true;
       }
+      if (name === "ref") {
+        hasRef = true;
+      }
       if (isEventHandler && value.type === 14) {
         value = value.arguments[0];
       }
       if (value.type === 20 || (value.type === 4 || value.type === 8) && getConstantType(value, context) > 0) {
         return;
       }
-      if (name === "ref") {
-        hasRef = true;
-      } else if (name === "class") {
+      if (name === "class") {
         hasClassBinding = true;
       } else if (name === "style") {
         hasStyleBinding = true;
-      } else if (name !== "key" && !dynamicPropNames.includes(name)) {
+      } else if (name !== "ref" && name !== "key" && !dynamicPropNames.includes(name)) {
         dynamicPropNames.push(name);
       }
       if (isComponent2 && (name === "class" || name === "style") && !dynamicPropNames.includes(name)) {
@@ -17593,13 +17686,12 @@ function buildProps(node, context, props = node.props, isComponent2, isDynamicCo
       if (isVOn && ssr) {
         continue;
       }
-      if (
-        // #938: elements with dynamic keys should be forced into blocks
-        isVBind && isStaticArgOf(arg, "key") || // inline before-update hooks need to force block so that it is invoked
-        // before children
-        isVOn && hasChildren && isStaticArgOf(arg, "vue:before-update")
-      ) {
+      if (isVBind && isStaticArgOf(arg, "key")) {
         shouldUseBlock = true;
+      }
+      if (isVOn && hasChildren && arg && isStaticExp(arg) && camelize(arg.content) === "vue:beforeUpdate") {
+        shouldUseBlock = true;
+        isBlockRequired = true;
       }
       if (isVBind && isStaticArgOf(arg, "ref")) {
         pushRefVForMarker();
@@ -17682,6 +17774,7 @@ function buildProps(node, context, props = node.props, isComponent2, isDynamicCo
         runtimeDirectives.push(prop);
         if (hasChildren) {
           shouldUseBlock = true;
+          isBlockRequired = true;
         }
       }
     }
@@ -17720,7 +17813,8 @@ function buildProps(node, context, props = node.props, isComponent2, isDynamicCo
       patchFlag |= 32;
     }
   }
-  if (!shouldUseBlock && (patchFlag === 0 || patchFlag === 32) && (hasRef || hasVnodeHook || runtimeDirectives.length > 0)) {
+  const needsPatch = (patchFlag === 0 || patchFlag === 32) && (hasRef || hasVnodeHook || runtimeDirectives.length > 0);
+  if (!shouldUseBlock && needsPatch) {
     patchFlag |= 512;
   }
   if (!context.inSSR && propsExpression) {
@@ -17786,7 +17880,9 @@ function buildProps(node, context, props = node.props, isComponent2, isDynamicCo
     directives: runtimeDirectives,
     patchFlag,
     dynamicPropNames,
-    shouldUseBlock
+    shouldUseBlock,
+    needsPatch,
+    isBlockRequired
   };
 }
 function dedupeProperties(properties) {
@@ -19377,49 +19473,49 @@ export {
 
 @vue/shared/dist/shared.esm-bundler.js:
   (**
-  * @vue/shared v3.5.40
+  * @vue/shared v3.5.41
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/reactivity/dist/reactivity.esm-bundler.js:
   (**
-  * @vue/reactivity v3.5.40
+  * @vue/reactivity v3.5.41
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/runtime-core/dist/runtime-core.esm-bundler.js:
   (**
-  * @vue/runtime-core v3.5.40
+  * @vue/runtime-core v3.5.41
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/runtime-dom/dist/runtime-dom.esm-bundler.js:
   (**
-  * @vue/runtime-dom v3.5.40
+  * @vue/runtime-dom v3.5.41
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/compiler-core/dist/compiler-core.esm-bundler.js:
   (**
-  * @vue/compiler-core v3.5.40
+  * @vue/compiler-core v3.5.41
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 @vue/compiler-dom/dist/compiler-dom.esm-bundler.js:
   (**
-  * @vue/compiler-dom v3.5.40
+  * @vue/compiler-dom v3.5.41
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
 
 vue/dist/vue.esm-bundler.js:
   (**
-  * vue v3.5.40
+  * vue v3.5.41
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **)
