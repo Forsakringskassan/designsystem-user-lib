@@ -65,7 +65,7 @@
     "@forsakringskassan/eslint-config": "15.6.0",
     "@forsakringskassan/eslint-config-cli": "15.6.0",
     "@forsakringskassan/eslint-config-typescript": "15.6.0",
-    "@forsakringskassan/eslint-config-typescript-typeinfo": "15.6.0",
+    "@forsakringskassan/eslint-config-typescript-typeinfo": "15.6.3",
     "@forsakringskassan/eslint-config-vitest": "15.6.0",
     "@forsakringskassan/eslint-config-vue": "15.6.0",
     "@forsakringskassan/prettier-config": "3.7.8",
