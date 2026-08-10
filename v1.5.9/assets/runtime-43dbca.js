@@ -1485,7 +1485,7 @@ function isRegex(value2) {
 function createDOMPurify() {
   let window3 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : getGlobal();
   const DOMPurify = (root4) => createDOMPurify(root4);
-  DOMPurify.version = "3.4.12";
+  DOMPurify.version = "3.4.13";
   DOMPurify.removed = [];
   if (!window3 || !window3.document || window3.document.nodeType !== NODE_TYPE.document || !window3.Element) {
     DOMPurify.isSupported = false;
@@ -1509,6 +1509,7 @@ function createDOMPurify() {
   const getAttributes = lookupGetter(ElementPrototype, "attributes");
   const getNodeType = Node2 && Node2.prototype ? lookupGetter(Node2.prototype, "nodeType") : null;
   const getNodeName = Node2 && Node2.prototype ? lookupGetter(Node2.prototype, "nodeName") : null;
+  const getOwnerDocument = Node2 && Node2.prototype ? lookupGetter(Node2.prototype, "ownerDocument") : null;
   if (typeof HTMLTemplateElement === "function") {
     const template = document2.createElement("template");
     if (template.content && template.content.ownerDocument) {
@@ -2086,8 +2087,9 @@ function createDOMPurify() {
     return WHOLE_DOCUMENT ? doc.documentElement : body;
   };
   const _createNodeIterator = function _createNodeIterator2(root4) {
+    const doc = getOwnerDocument ? getOwnerDocument(root4) : root4.ownerDocument;
     return createNodeIterator.call(
-      root4.ownerDocument || root4,
+      doc || root4,
       root4,
       // eslint-disable-next-line no-bitwise
       NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT | NodeFilter.SHOW_TEXT | NodeFilter.SHOW_PROCESSING_INSTRUCTION | NodeFilter.SHOW_CDATA_SECTION,
@@ -2103,8 +2105,9 @@ function createDOMPurify() {
   const _scrubTemplateExpressions2 = function _scrubTemplateExpressions(node2) {
     var _node$querySelectorAl;
     node2.normalize();
+    const doc = getOwnerDocument ? getOwnerDocument(node2) : node2.ownerDocument;
     const walker = createNodeIterator.call(
-      node2.ownerDocument || node2,
+      doc || node2,
       node2,
       // eslint-disable-next-line no-bitwise
       NodeFilter.SHOW_TEXT | NodeFilter.SHOW_COMMENT | NodeFilter.SHOW_CDATA_SECTION | NodeFilter.SHOW_PROCESSING_INSTRUCTION,
@@ -2200,7 +2203,7 @@ function createDOMPurify() {
     }
     return false;
   };
-  const _sanitizeDisallowedNode = function _sanitizeDisallowedNode2(currentNode, tagName) {
+  const _sanitizeDisallowedNode = function _sanitizeDisallowedNode2(currentNode, tagName, root4) {
     if (!FORBID_TAGS[tagName] && _isBasicCustomElement(tagName)) {
       if (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, tagName)) {
         return false;
@@ -2215,7 +2218,7 @@ function createDOMPurify() {
       if (childNodes && parentNode) {
         const childCount = childNodes.length;
         for (let i5 = childCount - 1; i5 >= 0; --i5) {
-          const hoisted = IN_PLACE ? childNodes[i5] : cloneNode(childNodes[i5], true);
+          const hoisted = currentNode === root4 ? cloneNode(childNodes[i5], true) : childNodes[i5];
           parentNode.insertBefore(hoisted, getNextSibling(currentNode));
         }
       }
@@ -2223,9 +2226,18 @@ function createDOMPurify() {
     _forceRemove(currentNode);
     return true;
   };
+  const _forkSharedAllowlist = function _forkSharedAllowlist2(hookList, set5, defaultSet, setConfigSet) {
+    if (hookList.length === 0) {
+      return set5;
+    }
+    return set5 === defaultSet || set5 === setConfigSet ? clone(set5) : set5;
+  };
   const _sanitizeElements = function _sanitizeElements2(currentNode, root4) {
     _executeHooks(hooks.beforeSanitizeElements, currentNode, null);
     if (currentNode !== root4 && getParentNode(currentNode) === null) {
+      if (IN_PLACE) {
+        _neutralizeSubtree(currentNode);
+      }
       return true;
     }
     if (_isClobbered(currentNode)) {
@@ -2233,11 +2245,15 @@ function createDOMPurify() {
       return true;
     }
     const tagName = transformCaseFunc(getNodeName ? getNodeName(currentNode) : currentNode.nodeName);
+    ALLOWED_TAGS = _forkSharedAllowlist(hooks.uponSanitizeElement, ALLOWED_TAGS, DEFAULT_ALLOWED_TAGS, SET_CONFIG_ALLOWED_TAGS);
     _executeHooks(hooks.uponSanitizeElement, currentNode, {
       tagName,
       allowedTags: ALLOWED_TAGS
     });
     if (currentNode !== root4 && getParentNode(currentNode) === null) {
+      if (IN_PLACE) {
+        _neutralizeSubtree(currentNode);
+      }
       return true;
     }
     if (_isUnsafeNode(currentNode, tagName)) {
@@ -2245,7 +2261,7 @@ function createDOMPurify() {
       return true;
     }
     if (FORBID_TAGS[tagName] || !(EXTRA_ELEMENT_HANDLING.tagCheck instanceof Function && EXTRA_ELEMENT_HANDLING.tagCheck(tagName)) && !ALLOWED_TAGS[tagName]) {
-      const removed = _sanitizeDisallowedNode(currentNode, tagName);
+      const removed = _sanitizeDisallowedNode(currentNode, tagName, root4);
       if (removed === false) {
         _executeHooks(hooks.afterSanitizeElements, currentNode, null);
       }
@@ -2348,6 +2364,7 @@ function createDOMPurify() {
     if (!attributes || _isClobbered(currentNode)) {
       return;
     }
+    ALLOWED_ATTR = _forkSharedAllowlist(hooks.uponSanitizeAttribute, ALLOWED_ATTR, DEFAULT_ALLOWED_ATTR, SET_CONFIG_ALLOWED_ATTR);
     const hookEvent = {
       attrName: "",
       attrValue: "",
@@ -2555,8 +2572,8 @@ function createDOMPurify() {
       _forceRemove(body.firstChild);
     }
     const walkRoot = inPlace ? dirty : body;
-    const nodeIterator = _createNodeIterator(walkRoot);
     try {
+      const nodeIterator = _createNodeIterator(walkRoot);
       while (currentNode = nodeIterator.nextNode()) {
         _sanitizeElements(currentNode, walkRoot);
         _sanitizeAttributes(currentNode);
@@ -17846,8 +17863,8 @@ var diagrams;
 var registerDiagram;
 var getDiagram;
 var DiagramNotFoundError;
-var init_chunk_WYO6CB5R = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-WYO6CB5R.mjs"() {
+var init_chunk_I66GZJ75 = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-I66GZJ75.mjs"() {
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_dist();
@@ -17863,8 +17880,8 @@ var init_chunk_WYO6CB5R = __esm({
     init_dist();
     init_dist();
     init_purify_es();
-    assignWithDepth = /* @__PURE__ */ __name((dst, src, { depth = 2, clobber = false } = {}) => {
-      const config22 = { depth, clobber };
+    assignWithDepth = /* @__PURE__ */ __name((dst, src, { depth = 2 } = {}) => {
+      const config22 = { depth };
       if (Array.isArray(src) && !Array.isArray(dst)) {
         src.forEach((s2) => assignWithDepth(dst, s2, config22));
         return dst;
@@ -17876,22 +17893,45 @@ var init_chunk_WYO6CB5R = __esm({
         });
         return dst;
       }
-      if (dst === void 0 || depth <= 0) {
+      if (dst === void 0 || dst === null || depth <= 0) {
         if (dst !== void 0 && dst !== null && typeof dst === "object" && typeof src === "object") {
           return Object.assign(dst, src);
         } else {
           return src;
         }
       }
-      if (src !== void 0 && typeof dst === "object" && typeof src === "object") {
-        Object.keys(src).forEach((key) => {
-          if (typeof src[key] === "object" && src[key] !== null && (dst[key] === void 0 || typeof dst[key] === "object")) {
-            if (dst[key] === void 0) {
-              dst[key] = Array.isArray(src[key]) ? [] : {};
+      if (src !== void 0 && src !== null && typeof dst === "object" && typeof src === "object") {
+        const dstWithKeys = dst;
+        Object.entries(src).forEach(([key, srcValue]) => {
+          if (typeof srcValue === "object") {
+            if (srcValue === null) {
+              return;
             }
-            dst[key] = assignWithDepth(dst[key], src[key], { depth: depth - 1, clobber });
-          } else if (clobber || typeof dst[key] !== "object" && typeof src[key] !== "object") {
-            dst[key] = src[key];
+            if (!Object.hasOwn(dst, key)) {
+              Object.defineProperty(dst, key, {
+                value: void 0,
+                writable: true,
+                enumerable: true,
+                configurable: true
+              });
+            }
+            if (dstWithKeys[key] === void 0) {
+              dstWithKeys[key] = Array.isArray(srcValue) ? [] : {};
+            }
+            if (typeof dstWithKeys[key] === "object") {
+              dstWithKeys[key] = assignWithDepth(dstWithKeys[key], srcValue, { depth: depth - 1 });
+            }
+          } else if (typeof dstWithKeys[key] !== "object") {
+            if (Object.hasOwn(dst, key)) {
+              dstWithKeys[key] = srcValue;
+            } else {
+              Object.defineProperty(dst, key, {
+                value: srcValue,
+                writable: true,
+                enumerable: true,
+                configurable: true
+              });
+            }
           }
         });
       }
@@ -22684,8 +22724,7 @@ var init_chunk_WYO6CB5R = __esm({
       return assignWithDepth_default({}, siteConfig);
     }, "getSiteConfig");
     setConfig = /* @__PURE__ */ __name((conf5) => {
-      checkConfig(conf5);
-      assignWithDepth_default(currentConfig, conf5);
+      updateCurrentConfig(currentConfig, [conf5]);
       return getConfig();
     }, "setConfig");
     getConfig = /* @__PURE__ */ __name(() => {
@@ -23046,7 +23085,7 @@ var init_chunk_WYO6CB5R = __esm({
       } else {
         log.warn(`No theme found for ${type3}`);
       }
-      return ` & {
+      return `& {
     font-family: ${options2.fontFamily};
     font-size: ${options2.fontSize};
     fill: ${options2.textColor}
@@ -30362,9 +30401,9 @@ var init_src32 = __esm({
   }
 });
 var selectSvgElement;
-var init_chunk_VAUOI2AC = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-VAUOI2AC.mjs"() {
-    init_chunk_WYO6CB5R();
+var init_chunk_3NCLNEKW = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-3NCLNEKW.mjs"() {
+    init_chunk_I66GZJ75();
     init_chunk_Y2CYZVJY();
     init_src32();
     selectSvgElement = /* @__PURE__ */ __name((id39) => {
@@ -33197,9 +33236,9 @@ var isLabelStyle;
 var styles2String;
 var userNodeOverrides;
 var getStrokeDashArray;
-var init_chunk_C7G6YPKG = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-C7G6YPKG.mjs"() {
-    init_chunk_WYO6CB5R();
+var init_chunk_W5SLKNZC = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-W5SLKNZC.mjs"() {
+    init_chunk_I66GZJ75();
     init_chunk_Y2CYZVJY();
     solidStateFill = /* @__PURE__ */ __name((color2) => {
       const { handDrawnSeed } = getConfig2();
@@ -33742,6 +33781,22 @@ var init_isArrayLikeObject = __esm({
     init_isObjectLike();
   }
 });
+function isTypedArray2(x6) {
+  return isTypedArray(x6);
+}
+var init_isTypedArray2 = __esm({
+  "node_modules/es-toolkit/dist/compat/predicate/isTypedArray.mjs"() {
+    init_isTypedArray();
+  }
+});
+function isPrototype(value2) {
+  const constructor = value2?.constructor;
+  return value2 === (typeof constructor === "function" ? constructor.prototype : Object.prototype);
+}
+var init_isPrototype = __esm({
+  "node_modules/es-toolkit/dist/compat/_internal/isPrototype.mjs"() {
+  }
+});
 function memoize(func, resolver3) {
   if (typeof func !== "function" || resolver3 != null && typeof resolver3 !== "function") throw new TypeError("Expected a function");
   const memoized = function(...args) {
@@ -33758,22 +33813,6 @@ function memoize(func, resolver3) {
 var init_memoize = __esm({
   "node_modules/es-toolkit/dist/compat/function/memoize.mjs"() {
     memoize.Cache = Map;
-  }
-});
-function isTypedArray2(x6) {
-  return isTypedArray(x6);
-}
-var init_isTypedArray2 = __esm({
-  "node_modules/es-toolkit/dist/compat/predicate/isTypedArray.mjs"() {
-    init_isTypedArray();
-  }
-});
-function isPrototype(value2) {
-  const constructor = value2?.constructor;
-  return value2 === (typeof constructor === "function" ? constructor.prototype : Object.prototype);
-}
-var init_isPrototype = __esm({
-  "node_modules/es-toolkit/dist/compat/_internal/isPrototype.mjs"() {
   }
 });
 function clone2(obj) {
@@ -34188,9 +34227,9 @@ var utils_default2;
 var encodeEntities;
 var decodeEntities;
 var getEdgeId;
-var init_chunk_ICXQ74PX = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-ICXQ74PX.mjs"() {
-    init_chunk_WYO6CB5R();
+var init_chunk_NSK5VX7P = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-NSK5VX7P.mjs"() {
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     import_sanitize_url = __toESM(require_dist(), 1);
@@ -34648,10 +34687,10 @@ async function configureLabelImages(container2, labelText) {
   );
 }
 var getSubGraphTitleMargins;
-var init_chunk_OGEWGWER = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-OGEWGWER.mjs"() {
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+var init_chunk_UBXNYLIW = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-UBXNYLIW.mjs"() {
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_Y2CYZVJY();
     getSubGraphTitleMargins = /* @__PURE__ */ __name(({
       flowchart
@@ -35041,9 +35080,9 @@ var registerIconPacks;
 var getRegisteredIconData;
 var isIconAvailable;
 var getIconSVG;
-var init_chunk_HOUHSVGY = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-HOUHSVGY.mjs"() {
-    init_chunk_WYO6CB5R();
+var init_chunk_4I5QYGJK = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-4I5QYGJK.mjs"() {
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_lib();
@@ -36705,11 +36744,11 @@ async function replaceIconSubstring(text4, config3 = {}) {
 }
 var maxSafeSizeForWidth;
 var createText;
-var init_chunk_Q4XR5HBZ = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-Q4XR5HBZ.mjs"() {
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+var init_chunk_WRU74C26 = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-WRU74C26.mjs"() {
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -42271,14 +42310,14 @@ var nodeElems;
 var setNodeElem;
 var clear22;
 var positionNode;
-var init_chunk_ZGVPDNZ5 = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-ZGVPDNZ5.mjs"() {
-    init_chunk_C7G6YPKG();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+var init_chunk_QR6OTTB3 = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-QR6OTTB3.mjs"() {
+    init_chunk_W5SLKNZC();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -43982,15 +44021,15 @@ var requirement_contains;
 var requirement_contains_neo;
 var markers;
 var markers_default;
-var init_chunk_52WLFC77 = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-52WLFC77.mjs"() {
-    init_chunk_ZGVPDNZ5();
-    init_chunk_C7G6YPKG();
+var init_chunk_7Z6QIM7H = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-7Z6QIM7H.mjs"() {
+    init_chunk_QR6OTTB3();
+    init_chunk_W5SLKNZC();
     init_chunk_7BUUIJ7U();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -52777,8 +52816,8 @@ var init_dagre = __esm({
     init_rank();
   }
 });
-var dagre_VKFMJZFB_exports = {};
-__export(dagre_VKFMJZFB_exports, {
+var dagre_VZM6K2ZE_exports = {};
+__export(dagre_VZM6K2ZE_exports, {
   getEdgesToRender: () => getEdgesToRender,
   render: () => render3
 });
@@ -52791,18 +52830,18 @@ var getSelfLoopLabelPosition;
 var getEdgesToRender;
 var recursiveRender;
 var render3;
-var init_dagre_VKFMJZFB = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/dagre-VKFMJZFB.mjs"() {
+var init_dagre_VZM6K2ZE = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/dagre-VZM6K2ZE.mjs"() {
     init_chunk_RYQCIY6F();
-    init_chunk_52WLFC77();
-    init_chunk_ZGVPDNZ5();
-    init_chunk_C7G6YPKG();
+    init_chunk_7Z6QIM7H();
+    init_chunk_QR6OTTB3();
+    init_chunk_W5SLKNZC();
     init_chunk_7BUUIJ7U();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_dagre();
@@ -53391,8 +53430,8 @@ var init_sizeCapture_X5ZJPWSS = __esm({
     __name(captureNodeSizes, "captureNodeSizes");
   }
 });
-var swimlanes_5IMT3BWC_exports = {};
-__export(swimlanes_5IMT3BWC_exports, {
+var swimlanes_SLNWSIFB_exports = {};
+__export(swimlanes_SLNWSIFB_exports, {
   render: () => render4
 });
 async function createGraphWithElements(element3, data4Layout) {
@@ -61751,18 +61790,18 @@ var VERTICAL_PIPE_MARGIN;
 var ROUTING_MARGIN;
 var ANCHOR_OFFSET;
 var TRACK_SPACING;
-var init_swimlanes_5IMT3BWC = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/swimlanes-5IMT3BWC.mjs"() {
+var init_swimlanes_SLNWSIFB = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/swimlanes-SLNWSIFB.mjs"() {
     init_chunk_RYQCIY6F();
-    init_chunk_52WLFC77();
-    init_chunk_ZGVPDNZ5();
-    init_chunk_C7G6YPKG();
+    init_chunk_7Z6QIM7H();
+    init_chunk_QR6OTTB3();
+    init_chunk_W5SLKNZC();
     init_chunk_7BUUIJ7U();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_graphlib();
@@ -97947,12 +97986,12 @@ var registerLayoutLoaders;
 var registerDefaultLayoutLoaders;
 var render6;
 var getRegisteredLayoutAlgorithm;
-var init_chunk_FWX5IMBZ = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-FWX5IMBZ.mjs"() {
-    init_chunk_52WLFC77();
-    init_chunk_ZGVPDNZ5();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+var init_chunk_J7OUQ5F2 = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-J7OUQ5F2.mjs"() {
+    init_chunk_7Z6QIM7H();
+    init_chunk_QR6OTTB3();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     internalHelpers = {
@@ -97978,11 +98017,11 @@ var init_chunk_FWX5IMBZ = __esm({
       registerLayoutLoaders([
         {
           name: "dagre",
-          loader: /* @__PURE__ */ __name(async () => await Promise.resolve().then(() => (init_dagre_VKFMJZFB(), dagre_VKFMJZFB_exports)), "loader")
+          loader: /* @__PURE__ */ __name(async () => await Promise.resolve().then(() => (init_dagre_VZM6K2ZE(), dagre_VZM6K2ZE_exports)), "loader")
         },
         {
           name: "swimlane",
-          loader: /* @__PURE__ */ __name(async () => await Promise.resolve().then(() => (init_swimlanes_5IMT3BWC(), swimlanes_5IMT3BWC_exports)), "loader")
+          loader: /* @__PURE__ */ __name(async () => await Promise.resolve().then(() => (init_swimlanes_SLNWSIFB(), swimlanes_SLNWSIFB_exports)), "loader")
         },
         ...true ? [
           {
@@ -98046,9 +98085,9 @@ var drawEmbeddedImage;
 var getNoteRect;
 var getTextObj2;
 var createTooltip;
-var init_chunk_32BRIVSS = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-32BRIVSS.mjs"() {
-    init_chunk_WYO6CB5R();
+var init_chunk_2GRJ4B5K = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-2GRJ4B5K.mjs"() {
+    init_chunk_I66GZJ75();
     init_chunk_Y2CYZVJY();
     import_sanitize_url2 = __toESM(require_dist(), 1);
     init_src32();
@@ -98159,8 +98198,8 @@ var init_chunk_32BRIVSS = __esm({
     }, "createTooltip");
   }
 });
-var c4Diagram_LMCZKHZV_exports = {};
-__export(c4Diagram_LMCZKHZV_exports, {
+var c4Diagram_5PPSVZJV_exports = {};
+__export(c4Diagram_5PPSVZJV_exports, {
   diagram: () => diagram
 });
 function calcC4ShapeTextWH(textType, c4Shape, c4ShapeTextWrap, textConf, textLimitWidth) {
@@ -98366,11 +98405,11 @@ var c4Renderer_default;
 var getStyles2;
 var styles_default2;
 var diagram;
-var init_c4Diagram_LMCZKHZV = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/c4Diagram-LMCZKHZV.mjs"() {
-    init_chunk_32BRIVSS();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+var init_c4Diagram_5PPSVZJV = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/c4Diagram-5PPSVZJV.mjs"() {
+    init_chunk_2GRJ4B5K();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -100852,9 +100891,9 @@ var init_chunk_XXDRQBXY = __esm({
 var setupViewPortForSVG;
 var calculateDimensionsWithPadding;
 var createViewBox;
-var init_chunk_VR4S4FIN = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-VR4S4FIN.mjs"() {
-    init_chunk_WYO6CB5R();
+var init_chunk_KBJHAD2P = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-KBJHAD2P.mjs"() {
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     setupViewPortForSVG = /* @__PURE__ */ __name((svg2, padding, cssDiagram, useMaxWidth) => {
@@ -100893,17 +100932,17 @@ var getStyles3;
 var styles_default3;
 var createFlowDiagram;
 var diagram2;
-var init_chunk_PUDLZKDR = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-PUDLZKDR.mjs"() {
+var init_chunk_JQJVKLGR = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-JQJVKLGR.mjs"() {
     init_chunk_5VM5RSS4();
     init_chunk_XXDRQBXY();
-    init_chunk_VR4S4FIN();
+    init_chunk_KBJHAD2P();
     init_chunk_ZIRB5QZD();
-    init_chunk_FWX5IMBZ();
-    init_chunk_32BRIVSS();
-    init_chunk_ZGVPDNZ5();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_J7OUQ5F2();
+    init_chunk_2GRJ4B5K();
+    init_chunk_QR6OTTB3();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -103359,58 +103398,58 @@ You have to call mermaid.initialize.`
     diagram2 = createFlowDiagram();
   }
 });
-var flowDiagram_23GEKE2U_exports = {};
-__export(flowDiagram_23GEKE2U_exports, {
+var flowDiagram_UKHOOZJN_exports = {};
+__export(flowDiagram_UKHOOZJN_exports, {
   createFlowDiagram: () => createFlowDiagram,
   diagram: () => diagram2
 });
-var init_flowDiagram_23GEKE2U = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/flowDiagram-23GEKE2U.mjs"() {
-    init_chunk_PUDLZKDR();
+var init_flowDiagram_UKHOOZJN = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/flowDiagram-UKHOOZJN.mjs"() {
+    init_chunk_JQJVKLGR();
     init_chunk_5VM5RSS4();
     init_chunk_XXDRQBXY();
-    init_chunk_VR4S4FIN();
+    init_chunk_KBJHAD2P();
     init_chunk_ZIRB5QZD();
-    init_chunk_FWX5IMBZ();
-    init_chunk_32BRIVSS();
-    init_chunk_52WLFC77();
-    init_chunk_ZGVPDNZ5();
-    init_chunk_C7G6YPKG();
+    init_chunk_J7OUQ5F2();
+    init_chunk_2GRJ4B5K();
+    init_chunk_7Z6QIM7H();
+    init_chunk_QR6OTTB3();
+    init_chunk_W5SLKNZC();
     init_chunk_7BUUIJ7U();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
   }
 });
-var swimlanesDiagram_G3AALYLV_exports = {};
-__export(swimlanesDiagram_G3AALYLV_exports, {
+var swimlanesDiagram_ULZ7WXOC_exports = {};
+__export(swimlanesDiagram_ULZ7WXOC_exports, {
   diagram: () => diagram3
 });
 var getStyles4;
 var styles_default22;
 var diagram3;
-var init_swimlanesDiagram_G3AALYLV = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/swimlanesDiagram-G3AALYLV.mjs"() {
-    init_chunk_PUDLZKDR();
+var init_swimlanesDiagram_ULZ7WXOC = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/swimlanesDiagram-ULZ7WXOC.mjs"() {
+    init_chunk_JQJVKLGR();
     init_chunk_5VM5RSS4();
     init_chunk_XXDRQBXY();
-    init_chunk_VR4S4FIN();
+    init_chunk_KBJHAD2P();
     init_chunk_ZIRB5QZD();
-    init_chunk_FWX5IMBZ();
-    init_chunk_32BRIVSS();
-    init_chunk_52WLFC77();
-    init_chunk_ZGVPDNZ5();
-    init_chunk_C7G6YPKG();
+    init_chunk_J7OUQ5F2();
+    init_chunk_2GRJ4B5K();
+    init_chunk_7Z6QIM7H();
+    init_chunk_QR6OTTB3();
+    init_chunk_W5SLKNZC();
     init_chunk_7BUUIJ7U();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     getStyles4 = /* @__PURE__ */ __name((options2) => `${styles_default3(options2)}
@@ -103425,8 +103464,8 @@ var init_swimlanesDiagram_G3AALYLV = __esm({
     diagram3 = createFlowDiagram({ defaultLayout: "swimlane", styles: styles_default22 });
   }
 });
-var erDiagram_Q63AITRT_exports = {};
-__export(erDiagram_Q63AITRT_exports, {
+var erDiagram_JOGREHBK_exports = {};
+__export(erDiagram_JOGREHBK_exports, {
   diagram: () => diagram4
 });
 var parser3;
@@ -103440,20 +103479,20 @@ var genColor;
 var getStyles5;
 var styles_default4;
 var diagram4;
-var init_erDiagram_Q63AITRT = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/erDiagram-Q63AITRT.mjs"() {
+var init_erDiagram_JOGREHBK = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/erDiagram-JOGREHBK.mjs"() {
     init_chunk_XXDRQBXY();
-    init_chunk_VR4S4FIN();
-    init_chunk_FWX5IMBZ();
-    init_chunk_52WLFC77();
-    init_chunk_ZGVPDNZ5();
-    init_chunk_C7G6YPKG();
+    init_chunk_KBJHAD2P();
+    init_chunk_J7OUQ5F2();
+    init_chunk_7Z6QIM7H();
+    init_chunk_QR6OTTB3();
+    init_chunk_W5SLKNZC();
     init_chunk_7BUUIJ7U();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -138581,8 +138620,8 @@ var init_mermaid_parser_core = __esm({
     };
   }
 });
-var gitGraphDiagram_IHSO6WYX_exports = {};
-__export(gitGraphDiagram_IHSO6WYX_exports, {
+var gitGraphDiagram_DS77QQ5N_exports = {};
+__export(gitGraphDiagram_DS77QQ5N_exports, {
   diagram: () => diagram5
 });
 function getID() {
@@ -138729,12 +138768,12 @@ var normalTheme;
 var getStyles6;
 var styles_default5;
 var diagram5;
-var init_gitGraphDiagram_IHSO6WYX = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/gitGraphDiagram-IHSO6WYX.mjs"() {
+var init_gitGraphDiagram_DS77QQ5N = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/gitGraphDiagram-DS77QQ5N.mjs"() {
     init_chunk_2Q5K7J3B();
     init_chunk_JWPE2WC7();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -140908,8 +140947,8 @@ var require_duration = __commonJS({
     }));
   }
 });
-var ganttDiagram_NO4QXBWP_exports = {};
-__export(ganttDiagram_NO4QXBWP_exports, {
+var ganttDiagram_PKOTCBZU_exports = {};
+__export(ganttDiagram_PKOTCBZU_exports, {
   diagram: () => diagram6
 });
 function getTaskTags(data6, task, tags2) {
@@ -141019,10 +141058,10 @@ var ganttRenderer_default;
 var getStyles7;
 var styles_default6;
 var diagram6;
-var init_ganttDiagram_NO4QXBWP = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/ganttDiagram-NO4QXBWP.mjs"() {
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+var init_ganttDiagram_PKOTCBZU = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/ganttDiagram-PKOTCBZU.mjs"() {
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     import_sanitize_url4 = __toESM(require_dist(), 1);
@@ -143282,8 +143321,8 @@ var init_ganttDiagram_NO4QXBWP = __esm({
     };
   }
 });
-var infoDiagram_FWYZ7A6U_exports = {};
-__export(infoDiagram_FWYZ7A6U_exports, {
+var infoDiagram_6WML65LV_exports = {};
+__export(infoDiagram_6WML65LV_exports, {
   diagram: () => diagram7
 });
 var parser6;
@@ -143293,10 +143332,10 @@ var db2;
 var draw6;
 var renderer3;
 var diagram7;
-var init_infoDiagram_FWYZ7A6U = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/infoDiagram-FWYZ7A6U.mjs"() {
-    init_chunk_VAUOI2AC();
-    init_chunk_WYO6CB5R();
+var init_infoDiagram_6WML65LV = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/infoDiagram-6WML65LV.mjs"() {
+    init_chunk_3NCLNEKW();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -143307,7 +143346,7 @@ var init_infoDiagram_FWYZ7A6U = __esm({
       }, "parse")
     };
     DEFAULT_INFO_DB = {
-      version: "11.16.0" + (true ? "" : "-tiny")
+      version: "11.16.1" + (true ? "" : "-tiny")
     };
     getVersion = /* @__PURE__ */ __name(() => DEFAULT_INFO_DB.version, "getVersion");
     db2 = {
@@ -143328,8 +143367,8 @@ var init_infoDiagram_FWYZ7A6U = __esm({
     };
   }
 });
-var pieDiagram_ENE6RG2P_exports = {};
-__export(pieDiagram_ENE6RG2P_exports, {
+var pieDiagram_7S7Q4E2Y_exports = {};
+__export(pieDiagram_7S7Q4E2Y_exports, {
   diagram: () => diagram8
 });
 var DEFAULT_PIE_CONFIG;
@@ -143352,12 +143391,12 @@ var createPieArcs;
 var draw7;
 var renderer4;
 var diagram8;
-var init_pieDiagram_ENE6RG2P = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/pieDiagram-ENE6RG2P.mjs"() {
+var init_pieDiagram_7S7Q4E2Y = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/pieDiagram-7S7Q4E2Y.mjs"() {
     init_chunk_JWPE2WC7();
-    init_chunk_VAUOI2AC();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_3NCLNEKW();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -143619,8 +143658,8 @@ var init_pieDiagram_ENE6RG2P = __esm({
     };
   }
 });
-var quadrantDiagram_ABIIQ3AL_exports = {};
-__export(quadrantDiagram_ABIIQ3AL_exports, {
+var quadrantDiagram_CIZ2JOQS_exports = {};
+__export(quadrantDiagram_CIZ2JOQS_exports, {
   diagram: () => diagram9
 });
 function validateHexCode(value2) {
@@ -143747,9 +143786,9 @@ var quadrantDb_default;
 var draw8;
 var quadrantRenderer_default;
 var diagram9;
-var init_quadrantDiagram_ABIIQ3AL = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/quadrantDiagram-ABIIQ3AL.mjs"() {
-    init_chunk_WYO6CB5R();
+var init_quadrantDiagram_CIZ2JOQS = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/quadrantDiagram-CIZ2JOQS.mjs"() {
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -145027,8 +145066,8 @@ var init_quadrantDiagram_ABIIQ3AL = __esm({
     };
   }
 });
-var xychartDiagram_FW5EYKEG_exports = {};
-__export(xychartDiagram_FW5EYKEG_exports, {
+var xychartDiagram_ELKLHX3M_exports = {};
+__export(xychartDiagram_ELKLHX3M_exports, {
   diagram: () => diagram10
 });
 function isBarPlot(data6) {
@@ -145165,12 +145204,12 @@ function transformDataWithoutCategory(data6) {
   if (isLinearAxisData(xyChartData.xAxis)) {
     const min10 = xyChartData.xAxis.min;
     const max10 = xyChartData.xAxis.max;
-    const step3 = (max10 - min10) / (data6.length - 1);
-    const categories = [];
-    for (let i5 = min10; i5 <= max10; i5 += step3) {
-      categories.push(`${i5}`);
+    if (data6.length === 1) {
+      retData = [[`${min10}`, data6[0]]];
+    } else {
+      const step3 = (max10 - min10) / (data6.length - 1);
+      retData = data6.map((datum2, index) => [`${min10 + index * step3}`, datum2]);
     }
-    retData = categories.map((c3, i5) => [c3, data6[i5]]);
   }
   return retData;
 }
@@ -145244,13 +145283,13 @@ var xychartDb_default;
 var draw9;
 var xychartRenderer_default;
 var diagram10;
-var init_xychartDiagram_FW5EYKEG = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/xychartDiagram-FW5EYKEG.mjs"() {
-    init_chunk_VAUOI2AC();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+var init_xychartDiagram_ELKLHX3M = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/xychartDiagram-ELKLHX3M.mjs"() {
+    init_chunk_3NCLNEKW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -147052,8 +147091,8 @@ var init_xychartDiagram_FW5EYKEG = __esm({
     };
   }
 });
-var requirementDiagram_TGXJPOKE_exports = {};
-__export(requirementDiagram_TGXJPOKE_exports, {
+var requirementDiagram_LRYGKXZP_exports = {};
+__export(requirementDiagram_LRYGKXZP_exports, {
   diagram: () => diagram11
 });
 var parser10;
@@ -147065,20 +147104,20 @@ var styles_default7;
 var requirementRenderer_exports;
 var draw10;
 var diagram11;
-var init_requirementDiagram_TGXJPOKE = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/requirementDiagram-TGXJPOKE.mjs"() {
+var init_requirementDiagram_LRYGKXZP = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/requirementDiagram-LRYGKXZP.mjs"() {
     init_chunk_XXDRQBXY();
-    init_chunk_VR4S4FIN();
-    init_chunk_FWX5IMBZ();
-    init_chunk_52WLFC77();
-    init_chunk_ZGVPDNZ5();
-    init_chunk_C7G6YPKG();
+    init_chunk_KBJHAD2P();
+    init_chunk_J7OUQ5F2();
+    init_chunk_7Z6QIM7H();
+    init_chunk_QR6OTTB3();
+    init_chunk_W5SLKNZC();
     init_chunk_7BUUIJ7U();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     parser10 = (function() {
@@ -148349,8 +148388,8 @@ var init_requirementDiagram_TGXJPOKE = __esm({
     };
   }
 });
-var sequenceDiagram_DBY2YBRQ_exports = {};
-__export(sequenceDiagram_DBY2YBRQ_exports, {
+var sequenceDiagram_SI44F4Z6_exports = {};
+__export(sequenceDiagram_SI44F4Z6_exports, {
   diagram: () => diagram12
 });
 async function boundMessage(_diagram, msgModel) {
@@ -148683,13 +148722,13 @@ var buildMessageModel;
 var calculateLoopBounds;
 var sequenceRenderer_default;
 var diagram12;
-var init_sequenceDiagram_DBY2YBRQ = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/sequenceDiagram-DBY2YBRQ.mjs"() {
+var init_sequenceDiagram_SI44F4Z6 = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/sequenceDiagram-SI44F4Z6.mjs"() {
     init_chunk_2Q5K7J3B();
     init_chunk_ZIRB5QZD();
-    init_chunk_32BRIVSS();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_2GRJ4B5K();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -153070,15 +153109,15 @@ var getDir;
 var getClasses2;
 var draw12;
 var classRenderer_v3_unified_default;
-var init_chunk_V7JOEXUC = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-V7JOEXUC.mjs"() {
+var init_chunk_GF5L2VYU = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-GF5L2VYU.mjs"() {
     init_chunk_5VM5RSS4();
     init_chunk_XXDRQBXY();
-    init_chunk_VR4S4FIN();
-    init_chunk_FWX5IMBZ();
-    init_chunk_32BRIVSS();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_KBJHAD2P();
+    init_chunk_J7OUQ5F2();
+    init_chunk_2GRJ4B5K();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -155186,28 +155225,28 @@ g.classGroup line {
     };
   }
 });
-var classDiagram_OUVF2IWQ_exports = {};
-__export(classDiagram_OUVF2IWQ_exports, {
+var classDiagram_JCYQIIEL_exports = {};
+__export(classDiagram_JCYQIIEL_exports, {
   diagram: () => diagram13
 });
 var diagram13;
-var init_classDiagram_OUVF2IWQ = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/classDiagram-OUVF2IWQ.mjs"() {
-    init_chunk_V7JOEXUC();
+var init_classDiagram_JCYQIIEL = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/classDiagram-JCYQIIEL.mjs"() {
+    init_chunk_GF5L2VYU();
     init_chunk_5VM5RSS4();
     init_chunk_XXDRQBXY();
-    init_chunk_VR4S4FIN();
-    init_chunk_FWX5IMBZ();
-    init_chunk_32BRIVSS();
-    init_chunk_52WLFC77();
-    init_chunk_ZGVPDNZ5();
-    init_chunk_C7G6YPKG();
+    init_chunk_KBJHAD2P();
+    init_chunk_J7OUQ5F2();
+    init_chunk_2GRJ4B5K();
+    init_chunk_7Z6QIM7H();
+    init_chunk_QR6OTTB3();
+    init_chunk_W5SLKNZC();
     init_chunk_7BUUIJ7U();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     diagram13 = {
@@ -155226,28 +155265,28 @@ var init_classDiagram_OUVF2IWQ = __esm({
     };
   }
 });
-var classDiagram_v2_EOCWNBFH_exports = {};
-__export(classDiagram_v2_EOCWNBFH_exports, {
+var classDiagram_v2_OCEON4UE_exports = {};
+__export(classDiagram_v2_OCEON4UE_exports, {
   diagram: () => diagram14
 });
 var diagram14;
-var init_classDiagram_v2_EOCWNBFH = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/classDiagram-v2-EOCWNBFH.mjs"() {
-    init_chunk_V7JOEXUC();
+var init_classDiagram_v2_OCEON4UE = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/classDiagram-v2-OCEON4UE.mjs"() {
+    init_chunk_GF5L2VYU();
     init_chunk_5VM5RSS4();
     init_chunk_XXDRQBXY();
-    init_chunk_VR4S4FIN();
-    init_chunk_FWX5IMBZ();
-    init_chunk_32BRIVSS();
-    init_chunk_52WLFC77();
-    init_chunk_ZGVPDNZ5();
-    init_chunk_C7G6YPKG();
+    init_chunk_KBJHAD2P();
+    init_chunk_J7OUQ5F2();
+    init_chunk_2GRJ4B5K();
+    init_chunk_7Z6QIM7H();
+    init_chunk_QR6OTTB3();
+    init_chunk_W5SLKNZC();
     init_chunk_7BUUIJ7U();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     diagram14 = {
@@ -155359,14 +155398,14 @@ var clone8;
 var StateDB;
 var getStyles12;
 var styles_default10;
-var init_chunk_EX3LRPZG = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-EX3LRPZG.mjs"() {
+var init_chunk_5RXB4S5H = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-5RXB4S5H.mjs"() {
     init_chunk_XXDRQBXY();
-    init_chunk_VR4S4FIN();
-    init_chunk_FWX5IMBZ();
-    init_chunk_32BRIVSS();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_KBJHAD2P();
+    init_chunk_J7OUQ5F2();
+    init_chunk_2GRJ4B5K();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -157392,8 +157431,8 @@ g.stateGroup line {
     styles_default10 = getStyles12;
   }
 });
-var stateDiagram_2N3HPSRC_exports = {};
-__export(stateDiagram_2N3HPSRC_exports, {
+var stateDiagram_OKZ733FA_exports = {};
+__export(stateDiagram_OKZ733FA_exports, {
   diagram: () => diagram15
 });
 var drawStartState;
@@ -157417,22 +157456,22 @@ var getLabelWidth;
 var renderDoc;
 var stateRenderer_default;
 var diagram15;
-var init_stateDiagram_2N3HPSRC = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/stateDiagram-2N3HPSRC.mjs"() {
-    init_chunk_EX3LRPZG();
+var init_stateDiagram_OKZ733FA = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/stateDiagram-OKZ733FA.mjs"() {
+    init_chunk_5RXB4S5H();
     init_chunk_XXDRQBXY();
-    init_chunk_VR4S4FIN();
-    init_chunk_FWX5IMBZ();
-    init_chunk_32BRIVSS();
-    init_chunk_52WLFC77();
-    init_chunk_ZGVPDNZ5();
-    init_chunk_C7G6YPKG();
+    init_chunk_KBJHAD2P();
+    init_chunk_J7OUQ5F2();
+    init_chunk_2GRJ4B5K();
+    init_chunk_7Z6QIM7H();
+    init_chunk_QR6OTTB3();
+    init_chunk_W5SLKNZC();
     init_chunk_7BUUIJ7U();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -157887,27 +157926,27 @@ var init_stateDiagram_2N3HPSRC = __esm({
     };
   }
 });
-var stateDiagram_v2_6OUMAXLB_exports = {};
-__export(stateDiagram_v2_6OUMAXLB_exports, {
+var stateDiagram_v2_UEYNNEHI_exports = {};
+__export(stateDiagram_v2_UEYNNEHI_exports, {
   diagram: () => diagram16
 });
 var diagram16;
-var init_stateDiagram_v2_6OUMAXLB = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/stateDiagram-v2-6OUMAXLB.mjs"() {
-    init_chunk_EX3LRPZG();
+var init_stateDiagram_v2_UEYNNEHI = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/stateDiagram-v2-UEYNNEHI.mjs"() {
+    init_chunk_5RXB4S5H();
     init_chunk_XXDRQBXY();
-    init_chunk_VR4S4FIN();
-    init_chunk_FWX5IMBZ();
-    init_chunk_32BRIVSS();
-    init_chunk_52WLFC77();
-    init_chunk_ZGVPDNZ5();
-    init_chunk_C7G6YPKG();
+    init_chunk_KBJHAD2P();
+    init_chunk_J7OUQ5F2();
+    init_chunk_2GRJ4B5K();
+    init_chunk_7Z6QIM7H();
+    init_chunk_QR6OTTB3();
+    init_chunk_W5SLKNZC();
     init_chunk_7BUUIJ7U();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     diagram16 = {
@@ -157926,8 +157965,8 @@ var init_stateDiagram_v2_6OUMAXLB = __esm({
     };
   }
 });
-var journeyDiagram_5HDEW3XC_exports = {};
-__export(journeyDiagram_5HDEW3XC_exports, {
+var journeyDiagram_NVQOT4AX_exports = {};
+__export(journeyDiagram_NVQOT4AX_exports, {
   diagram: () => diagram17
 });
 function drawActorLegend(diagram210) {
@@ -158046,11 +158085,11 @@ var textColours;
 var drawTasks;
 var journeyRenderer_default;
 var diagram17;
-var init_journeyDiagram_5HDEW3XC = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/journeyDiagram-5HDEW3XC.mjs"() {
+var init_journeyDiagram_NVQOT4AX = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/journeyDiagram-NVQOT4AX.mjs"() {
     init_chunk_5VM5RSS4();
-    init_chunk_32BRIVSS();
-    init_chunk_WYO6CB5R();
+    init_chunk_2GRJ4B5K();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -159253,8 +159292,8 @@ var init_journeyDiagram_5HDEW3XC = __esm({
     };
   }
 });
-var timeline_definition_FHXFAJF6_exports = {};
-__export(timeline_definition_FHXFAJF6_exports, {
+var timeline_definition_Z64GVDOM_exports = {};
+__export(timeline_definition_Z64GVDOM_exports, {
   diagram: () => diagram18
 });
 function wrap2(text4, width3) {
@@ -159341,11 +159380,11 @@ var getStyles14;
 var styles_default12;
 var rendererSelector;
 var diagram18;
-var init_timeline_definition_FHXFAJF6 = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/timeline-definition-FHXFAJF6.mjs"() {
-    init_chunk_VAUOI2AC();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+var init_timeline_definition_Z64GVDOM = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/timeline-definition-Z64GVDOM.mjs"() {
+    init_chunk_3NCLNEKW();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -161007,8 +161046,8 @@ var init_dist2 = __esm({
     init_v4();
   }
 });
-var mindmap_definition_LN4V7U3C_exports = {};
-__export(mindmap_definition_LN4V7U3C_exports, {
+var mindmap_definition_FAOFIHXS_exports = {};
+__export(mindmap_definition_FAOFIHXS_exports, {
   diagram: () => diagram19
 });
 var parser16;
@@ -161023,20 +161062,20 @@ var genGradient;
 var getStyles15;
 var styles_default13;
 var diagram19;
-var init_mindmap_definition_LN4V7U3C = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/mindmap-definition-LN4V7U3C.mjs"() {
+var init_mindmap_definition_FAOFIHXS = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/mindmap-definition-FAOFIHXS.mjs"() {
     init_chunk_XXDRQBXY();
-    init_chunk_VR4S4FIN();
-    init_chunk_FWX5IMBZ();
-    init_chunk_52WLFC77();
-    init_chunk_ZGVPDNZ5();
-    init_chunk_C7G6YPKG();
+    init_chunk_KBJHAD2P();
+    init_chunk_J7OUQ5F2();
+    init_chunk_7Z6QIM7H();
+    init_chunk_QR6OTTB3();
+    init_chunk_W5SLKNZC();
     init_chunk_7BUUIJ7U();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_dist2();
@@ -162227,8 +162266,8 @@ var init_mindmap_definition_LN4V7U3C = __esm({
     };
   }
 });
-var kanban_definition_HUTT4EX6_exports = {};
-__export(kanban_definition_HUTT4EX6_exports, {
+var kanban_definition_27J2QSJJ_exports = {};
+__export(kanban_definition_27J2QSJJ_exports, {
   diagram: () => diagram20
 });
 var parser17;
@@ -162257,18 +162296,18 @@ var genSections3;
 var getStyles16;
 var styles_default14;
 var diagram20;
-var init_kanban_definition_HUTT4EX6 = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/kanban-definition-HUTT4EX6.mjs"() {
-    init_chunk_VAUOI2AC();
+var init_kanban_definition_27J2QSJJ = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/kanban-definition-27J2QSJJ.mjs"() {
+    init_chunk_3NCLNEKW();
     init_chunk_5VM5RSS4();
     init_chunk_ZIRB5QZD();
-    init_chunk_ZGVPDNZ5();
-    init_chunk_C7G6YPKG();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_QR6OTTB3();
+    init_chunk_W5SLKNZC();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_dist();
@@ -163975,8 +164014,8 @@ var init_src36 = __esm({
     init_sankeyLinkHorizontal();
   }
 });
-var sankeyDiagram_HTMAVEWB_exports = {};
-__export(sankeyDiagram_HTMAVEWB_exports, {
+var sankeyDiagram_W5VNT64P_exports = {};
+__export(sankeyDiagram_W5VNT64P_exports, {
   diagram: () => diagram21
 });
 var parser18;
@@ -164003,9 +164042,9 @@ var getStyles17;
 var styles_default15;
 var originalParse;
 var diagram21;
-var init_sankeyDiagram_HTMAVEWB = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/sankeyDiagram-HTMAVEWB.mjs"() {
-    init_chunk_WYO6CB5R();
+var init_sankeyDiagram_W5VNT64P = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/sankeyDiagram-W5VNT64P.mjs"() {
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -164769,8 +164808,8 @@ ${prefix}${Math.round(value2 * 100) / 100}${suffix}`;
     };
   }
 });
-var diagram_NH7WQ7WH_exports = {};
-__export(diagram_NH7WQ7WH_exports, {
+var diagram_LBJQPF4R_exports = {};
+__export(diagram_LBJQPF4R_exports, {
   diagram: () => diagram22
 });
 var DEFAULT_PACKET_CONFIG;
@@ -164785,12 +164824,12 @@ var renderer5;
 var defaultPacketStyleOptions;
 var styles2;
 var diagram22;
-var init_diagram_NH7WQ7WH = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/diagram-NH7WQ7WH.mjs"() {
+var init_diagram_LBJQPF4R = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/diagram-LBJQPF4R.mjs"() {
     init_chunk_JWPE2WC7();
-    init_chunk_VAUOI2AC();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_3NCLNEKW();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -165002,8 +165041,8 @@ var init_diagram_NH7WQ7WH = __esm({
     };
   }
 });
-var diagram_WEI45ONY_exports = {};
-__export(diagram_WEI45ONY_exports, {
+var diagram_UB23O5K3_exports = {};
+__export(diagram_UB23O5K3_exports, {
   diagram: () => diagram23
 });
 function drawCurves(g2, axes, curves, minValue, maxValue, graticule, config3) {
@@ -165065,6 +165104,7 @@ function drawLegend(g2, curves, showLegend, config3) {
   });
 }
 var defaultOptions;
+var MAX_TICKS;
 var defaultRadarData;
 var data4;
 var DEFAULT_RADAR_CONFIG;
@@ -165089,12 +165129,12 @@ var genIndexStyles;
 var buildRadarStyleOptions;
 var styles3;
 var diagram23;
-var init_diagram_WEI45ONY = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/diagram-WEI45ONY.mjs"() {
+var init_diagram_UB23O5K3 = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/diagram-UB23O5K3.mjs"() {
     init_chunk_JWPE2WC7();
-    init_chunk_VAUOI2AC();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_3NCLNEKW();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -165105,6 +165145,7 @@ var init_diagram_WEI45ONY = __esm({
       min: 0,
       graticule: "circle"
     };
+    MAX_TICKS = 32;
     defaultRadarData = {
       axes: [],
       curves: [],
@@ -165170,6 +165211,12 @@ var init_diagram_WEI45ONY = __esm({
         min: optionMap.min?.value ?? defaultOptions.min,
         graticule: optionMap.graticule?.value ?? defaultOptions.graticule
       };
+      if (data4.options.ticks > MAX_TICKS) {
+        log.warn(
+          `Radar diagram ticks (${data4.options.ticks}) exceeds maximum allowed (${MAX_TICKS}). Using ${MAX_TICKS} instead.`
+        );
+        data4.options.ticks = MAX_TICKS;
+      }
     }, "setOptions");
     clear211 = /* @__PURE__ */ __name(() => {
       clear();
@@ -165340,8 +165387,8 @@ var init_diagram_WEI45ONY = __esm({
     };
   }
 });
-var blockDiagram_677ZJIJ3_exports = {};
-__export(blockDiagram_677ZJIJ3_exports, {
+var blockDiagram_VBNYF7ZC_exports = {};
+__export(blockDiagram_VBNYF7ZC_exports, {
   diagram: () => diagram24
 });
 function typeStr2Type(typeStr) {
@@ -166149,15 +166196,15 @@ var getClasses22;
 var draw23;
 var blockRenderer_default;
 var diagram24;
-var init_blockDiagram_677ZJIJ3 = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/blockDiagram-677ZJIJ3.mjs"() {
+var init_blockDiagram_VBNYF7ZC = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/blockDiagram-VBNYF7ZC.mjs"() {
     init_chunk_5VM5RSS4();
     init_chunk_7BUUIJ7U();
-    init_chunk_OGEWGWER();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_UBXNYLIW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_compat();
@@ -169233,8 +169280,8 @@ var init_blockDiagram_677ZJIJ3 = __esm({
     };
   }
 });
-var diagram_OA4YK3LP_exports = {};
-__export(diagram_OA4YK3LP_exports, {
+var diagram_7IWD3JNH_exports = {};
+__export(diagram_7IWD3JNH_exports, {
   diagram: () => diagram25
 });
 function isBoxDrawingFormat(lines) {
@@ -169434,14 +169481,14 @@ var defaultTreeViewDiagramStyles;
 var styles4;
 var styles_default17;
 var diagram25;
-var init_diagram_OA4YK3LP = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/diagram-OA4YK3LP.mjs"() {
+var init_diagram_7IWD3JNH = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/diagram-7IWD3JNH.mjs"() {
     init_chunk_2Q5K7J3B();
     init_chunk_JWPE2WC7();
-    init_chunk_VAUOI2AC();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_3NCLNEKW();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -177437,8 +177484,8 @@ var require_cytoscape_fcose = __commonJS({
     });
   }
 });
-var architectureDiagram_ZJ3FMSHR_exports = {};
-__export(architectureDiagram_ZJ3FMSHR_exports, {
+var architectureDiagram_T3A2C74G_exports = {};
+__export(architectureDiagram_T3A2C74G_exports, {
   diagram: () => diagram26
 });
 function withSeededRandom(seed, fn3) {
@@ -177545,56 +177592,62 @@ function addEdges2(edges3, cy) {
   });
 }
 function getAlignments(db12, spatialMaps, groupAlignments, layoutHints = []) {
-  const flattenAlignments = /* @__PURE__ */ __name((alignmentObj, alignmentDir) => {
-    return Object.entries(alignmentObj).reduce(
-      (prev2, [dir2, alignments2]) => {
-        let cnt4 = 0;
-        const arr = Object.entries(alignments2);
-        if (arr.length === 1) {
-          prev2[dir2] = arr[0][1];
-          return prev2;
-        }
-        for (let i5 = 0; i5 < arr.length - 1; i5++) {
-          for (let j3 = i5 + 1; j3 < arr.length; j3++) {
-            const [aGroupId, aNodeIds] = arr[i5];
-            const [bGroupId, bNodeIds] = arr[j3];
-            const alignment = groupAlignments[aGroupId]?.[bGroupId];
-            if (alignment === alignmentDir) {
-              prev2[dir2] ??= [];
-              prev2[dir2] = [...prev2[dir2], ...aNodeIds, ...bNodeIds];
-            } else if (aGroupId === "default" || bGroupId === "default") {
-              prev2[dir2] ??= [];
-              prev2[dir2] = [...prev2[dir2], ...aNodeIds, ...bNodeIds];
-            } else {
-              const keyA = `${dir2}-${cnt4++}`;
-              prev2[keyA] = aNodeIds;
-              const keyB = `${dir2}-${cnt4++}`;
-              prev2[keyB] = bNodeIds;
-            }
+  const flattenAlignments = /* @__PURE__ */ __name((alignmentMap, alignmentDir) => {
+    const flattened = /* @__PURE__ */ new Map();
+    for (const [numericDir, alignments2] of alignmentMap.entries()) {
+      const dir2 = `${numericDir}`;
+      let cnt4 = 0;
+      const arr = [...alignments2.entries()];
+      if (arr.length === 1) {
+        flattened.set(dir2, arr[0][1]);
+        continue;
+      }
+      for (let i5 = 0; i5 < arr.length - 1; i5++) {
+        for (let j3 = i5 + 1; j3 < arr.length; j3++) {
+          const [aGroupId, aNodeIds] = arr[i5];
+          const [bGroupId, bNodeIds] = arr[j3];
+          const alignment = groupAlignments.get(architectureGroupAlignmentKey(aGroupId, bGroupId));
+          if (alignment === alignmentDir) {
+            flattened.set(dir2, [...flattened.get(dir2) ?? [], ...aNodeIds, ...bNodeIds]);
+          } else if (aGroupId === "default" || bGroupId === "default") {
+            flattened.set(dir2, [...flattened.get(dir2) ?? [], ...aNodeIds, ...bNodeIds]);
+          } else {
+            const keyA = `${dir2}-${cnt4++}`;
+            flattened.set(keyA, aNodeIds);
+            const keyB = `${dir2}-${cnt4++}`;
+            flattened.set(keyB, bNodeIds);
           }
         }
-        return prev2;
-      },
-      {}
-    );
+      }
+    }
+    return flattened;
   }, "flattenAlignments");
   const alignments = spatialMaps.map((spatialMap) => {
-    const horizontalAlignments = {};
-    const verticalAlignments = {};
-    Object.entries(spatialMap).forEach(([id39, [x6, y6]]) => {
+    const horizontalAlignments = /* @__PURE__ */ new Map();
+    const verticalAlignments = /* @__PURE__ */ new Map();
+    spatialMap.forEach(([x6, y6], id39) => {
       const nodeGroup = db12.getNode(id39)?.in ?? "default";
-      horizontalAlignments[y6] ??= {};
-      horizontalAlignments[y6][nodeGroup] ??= [];
-      horizontalAlignments[y6][nodeGroup].push(id39);
-      verticalAlignments[x6] ??= {};
-      verticalAlignments[x6][nodeGroup] ??= [];
-      verticalAlignments[x6][nodeGroup].push(id39);
+      const horizontalAlignment = horizontalAlignments.get(y6) ?? /* @__PURE__ */ new Map();
+      if (!horizontalAlignments.has(y6)) {
+        horizontalAlignments.set(y6, horizontalAlignment);
+      }
+      const verticalAlignment2 = verticalAlignments.get(x6) ?? /* @__PURE__ */ new Map();
+      if (!verticalAlignments.has(x6)) {
+        verticalAlignments.set(x6, verticalAlignment2);
+      }
+      for (const alignment of [horizontalAlignment, verticalAlignment2]) {
+        const nodeList = alignment.get(nodeGroup) ?? [];
+        if (!alignment.has(nodeGroup)) {
+          alignment.set(nodeGroup, nodeList);
+        }
+        nodeList.push(id39);
+      }
     });
     return {
-      horiz: Object.values(flattenAlignments(horizontalAlignments, "horizontal")).filter(
+      horiz: [...flattenAlignments(horizontalAlignments, "horizontal").values()].filter(
         (arr) => arr.length > 1
       ),
-      vert: Object.values(flattenAlignments(verticalAlignments, "vertical")).filter(
+      vert: [...flattenAlignments(verticalAlignments, "vertical").values()].filter(
         (arr) => arr.length > 1
       )
     };
@@ -177650,8 +177703,8 @@ function getRelativeConstraints(spatialMaps, db12, layoutHints = []) {
   const posToStr = /* @__PURE__ */ __name((pos) => `${pos[0]},${pos[1]}`, "posToStr");
   const strToPos = /* @__PURE__ */ __name((pos) => pos.split(",").map((p3) => parseInt(p3)), "strToPos");
   spatialMaps.forEach((spatialMap) => {
-    const invSpatialMap = Object.fromEntries(
-      Object.entries(spatialMap).map(([id39, pos]) => [posToStr(pos), id39])
+    const invSpatialMap = new Map(
+      [...spatialMap.entries()].map(([key, value2]) => [posToStr(value2), key])
     );
     const queue = [posToStr([0, 0])];
     const visited = {};
@@ -177665,12 +177718,12 @@ function getRelativeConstraints(spatialMaps, db12, layoutHints = []) {
       const curr = queue.shift();
       if (curr) {
         visited[curr] = 1;
-        const currId = invSpatialMap[curr];
+        const currId = invSpatialMap.get(curr);
         if (currId) {
           const currPos = strToPos(curr);
           Object.entries(directions).forEach(([dir2, shift2]) => {
             const newPos = posToStr([currPos[0] + shift2[0], currPos[1] + shift2[1]]);
-            const newId2 = invSpatialMap[newPos];
+            const newId2 = invSpatialMap.get(newPos);
             if (newId2 && !visited[newPos]) {
               queue.push(newPos);
               if (declaredPairs.has(`${currId}|${newId2}`)) {
@@ -177895,6 +177948,7 @@ var getArchitectureDirectionXYFactors;
 var getArchitectureDirectionAlignment;
 var isArchitectureService;
 var isArchitectureJunction;
+var architectureGroupAlignmentKey;
 var edgeData;
 var nodeData;
 var DEFAULT_ARCHITECTURE_CONFIG;
@@ -177912,14 +177966,14 @@ var drawJunctions;
 var draw25;
 var renderer8;
 var diagram26;
-var init_architectureDiagram_ZJ3FMSHR = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/architectureDiagram-ZJ3FMSHR.mjs"() {
+var init_architectureDiagram_T3A2C74G = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/architectureDiagram-T3A2C74G.mjs"() {
     init_chunk_JWPE2WC7();
-    init_chunk_VAUOI2AC();
-    init_chunk_Q4XR5HBZ();
-    init_chunk_HOUHSVGY();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_3NCLNEKW();
+    init_chunk_WRU74C26();
+    init_chunk_4I5QYGJK();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -178026,6 +178080,10 @@ var init_architectureDiagram_ZJ3FMSHR = __esm({
       const temp = x6;
       return temp.type === "junction";
     }, "isArchitectureJunction");
+    architectureGroupAlignmentKey = /* @__PURE__ */ __name((groupA, groupB) => {
+      const [lowerGroupId, upperGroupId] = [groupA, groupB].sort();
+      return `${JSON.stringify(lowerGroupId)}-${JSON.stringify(upperGroupId)}`;
+    }, "architectureGroupAlignmentKey");
     edgeData = /* @__PURE__ */ __name((edge) => {
       return edge.data();
     }, "edgeData");
@@ -178035,12 +178093,12 @@ var init_architectureDiagram_ZJ3FMSHR = __esm({
     DEFAULT_ARCHITECTURE_CONFIG = defaultConfig_default.architecture;
     ArchitectureDB = class {
       constructor() {
-        this.nodes = {};
-        this.groups = {};
+        this.nodes = /* @__PURE__ */ new Map();
+        this.groups = /* @__PURE__ */ new Map();
         this.edges = [];
         this.layoutHints = [];
-        this.registeredIds = {};
-        this.elements = {};
+        this.registeredIds = /* @__PURE__ */ new Map();
+        this.elements = /* @__PURE__ */ new Map();
         this.diagramId = "";
         this.setAccTitle = setAccTitle;
         this.getAccTitle = getAccTitle;
@@ -178060,13 +178118,13 @@ var init_architectureDiagram_ZJ3FMSHR = __esm({
         return this.diagramId;
       }
       clear() {
-        this.nodes = {};
-        this.groups = {};
+        this.nodes = /* @__PURE__ */ new Map();
+        this.groups = /* @__PURE__ */ new Map();
         this.edges = [];
         this.layoutHints = [];
-        this.registeredIds = {};
+        this.registeredIds = /* @__PURE__ */ new Map();
         this.dataStructures = void 0;
-        this.elements = {};
+        this.elements = /* @__PURE__ */ new Map();
         this.diagramId = "";
         clear();
       }
@@ -178077,26 +178135,26 @@ var init_architectureDiagram_ZJ3FMSHR = __esm({
         title: title2,
         iconText
       }) {
-        if (this.registeredIds[id39] !== void 0) {
+        if (this.registeredIds.has(id39)) {
           throw new Error(
-            `The service id [${id39}] is already in use by another ${this.registeredIds[id39]}`
+            `The service id [${id39}] is already in use by another ${this.registeredIds.get(id39)}`
           );
         }
         if (parent4 !== void 0) {
           if (id39 === parent4) {
             throw new Error(`The service [${id39}] cannot be placed within itself`);
           }
-          if (this.registeredIds[parent4] === void 0) {
+          if (!this.registeredIds.has(parent4)) {
             throw new Error(
               `The service [${id39}]'s parent does not exist. Please make sure the parent is created before this service`
             );
           }
-          if (this.registeredIds[parent4] === "node") {
+          if (this.registeredIds.get(parent4) === "node") {
             throw new Error(`The service [${id39}]'s parent is not a group`);
           }
         }
-        this.registeredIds[id39] = "node";
-        this.nodes[id39] = {
+        this.registeredIds.set(id39, "node");
+        this.nodes.set(id39, {
           id: id39,
           type: "service",
           icon: icon2,
@@ -178104,76 +178162,76 @@ var init_architectureDiagram_ZJ3FMSHR = __esm({
           title: title2,
           edges: [],
           in: parent4
-        };
+        });
       }
       getServices() {
-        return Object.values(this.nodes).filter(isArchitectureService);
+        return [...this.nodes.values()].filter(isArchitectureService);
       }
       addJunction({ id: id39, in: parent4 }) {
-        if (this.registeredIds[id39] !== void 0) {
+        if (this.registeredIds.has(id39)) {
           throw new Error(
-            `The junction id [${id39}] is already in use by another ${this.registeredIds[id39]}`
+            `The junction id [${id39}] is already in use by another ${this.registeredIds.get(id39)}`
           );
         }
         if (parent4 !== void 0) {
           if (id39 === parent4) {
             throw new Error(`The junction [${id39}] cannot be placed within itself`);
           }
-          if (this.registeredIds[parent4] === void 0) {
+          if (!this.registeredIds.has(parent4)) {
             throw new Error(
               `The junction [${id39}]'s parent does not exist. Please make sure the parent is created before this junction`
             );
           }
-          if (this.registeredIds[parent4] === "node") {
+          if (this.registeredIds.get(parent4) === "node") {
             throw new Error(`The junction [${id39}]'s parent is not a group`);
           }
         }
-        this.registeredIds[id39] = "node";
-        this.nodes[id39] = {
+        this.registeredIds.set(id39, "node");
+        this.nodes.set(id39, {
           id: id39,
           type: "junction",
           edges: [],
           in: parent4
-        };
+        });
       }
       getJunctions() {
-        return Object.values(this.nodes).filter(isArchitectureJunction);
+        return [...this.nodes.values()].filter(isArchitectureJunction);
       }
       getNodes() {
-        return Object.values(this.nodes);
+        return [...this.nodes.values()];
       }
       getNode(id39) {
-        return this.nodes[id39] ?? null;
+        return this.nodes.get(id39) ?? null;
       }
       addGroup({ id: id39, icon: icon2, in: parent4, title: title2 }) {
-        if (this.registeredIds?.[id39] !== void 0) {
+        if (this.registeredIds.has(id39)) {
           throw new Error(
-            `The group id [${id39}] is already in use by another ${this.registeredIds[id39]}`
+            `The group id [${id39}] is already in use by another ${this.registeredIds.get(id39)}`
           );
         }
         if (parent4 !== void 0) {
           if (id39 === parent4) {
             throw new Error(`The group [${id39}] cannot be placed within itself`);
           }
-          if (this.registeredIds?.[parent4] === void 0) {
+          if (!this.registeredIds.has(parent4)) {
             throw new Error(
               `The group [${id39}]'s parent does not exist. Please make sure the parent is created before this group`
             );
           }
-          if (this.registeredIds?.[parent4] === "node") {
+          if (this.registeredIds.get(parent4) === "node") {
             throw new Error(`The group [${id39}]'s parent is not a group`);
           }
         }
-        this.registeredIds[id39] = "group";
-        this.groups[id39] = {
+        this.registeredIds.set(id39, "group");
+        this.groups.set(id39, {
           id: id39,
           icon: icon2,
           title: title2,
           in: parent4
-        };
+        });
       }
       getGroups() {
-        return Object.values(this.groups);
+        return [...this.groups.values()];
       }
       addEdge({
         lhsId,
@@ -178196,18 +178254,18 @@ var init_architectureDiagram_ZJ3FMSHR = __esm({
             `Invalid direction given for right hand side of edge ${lhsId}--${rhsId}. Expected (L,R,T,B) got ${String(rhsDir)}`
           );
         }
-        if (this.nodes[lhsId] === void 0 && this.groups[lhsId] === void 0) {
+        if (!this.nodes.has(lhsId) && !this.groups.has(lhsId)) {
           throw new Error(
             `The left-hand id [${lhsId}] does not yet exist. Please create the service/group before declaring an edge to it.`
           );
         }
-        if (this.nodes[rhsId] === void 0 && this.groups[rhsId] === void 0) {
+        if (!this.nodes.has(rhsId) && !this.groups.has(rhsId)) {
           throw new Error(
             `The right-hand id [${rhsId}] does not yet exist. Please create the service/group before declaring an edge to it.`
           );
         }
-        const lhsGroupId = this.nodes[lhsId].in;
-        const rhsGroupId = this.nodes[rhsId].in;
+        const lhsGroupId = this.nodes.get(lhsId).in;
+        const rhsGroupId = this.nodes.get(rhsId).in;
         if (lhsGroup && lhsGroupId && rhsGroupId && lhsGroupId == rhsGroupId) {
           throw new Error(
             `The left-hand id [${lhsId}] is modified to traverse the group boundary, but the edge does not pass through two groups.`
@@ -178230,9 +178288,11 @@ var init_architectureDiagram_ZJ3FMSHR = __esm({
           title: title2
         };
         this.edges.push(edge);
-        if (this.nodes[lhsId] && this.nodes[rhsId]) {
-          this.nodes[lhsId].edges.push(this.edges[this.edges.length - 1]);
-          this.nodes[rhsId].edges.push(this.edges[this.edges.length - 1]);
+        const lhsNode = this.nodes.get(lhsId);
+        const rhsNode = this.nodes.get(rhsId);
+        if (lhsNode && rhsNode) {
+          lhsNode.edges.push(this.edges[this.edges.length - 1]);
+          rhsNode.edges.push(this.edges[this.edges.length - 1]);
         }
       }
       getEdges() {
@@ -178246,7 +178306,7 @@ var init_architectureDiagram_ZJ3FMSHR = __esm({
         }
         const seen = /* @__PURE__ */ new Set();
         hint.members.forEach((id39) => {
-          if (this.registeredIds[id39] !== "node") {
+          if (this.registeredIds.get(id39) !== "node") {
             throw new Error(
               `align ${hint.direction} references [${id39}], which is not a service or junction`
             );
@@ -178268,57 +178328,59 @@ var init_architectureDiagram_ZJ3FMSHR = __esm({
        */
       getDataStructures() {
         if (this.dataStructures === void 0) {
-          const groupAlignments = {};
-          const adjList = Object.entries(this.nodes).reduce((prevOuter, [id39, service]) => {
-            prevOuter[id39] = service.edges.reduce((prevInner, edge) => {
+          const groupAlignments = /* @__PURE__ */ new Map();
+          const adjList = /* @__PURE__ */ new Map();
+          for (const [id39, service] of this.nodes.entries()) {
+            const directionMap = /* @__PURE__ */ new Map();
+            for (const edge of service.edges) {
               const lhsGroupId = this.getNode(edge.lhsId)?.in;
               const rhsGroupId = this.getNode(edge.rhsId)?.in;
               if (lhsGroupId && rhsGroupId && lhsGroupId !== rhsGroupId) {
                 const alignment = getArchitectureDirectionAlignment(edge.lhsDir, edge.rhsDir);
                 if (alignment !== "bend") {
-                  groupAlignments[lhsGroupId] ??= {};
-                  groupAlignments[lhsGroupId][rhsGroupId] = alignment;
-                  groupAlignments[rhsGroupId] ??= {};
-                  groupAlignments[rhsGroupId][lhsGroupId] = alignment;
+                  groupAlignments.set(architectureGroupAlignmentKey(lhsGroupId, rhsGroupId), alignment);
                 }
               }
               if (edge.lhsId === id39) {
                 const pair = getArchitectureDirectionPair(edge.lhsDir, edge.rhsDir);
                 if (pair) {
-                  prevInner[pair] = edge.rhsId;
+                  directionMap.set(pair, edge.rhsId);
                 }
               } else {
                 const pair = getArchitectureDirectionPair(edge.rhsDir, edge.lhsDir);
                 if (pair) {
-                  prevInner[pair] = edge.lhsId;
+                  directionMap.set(pair, edge.lhsId);
                 }
               }
-              return prevInner;
-            }, {});
-            return prevOuter;
-          }, {});
-          const firstId = Object.keys(adjList)[0];
-          const visited = { [firstId]: 1 };
-          const notVisited = Object.keys(adjList).reduce(
-            (prev2, id39) => id39 === firstId ? prev2 : { ...prev2, [id39]: 1 },
-            {}
-          );
+            }
+            adjList.set(id39, directionMap);
+          }
+          const visited = /* @__PURE__ */ new Set();
+          const notVisited = new Set(adjList.keys());
           const BFS = /* @__PURE__ */ __name((startingId) => {
-            const spatialMap = { [startingId]: [0, 0] };
+            const spatialMap = /* @__PURE__ */ new Map([[startingId, [0, 0]]]);
             const queue = [startingId];
             while (queue.length > 0) {
               const id39 = queue.shift();
               if (id39) {
-                visited[id39] = 1;
-                delete notVisited[id39];
-                const adj = adjList[id39];
-                const [posX, posY] = spatialMap[id39];
-                Object.entries(adj).forEach(([dir2, rhsId]) => {
-                  if (!visited[rhsId]) {
-                    spatialMap[rhsId] = shiftPositionByArchitectureDirectionPair(
-                      [posX, posY],
-                      dir2
-                    );
+                visited.add(id39);
+                notVisited.delete(id39);
+                const adj = adjList.get(id39);
+                if (!adj) {
+                  throw new Error(
+                    `BFS error: adjacency list for id ${id39} not found. Please report this as a bug.`
+                  );
+                }
+                const pos = spatialMap.get(id39);
+                if (!pos) {
+                  throw new Error(
+                    `BFS error: position for id ${id39} not found in spatial map. Please report this as a bug.`
+                  );
+                }
+                const [posX, posY] = pos;
+                adj.forEach((rhsId, dir2) => {
+                  if (!visited.has(rhsId)) {
+                    spatialMap.set(rhsId, shiftPositionByArchitectureDirectionPair([posX, posY], dir2));
                     queue.push(rhsId);
                   }
                 });
@@ -178326,9 +178388,10 @@ var init_architectureDiagram_ZJ3FMSHR = __esm({
             }
             return spatialMap;
           }, "BFS");
-          const spatialMaps = [BFS(firstId)];
-          while (Object.keys(notVisited).length > 0) {
-            spatialMaps.push(BFS(Object.keys(notVisited)[0]));
+          const spatialMaps = [];
+          while (notVisited.size > 0) {
+            const firstId = notVisited.values().next().value;
+            spatialMaps.push(BFS(firstId));
           }
           this.dataStructures = {
             adjList,
@@ -178339,10 +178402,10 @@ var init_architectureDiagram_ZJ3FMSHR = __esm({
         return this.dataStructures;
       }
       setElementForId(id39, element3) {
-        this.elements[id39] = element3;
+        this.elements.set(id39, element3);
       }
       getElementById(id39) {
-        return this.elements[id39];
+        return this.elements.get(id39);
       }
       getConfig() {
         return cleanAndMerge({
@@ -178729,8 +178792,8 @@ var init_architectureDiagram_ZJ3FMSHR = __esm({
     };
   }
 });
-var diagram_FQU43EPY_exports = {};
-__export(diagram_FQU43EPY_exports, {
+var diagram_B4RE2ZJO_exports = {};
+__export(diagram_B4RE2ZJO_exports, {
   diagram: () => diagram27
 });
 function reset4() {
@@ -179235,11 +179298,11 @@ var renderer_default2;
 var getStyles20;
 var styles_default18;
 var diagram27;
-var init_diagram_FQU43EPY = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/diagram-FQU43EPY.mjs"() {
+var init_diagram_B4RE2ZJO = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/diagram-B4RE2ZJO.mjs"() {
     init_chunk_JWPE2WC7();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -179406,8 +179469,8 @@ var init_diagram_FQU43EPY = __esm({
     };
   }
 });
-var ishikawaDiagram_FXEZZL3T_exports = {};
-__export(ishikawaDiagram_FXEZZL3T_exports, {
+var ishikawaDiagram_WSZJBQD7_exports = {};
+__export(ishikawaDiagram_WSZJBQD7_exports, {
   diagram: () => diagram28
 });
 var parser25;
@@ -179438,11 +179501,11 @@ var renderer9;
 var getStyles21;
 var ishikawaStyles_default;
 var diagram28;
-var init_ishikawaDiagram_FXEZZL3T = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/ishikawaDiagram-FXEZZL3T.mjs"() {
-    init_chunk_VAUOI2AC();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+var init_ishikawaDiagram_WSZJBQD7 = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/ishikawaDiagram-WSZJBQD7.mjs"() {
+    init_chunk_3NCLNEKW();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_rough_esm();
@@ -181874,8 +181937,8 @@ var init_venn_esm = __esm({
     SMALL = 1e-10;
   }
 });
-var vennDiagram_L72KCM5P_exports = {};
-__export(vennDiagram_L72KCM5P_exports, {
+var vennDiagram_T6HMQDX7_exports = {};
+__export(vennDiagram_T6HMQDX7_exports, {
   diagram: () => diagram29
 });
 function getConfig25() {
@@ -182016,11 +182079,11 @@ var styles_default19;
 var draw28;
 var renderer10;
 var diagram29;
-var init_vennDiagram_L72KCM5P = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/vennDiagram-L72KCM5P.mjs"() {
-    init_chunk_VAUOI2AC();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+var init_vennDiagram_T6HMQDX7 = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/vennDiagram-T6HMQDX7.mjs"() {
+    init_chunk_3NCLNEKW();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_src32();
@@ -183011,8 +183074,8 @@ var init_vennDiagram_L72KCM5P = __esm({
     };
   }
 });
-var diagram_G47NLZAW_exports = {};
-__export(diagram_G47NLZAW_exports, {
+var diagram_Q27KOJAE_exports = {};
+__export(diagram_Q27KOJAE_exports, {
   diagram: () => diagram30
 });
 function buildHierarchy(items) {
@@ -183066,14 +183129,14 @@ var defaultTreemapStyleOptions;
 var getStyles23;
 var styles_default20;
 var diagram30;
-var init_diagram_G47NLZAW = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/diagram-G47NLZAW.mjs"() {
+var init_diagram_Q27KOJAE = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/diagram-Q27KOJAE.mjs"() {
     init_chunk_JWPE2WC7();
-    init_chunk_VAUOI2AC();
-    init_chunk_VR4S4FIN();
-    init_chunk_C7G6YPKG();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_3NCLNEKW();
+    init_chunk_KBJHAD2P();
+    init_chunk_W5SLKNZC();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -183565,8 +183628,8 @@ var init_diagram_G47NLZAW = __esm({
     };
   }
 });
-var wardleyDiagram_EHGQE667_exports = {};
-__export(wardleyDiagram_EHGQE667_exports, {
+var wardleyDiagram_T6FBY63Y_exports = {};
+__export(wardleyDiagram_T6FBY63Y_exports, {
   diagram: () => diagram31
 });
 function getConfig33() {
@@ -183669,12 +183732,12 @@ var draw30;
 var wardleyRenderer_default;
 var styles5;
 var diagram31;
-var init_wardleyDiagram_EHGQE667 = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/wardleyDiagram-EHGQE667.mjs"() {
+var init_wardleyDiagram_T6FBY63Y = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/wardleyDiagram-T6FBY63Y.mjs"() {
     init_chunk_JWPE2WC7();
-    init_chunk_VAUOI2AC();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_3NCLNEKW();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -184565,8 +184628,8 @@ var init_wardleyDiagram_EHGQE667 = __esm({
     };
   }
 });
-var cynefinDiagram_TSTJHNR4_exports = {};
-__export(cynefinDiagram_TSTJHNR4_exports, {
+var cynefinDiagram_MW4NZA55_exports = {};
+__export(cynefinDiagram_MW4NZA55_exports, {
   diagram: () => diagram32
 });
 function seededRandom(seed) {
@@ -184684,12 +184747,12 @@ var getCynefinTheme;
 var styles6;
 var styles_default21;
 var diagram32;
-var init_cynefinDiagram_TSTJHNR4 = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/cynefinDiagram-TSTJHNR4.mjs"() {
+var init_cynefinDiagram_MW4NZA55 = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/cynefinDiagram-MW4NZA55.mjs"() {
     init_chunk_JWPE2WC7();
-    init_chunk_VAUOI2AC();
-    init_chunk_ICXQ74PX();
-    init_chunk_WYO6CB5R();
+    init_chunk_3NCLNEKW();
+    init_chunk_NSK5VX7P();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -185087,10 +185150,10 @@ var RailroadRenderer;
 var configureRailroadSvgSize;
 var draw32;
 var renderer13;
-var init_chunk_MOJQB5TN = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-MOJQB5TN.mjs"() {
-    init_chunk_VAUOI2AC();
-    init_chunk_WYO6CB5R();
+var init_chunk_6Q2QTUOP = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-6Q2QTUOP.mjs"() {
+    init_chunk_3NCLNEKW();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     diagramTitle2 = "";
@@ -185949,8 +186012,8 @@ var init_chunk_MOJQB5TN = __esm({
     renderer13 = { draw: draw32 };
   }
 });
-var railroadDiagram_RFXS5EU6_exports = {};
-__export(railroadDiagram_RFXS5EU6_exports, {
+var railroadDiagram_AXF67PYL_exports = {};
+__export(railroadDiagram_AXF67PYL_exports, {
   default: () => railroadDiagram_default,
   diagram: () => diagram33
 });
@@ -185961,12 +186024,12 @@ var populateDb4;
 var parser30;
 var diagram33;
 var railroadDiagram_default;
-var init_railroadDiagram_RFXS5EU6 = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/railroadDiagram-RFXS5EU6.mjs"() {
-    init_chunk_MOJQB5TN();
+var init_railroadDiagram_AXF67PYL = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/railroadDiagram-AXF67PYL.mjs"() {
+    init_chunk_6Q2QTUOP();
     init_chunk_JWPE2WC7();
-    init_chunk_VAUOI2AC();
-    init_chunk_WYO6CB5R();
+    init_chunk_3NCLNEKW();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -186058,8 +186121,8 @@ var init_railroadDiagram_RFXS5EU6 = __esm({
     railroadDiagram_default = diagram33;
   }
 });
-var ebnfDiagram_CCIWWBDH_exports = {};
-__export(ebnfDiagram_CCIWWBDH_exports, {
+var ebnfDiagram_BXEA7PRR_exports = {};
+__export(ebnfDiagram_BXEA7PRR_exports, {
   diagram: () => diagram34
 });
 var langiumParser2;
@@ -186072,12 +186135,12 @@ var transformRule2;
 var populateDb5;
 var parser31;
 var diagram34;
-var init_ebnfDiagram_CCIWWBDH = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/ebnfDiagram-CCIWWBDH.mjs"() {
-    init_chunk_MOJQB5TN();
+var init_ebnfDiagram_BXEA7PRR = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/ebnfDiagram-BXEA7PRR.mjs"() {
+    init_chunk_6Q2QTUOP();
     init_chunk_JWPE2WC7();
-    init_chunk_VAUOI2AC();
-    init_chunk_WYO6CB5R();
+    init_chunk_3NCLNEKW();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -186214,8 +186277,8 @@ var init_ebnfDiagram_CCIWWBDH = __esm({
     };
   }
 });
-var abnfDiagram_VRR7QNED_exports = {};
-__export(abnfDiagram_VRR7QNED_exports, {
+var abnfDiagram_N423BO3Z_exports = {};
+__export(abnfDiagram_N423BO3Z_exports, {
   diagram: () => diagram35
 });
 var langiumParser3;
@@ -186228,12 +186291,12 @@ var transformRule3;
 var populateDb6;
 var parser32;
 var diagram35;
-var init_abnfDiagram_VRR7QNED = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/abnfDiagram-VRR7QNED.mjs"() {
-    init_chunk_MOJQB5TN();
+var init_abnfDiagram_N423BO3Z = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/abnfDiagram-N423BO3Z.mjs"() {
+    init_chunk_6Q2QTUOP();
     init_chunk_JWPE2WC7();
-    init_chunk_VAUOI2AC();
-    init_chunk_WYO6CB5R();
+    init_chunk_3NCLNEKW();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -186350,8 +186413,8 @@ var init_abnfDiagram_VRR7QNED = __esm({
     };
   }
 });
-var pegDiagram_2B236MQR_exports = {};
-__export(pegDiagram_2B236MQR_exports, {
+var pegDiagram_VL7TDLO6_exports = {};
+__export(pegDiagram_VL7TDLO6_exports, {
   diagram: () => diagram36
 });
 var langiumParser4;
@@ -186365,12 +186428,12 @@ var transformRule4;
 var populateDb7;
 var parser33;
 var diagram36;
-var init_pegDiagram_2B236MQR = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/pegDiagram-2B236MQR.mjs"() {
-    init_chunk_MOJQB5TN();
+var init_pegDiagram_VL7TDLO6 = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/pegDiagram-VL7TDLO6.mjs"() {
+    init_chunk_6Q2QTUOP();
     init_chunk_JWPE2WC7();
-    init_chunk_VAUOI2AC();
-    init_chunk_WYO6CB5R();
+    init_chunk_3NCLNEKW();
+    init_chunk_I66GZJ75();
     init_chunk_X3CZISLH();
     init_chunk_Y2CYZVJY();
     init_mermaid_parser_core();
@@ -186536,18 +186599,18 @@ function toggleMarkup(button) {
     }, 500);
   }
 }
-init_chunk_VAUOI2AC();
+init_chunk_3NCLNEKW();
 init_chunk_ZIRB5QZD();
-init_chunk_FWX5IMBZ();
-init_chunk_52WLFC77();
-init_chunk_ZGVPDNZ5();
-init_chunk_C7G6YPKG();
+init_chunk_J7OUQ5F2();
+init_chunk_7Z6QIM7H();
+init_chunk_QR6OTTB3();
+init_chunk_W5SLKNZC();
 init_chunk_7BUUIJ7U();
-init_chunk_OGEWGWER();
-init_chunk_Q4XR5HBZ();
-init_chunk_HOUHSVGY();
-init_chunk_ICXQ74PX();
-init_chunk_WYO6CB5R();
+init_chunk_UBXNYLIW();
+init_chunk_WRU74C26();
+init_chunk_4I5QYGJK();
+init_chunk_NSK5VX7P();
+init_chunk_I66GZJ75();
 init_chunk_X3CZISLH();
 init_chunk_Y2CYZVJY();
 init_esm();
@@ -186921,7 +186984,7 @@ var detector = /* @__PURE__ */ __name((txt) => {
   return /^\s*C4Context|C4Container|C4Component|C4Dynamic|C4Deployment/.test(txt);
 }, "detector");
 var loader2 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_c4Diagram_LMCZKHZV(), c4Diagram_LMCZKHZV_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_c4Diagram_5PPSVZJV(), c4Diagram_5PPSVZJV_exports));
   return { id: id3, diagram: diagram210 };
 }, "loader");
 var plugin = {
@@ -186938,7 +187001,7 @@ var detector2 = /* @__PURE__ */ __name((txt, config3) => {
   return /^\s*graph/.test(txt);
 }, "detector");
 var loader22 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_flowDiagram_23GEKE2U(), flowDiagram_23GEKE2U_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_flowDiagram_UKHOOZJN(), flowDiagram_UKHOOZJN_exports));
   return { id: id22, diagram: diagram210 };
 }, "loader");
 var plugin2 = {
@@ -186961,7 +187024,7 @@ var detector3 = /* @__PURE__ */ __name((txt, config3) => {
   return /^\s*flowchart/.test(txt);
 }, "detector");
 var loader3 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_flowDiagram_23GEKE2U(), flowDiagram_23GEKE2U_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_flowDiagram_UKHOOZJN(), flowDiagram_UKHOOZJN_exports));
   return { id: id32, diagram: diagram210 };
 }, "loader");
 var plugin3 = {
@@ -186975,7 +187038,7 @@ var detector4 = /* @__PURE__ */ __name((txt) => {
   return /^\s*swimlane-beta\b/.test(txt);
 }, "detector");
 var loader4 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_swimlanesDiagram_G3AALYLV(), swimlanesDiagram_G3AALYLV_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_swimlanesDiagram_ULZ7WXOC(), swimlanesDiagram_ULZ7WXOC_exports));
   return { id: id4, diagram: diagram210 };
 }, "loader");
 var plugin4 = {
@@ -186989,7 +187052,7 @@ var detector5 = /* @__PURE__ */ __name((txt) => {
   return /^\s*erDiagram/.test(txt);
 }, "detector");
 var loader5 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_erDiagram_Q63AITRT(), erDiagram_Q63AITRT_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_erDiagram_JOGREHBK(), erDiagram_JOGREHBK_exports));
   return { id: id5, diagram: diagram210 };
 }, "loader");
 var plugin5 = {
@@ -187003,7 +187066,7 @@ var detector6 = /* @__PURE__ */ __name((txt) => {
   return /^\s*gitGraph/.test(txt);
 }, "detector");
 var loader6 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_gitGraphDiagram_IHSO6WYX(), gitGraphDiagram_IHSO6WYX_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_gitGraphDiagram_DS77QQ5N(), gitGraphDiagram_DS77QQ5N_exports));
   return { id: id6, diagram: diagram210 };
 }, "loader");
 var plugin6 = {
@@ -187017,7 +187080,7 @@ var detector7 = /* @__PURE__ */ __name((txt) => {
   return /^\s*gantt/.test(txt);
 }, "detector");
 var loader7 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_ganttDiagram_NO4QXBWP(), ganttDiagram_NO4QXBWP_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_ganttDiagram_PKOTCBZU(), ganttDiagram_PKOTCBZU_exports));
   return { id: id7, diagram: diagram210 };
 }, "loader");
 var plugin7 = {
@@ -187031,7 +187094,7 @@ var detector8 = /* @__PURE__ */ __name((txt) => {
   return /^\s*info/.test(txt);
 }, "detector");
 var loader8 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_infoDiagram_FWYZ7A6U(), infoDiagram_FWYZ7A6U_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_infoDiagram_6WML65LV(), infoDiagram_6WML65LV_exports));
   return { id: id8, diagram: diagram210 };
 }, "loader");
 var info = {
@@ -187044,7 +187107,7 @@ var detector9 = /* @__PURE__ */ __name((txt) => {
   return /^\s*pie/.test(txt);
 }, "detector");
 var loader9 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_pieDiagram_ENE6RG2P(), pieDiagram_ENE6RG2P_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_pieDiagram_7S7Q4E2Y(), pieDiagram_7S7Q4E2Y_exports));
   return { id: id9, diagram: diagram210 };
 }, "loader");
 var pie = {
@@ -187057,7 +187120,7 @@ var detector10 = /* @__PURE__ */ __name((txt) => {
   return /^\s*quadrantChart/.test(txt);
 }, "detector");
 var loader10 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_quadrantDiagram_ABIIQ3AL(), quadrantDiagram_ABIIQ3AL_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_quadrantDiagram_CIZ2JOQS(), quadrantDiagram_CIZ2JOQS_exports));
   return { id: id10, diagram: diagram210 };
 }, "loader");
 var plugin8 = {
@@ -187071,7 +187134,7 @@ var detector11 = /* @__PURE__ */ __name((txt) => {
   return /^\s*xychart(-beta)?/.test(txt);
 }, "detector");
 var loader11 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_xychartDiagram_FW5EYKEG(), xychartDiagram_FW5EYKEG_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_xychartDiagram_ELKLHX3M(), xychartDiagram_ELKLHX3M_exports));
   return { id: id11, diagram: diagram210 };
 }, "loader");
 var plugin9 = {
@@ -187085,7 +187148,7 @@ var detector12 = /* @__PURE__ */ __name((txt) => {
   return /^\s*requirement(Diagram)?/.test(txt);
 }, "detector");
 var loader12 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_requirementDiagram_TGXJPOKE(), requirementDiagram_TGXJPOKE_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_requirementDiagram_LRYGKXZP(), requirementDiagram_LRYGKXZP_exports));
   return { id: id12, diagram: diagram210 };
 }, "loader");
 var plugin10 = {
@@ -187099,7 +187162,7 @@ var detector13 = /* @__PURE__ */ __name((txt) => {
   return /^\s*sequenceDiagram/.test(txt);
 }, "detector");
 var loader13 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_sequenceDiagram_DBY2YBRQ(), sequenceDiagram_DBY2YBRQ_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_sequenceDiagram_SI44F4Z6(), sequenceDiagram_SI44F4Z6_exports));
   return { id: id13, diagram: diagram210 };
 }, "loader");
 var plugin11 = {
@@ -187116,7 +187179,7 @@ var detector14 = /* @__PURE__ */ __name((txt, config3) => {
   return /^\s*classDiagram/.test(txt);
 }, "detector");
 var loader14 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_classDiagram_OUVF2IWQ(), classDiagram_OUVF2IWQ_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_classDiagram_JCYQIIEL(), classDiagram_JCYQIIEL_exports));
   return { id: id14, diagram: diagram210 };
 }, "loader");
 var plugin12 = {
@@ -187133,7 +187196,7 @@ var detector15 = /* @__PURE__ */ __name((txt, config3) => {
   return /^\s*classDiagram-v2/.test(txt);
 }, "detector");
 var loader15 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_classDiagram_v2_EOCWNBFH(), classDiagram_v2_EOCWNBFH_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_classDiagram_v2_OCEON4UE(), classDiagram_v2_OCEON4UE_exports));
   return { id: id15, diagram: diagram210 };
 }, "loader");
 var plugin13 = {
@@ -187150,7 +187213,7 @@ var detector16 = /* @__PURE__ */ __name((txt, config3) => {
   return /^\s*stateDiagram/.test(txt);
 }, "detector");
 var loader16 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_stateDiagram_2N3HPSRC(), stateDiagram_2N3HPSRC_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_stateDiagram_OKZ733FA(), stateDiagram_OKZ733FA_exports));
   return { id: id16, diagram: diagram210 };
 }, "loader");
 var plugin14 = {
@@ -187170,7 +187233,7 @@ var detector17 = /* @__PURE__ */ __name((txt, config3) => {
   return false;
 }, "detector");
 var loader17 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_stateDiagram_v2_6OUMAXLB(), stateDiagram_v2_6OUMAXLB_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_stateDiagram_v2_UEYNNEHI(), stateDiagram_v2_UEYNNEHI_exports));
   return { id: id17, diagram: diagram210 };
 }, "loader");
 var plugin15 = {
@@ -187184,7 +187247,7 @@ var detector18 = /* @__PURE__ */ __name((txt) => {
   return /^\s*journey/.test(txt);
 }, "detector");
 var loader18 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_journeyDiagram_5HDEW3XC(), journeyDiagram_5HDEW3XC_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_journeyDiagram_NVQOT4AX(), journeyDiagram_NVQOT4AX_exports));
   return { id: id18, diagram: diagram210 };
 }, "loader");
 var plugin16 = {
@@ -187251,7 +187314,7 @@ var detector19 = /* @__PURE__ */ __name((txt, config3 = {}) => {
   return false;
 }, "detector");
 var loader19 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_flowDiagram_23GEKE2U(), flowDiagram_23GEKE2U_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_flowDiagram_UKHOOZJN(), flowDiagram_UKHOOZJN_exports));
   return { id: id19, diagram: diagram210 };
 }, "loader");
 var plugin17 = {
@@ -187265,7 +187328,7 @@ var detector20 = /* @__PURE__ */ __name((txt) => {
   return /^\s*timeline/.test(txt);
 }, "detector");
 var loader20 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_timeline_definition_FHXFAJF6(), timeline_definition_FHXFAJF6_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_timeline_definition_Z64GVDOM(), timeline_definition_Z64GVDOM_exports));
   return { id: id20, diagram: diagram210 };
 }, "loader");
 var plugin18 = {
@@ -187279,7 +187342,7 @@ var detector21 = /* @__PURE__ */ __name((txt) => {
   return /^\s*mindmap/.test(txt);
 }, "detector");
 var loader21 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_mindmap_definition_LN4V7U3C(), mindmap_definition_LN4V7U3C_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_mindmap_definition_FAOFIHXS(), mindmap_definition_FAOFIHXS_exports));
   return { id: id21, diagram: diagram210 };
 }, "loader");
 var plugin19 = {
@@ -187293,7 +187356,7 @@ var detector22 = /* @__PURE__ */ __name((txt) => {
   return /^\s*kanban/.test(txt);
 }, "detector");
 var loader222 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_kanban_definition_HUTT4EX6(), kanban_definition_HUTT4EX6_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_kanban_definition_27J2QSJJ(), kanban_definition_27J2QSJJ_exports));
   return { id: id222, diagram: diagram210 };
 }, "loader");
 var plugin20 = {
@@ -187307,7 +187370,7 @@ var detector23 = /* @__PURE__ */ __name((txt) => {
   return /^\s*sankey(-beta)?/.test(txt);
 }, "detector");
 var loader23 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_sankeyDiagram_HTMAVEWB(), sankeyDiagram_HTMAVEWB_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_sankeyDiagram_W5VNT64P(), sankeyDiagram_W5VNT64P_exports));
   return { id: id23, diagram: diagram210 };
 }, "loader");
 var plugin21 = {
@@ -187321,7 +187384,7 @@ var detector24 = /* @__PURE__ */ __name((txt) => {
   return /^\s*packet(-beta)?/.test(txt);
 }, "detector");
 var loader24 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_diagram_NH7WQ7WH(), diagram_NH7WQ7WH_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_diagram_LBJQPF4R(), diagram_LBJQPF4R_exports));
   return { id: id24, diagram: diagram210 };
 }, "loader");
 var packet = {
@@ -187334,7 +187397,7 @@ var detector25 = /* @__PURE__ */ __name((txt) => {
   return /^\s*radar-beta/.test(txt);
 }, "detector");
 var loader25 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_diagram_WEI45ONY(), diagram_WEI45ONY_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_diagram_UB23O5K3(), diagram_UB23O5K3_exports));
   return { id: id25, diagram: diagram210 };
 }, "loader");
 var radar = {
@@ -187347,7 +187410,7 @@ var detector26 = /* @__PURE__ */ __name((txt) => {
   return /^\s*block(-beta)?/.test(txt);
 }, "detector");
 var loader26 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_blockDiagram_677ZJIJ3(), blockDiagram_677ZJIJ3_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_blockDiagram_VBNYF7ZC(), blockDiagram_VBNYF7ZC_exports));
   return { id: id26, diagram: diagram210 };
 }, "loader");
 var plugin22 = {
@@ -187361,7 +187424,7 @@ var detector27 = /* @__PURE__ */ __name((txt) => {
   return /^\s*treeView-beta/.test(txt);
 }, "detector");
 var loader27 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_diagram_OA4YK3LP(), diagram_OA4YK3LP_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_diagram_7IWD3JNH(), diagram_7IWD3JNH_exports));
   return { id: id27, diagram: diagram210 };
 }, "loader");
 var plugin23 = {
@@ -187375,7 +187438,7 @@ var detector28 = /* @__PURE__ */ __name((txt) => {
   return /^\s*architecture/.test(txt);
 }, "detector");
 var loader28 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_architectureDiagram_ZJ3FMSHR(), architectureDiagram_ZJ3FMSHR_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_architectureDiagram_T3A2C74G(), architectureDiagram_T3A2C74G_exports));
   return { id: id28, diagram: diagram210 };
 }, "loader");
 var architecture = {
@@ -187389,7 +187452,7 @@ var detector29 = /* @__PURE__ */ __name((txt) => {
   return /^\s*eventmodeling/.test(txt);
 }, "detector");
 var loader29 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_diagram_FQU43EPY(), diagram_FQU43EPY_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_diagram_B4RE2ZJO(), diagram_B4RE2ZJO_exports));
   return { id: id29, diagram: diagram210 };
 }, "loader");
 var plugin24 = {
@@ -187403,7 +187466,7 @@ var detector30 = /* @__PURE__ */ __name((txt) => {
   return /^\s*ishikawa(-beta)?\b/i.test(txt);
 }, "detector");
 var loader30 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_ishikawaDiagram_FXEZZL3T(), ishikawaDiagram_FXEZZL3T_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_ishikawaDiagram_WSZJBQD7(), ishikawaDiagram_WSZJBQD7_exports));
   return { id: id30, diagram: diagram210 };
 }, "loader");
 var ishikawa = {
@@ -187416,7 +187479,7 @@ var detector31 = /* @__PURE__ */ __name((txt) => {
   return /^\s*venn-beta/.test(txt);
 }, "detector");
 var loader31 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_vennDiagram_L72KCM5P(), vennDiagram_L72KCM5P_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_vennDiagram_T6HMQDX7(), vennDiagram_T6HMQDX7_exports));
   return { id: id31, diagram: diagram210 };
 }, "loader");
 var plugin25 = {
@@ -187430,7 +187493,7 @@ var detector32 = /* @__PURE__ */ __name((txt) => {
   return /^\s*treemap/.test(txt);
 }, "detector");
 var loader32 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_diagram_G47NLZAW(), diagram_G47NLZAW_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_diagram_Q27KOJAE(), diagram_Q27KOJAE_exports));
   return { id: id322, diagram: diagram210 };
 }, "loader");
 var treemap = {
@@ -187443,7 +187506,7 @@ var detector33 = /* @__PURE__ */ __name((text4) => {
   return /^\s*wardley-beta/i.test(text4);
 }, "detector");
 var loader33 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_wardleyDiagram_EHGQE667(), wardleyDiagram_EHGQE667_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_wardleyDiagram_T6FBY63Y(), wardleyDiagram_T6FBY63Y_exports));
   return { id: id33, diagram: diagram210 };
 }, "loader");
 var plugin26 = {
@@ -187457,7 +187520,7 @@ var detector34 = /* @__PURE__ */ __name((txt) => {
   return /^\s*cynefin-beta(?:[\s:]|$)/.test(txt);
 }, "detector");
 var loader34 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_cynefinDiagram_TSTJHNR4(), cynefinDiagram_TSTJHNR4_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_cynefinDiagram_MW4NZA55(), cynefinDiagram_MW4NZA55_exports));
   return { id: id34, diagram: diagram210 };
 }, "loader");
 var cynefin = {
@@ -187470,7 +187533,7 @@ var detector35 = /* @__PURE__ */ __name((txt) => {
   return /^\s*railroad-beta/i.test(txt);
 }, "detector");
 var loader35 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_railroadDiagram_RFXS5EU6(), railroadDiagram_RFXS5EU6_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_railroadDiagram_AXF67PYL(), railroadDiagram_AXF67PYL_exports));
   return { id: id35, diagram: diagram210 };
 }, "loader");
 var railroad = {
@@ -187483,7 +187546,7 @@ var detector36 = /* @__PURE__ */ __name((txt) => {
   return /^\s*railroad-ebnf-beta/i.test(txt);
 }, "detector");
 var loader36 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_ebnfDiagram_CCIWWBDH(), ebnfDiagram_CCIWWBDH_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_ebnfDiagram_BXEA7PRR(), ebnfDiagram_BXEA7PRR_exports));
   return { id: id36, diagram: diagram210 };
 }, "loader");
 var railroadEbnf = {
@@ -187496,7 +187559,7 @@ var detector37 = /* @__PURE__ */ __name((txt) => {
   return /^\s*railroad-abnf-beta/i.test(txt);
 }, "detector");
 var loader37 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_abnfDiagram_VRR7QNED(), abnfDiagram_VRR7QNED_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_abnfDiagram_N423BO3Z(), abnfDiagram_N423BO3Z_exports));
   return { id: id37, diagram: diagram210 };
 }, "loader");
 var railroadAbnf = {
@@ -187509,7 +187572,7 @@ var detector38 = /* @__PURE__ */ __name((txt) => {
   return /^\s*railroad-peg-beta/i.test(txt);
 }, "detector");
 var loader38 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_pegDiagram_2B236MQR(), pegDiagram_2B236MQR_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_pegDiagram_VL7TDLO6(), pegDiagram_VL7TDLO6_exports));
   return { id: id38, diagram: diagram210 };
 }, "loader");
 var railroadPeg = {
@@ -187890,7 +187953,26 @@ var compileCSS = /* @__PURE__ */ __name((namespace, css) => {
             return;
           }
           element3.props = element3.props.map((prop) => {
-            if (!prop.startsWith(namespace)) {
+            if (prop === namespace && Array.isArray(element3.children) && element3.children.every((child) => {
+              if (child.type !== "decl") {
+                return false;
+              }
+              const allowedProps = /* @__PURE__ */ new Set([
+                "font-family",
+                "font-size",
+                "fill"
+              ]);
+              return allowedProps.has(child.props);
+            })) {
+              return prop;
+            }
+            const alreadyNamespaced = (
+              // If the prop already starts with the namespace followed by a space or >, then it's already namespaced.
+              (prop.startsWith(`${namespace} `) || prop.startsWith(`${namespace}>`)) && // Column combinators are not yet widely supported, it's not yet compressed to `${namespace}||`,
+              // so we need to add an extra check for that
+              !prop.startsWith(`${namespace} ||`)
+            );
+            if (!alreadyNamespaced) {
               return `${namespace} ${prop}`;
             }
             return prop;
@@ -188040,12 +188122,12 @@ var render7 = /* @__PURE__ */ __name(async function(id39, text4, svgContainingEl
   style1.innerHTML = rules2;
   svg2.insertBefore(style1, firstChild);
   try {
-    await diag.renderer.draw(text4, id39, "11.16.0", diag);
+    await diag.renderer.draw(text4, id39, "11.16.1", diag);
   } catch (e3) {
     if (config3.suppressErrorRendering) {
       removeTempElements();
     } else {
-      errorRenderer_default.draw(text4, id39, "11.16.0");
+      errorRenderer_default.draw(text4, id39, "11.16.1");
     }
     throw e3;
   }
@@ -188114,6 +188196,10 @@ var mermaidAPI = Object.freeze({
   getDiagramFromText,
   initialize,
   getConfig,
+  /**
+   * @deprecated This function does nothing. It will be overwritten by the next
+   *             call to {@link render} or {@link parse}.
+   */
   setConfig,
   getSiteConfig,
   updateSiteConfig,
@@ -188792,7 +188878,7 @@ export {
   (*! Bundled license information:
   
   dompurify/dist/purify.es.mjs:
-    (*! @license DOMPurify 3.4.12 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.4.12/LICENSE *)
+    (*! @license DOMPurify 3.4.13 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.4.13/LICENSE *)
   
   mermaid/dist/chunks/mermaid.core/chunk-ZIRB5QZD.mjs:
     (*! Bundled license information:
