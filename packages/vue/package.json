@@ -1,6 +1,6 @@
 {
   "name": "@fkui/user-lib-vue",
-  "version": "1.5.10",
+  "version": "1.5.11",
   "description": "Vue implementation of custom user components",
   "keywords": [
     "fkui",
@@ -46,7 +46,7 @@
     "@fkui/logic": "6.53.0",
     "@fkui/theme-default": "6.53.0",
     "@fkui/tsconfig": "6.53.0",
-    "@fkui/user-lib-design": "1.5.10",
+    "@fkui/user-lib-design": "1.5.11",
     "@fkui/vue": "6.53.0",
     "@forsakringskassan/vite-lib-config": "5.6.1",
     "@forsakringskassan/vitest-config": "2.6.0",
