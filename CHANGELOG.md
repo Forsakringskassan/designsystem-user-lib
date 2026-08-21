@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.5.13 (2026-08-21)
+
+### Bug Fixes
+
+* **deps:** update dependency @forsakringskassan/docs-live-example to v3.0.1 ac50846
+
 ## 1.5.12 (2026-08-20)
 
 ### Bug Fixes
