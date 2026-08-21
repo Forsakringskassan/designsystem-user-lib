@@ -65846,6 +65846,8 @@ var min5;
 var max5;
 var mean;
 var median2;
+var _gcd;
+var gcdMultipleZeroIfNonInt;
 var deg2rad;
 var getAngleFromDisp;
 var log22;
@@ -67775,6 +67777,7 @@ var init_cytoscape_esm = __esm({
             if (tempScore < gScore[wid]) {
               gScore[wid] = tempScore;
               fScore[wid] = tempScore + heuristic2(w4);
+              openSet.updateItem(w4);
               cameFrom[wid] = cMin;
               cameFromEdge[wid] = e3;
             }
@@ -68301,6 +68304,23 @@ var init_cytoscape_esm = __esm({
       } else {
         return (arr[mid - 1 + off] + arr[mid + off]) / 2;
       }
+    };
+    _gcd = function gcd(a2, b3) {
+      if (b3 === 0) {
+        return a2;
+      }
+      return _gcd(b3, a2 % b3);
+    };
+    gcdMultipleZeroIfNonInt = function gcdMultipleZeroIfNonInt2(arr) {
+      var out = arr[0];
+      for (var i5 = 0; i5 < arr.length; i5++) {
+        if (!integer(arr[i5])) {
+          return 0;
+        } else if (i5 > 0) {
+          out = _gcd(out, arr[i5]);
+        }
+      }
+      return out;
     };
     deg2rad = function deg2rad2(deg) {
       return Math.PI * deg / 180;
@@ -86233,14 +86253,6 @@ var init_cytoscape_esm = __esm({
       var wheelDeltaN = 4;
       var inaccurateScrollDevice;
       var inaccurateScrollFactor = 1e5;
-      var allAreDivisibleBy = function allAreDivisibleBy2(list, factor) {
-        for (var i5 = 0; i5 < list.length; i5++) {
-          if (list[i5] % factor !== 0) {
-            return false;
-          }
-        }
-        return true;
-      };
       var allAreSameMagnitude = function allAreSameMagnitude2(list) {
         var firstMag = Math.abs(list[0]);
         for (var i5 = 1; i5 < list.length; i5++) {
@@ -86265,19 +86277,22 @@ var init_cytoscape_esm = __esm({
         }
         if (inaccurateScrollDevice == null) {
           if (wheelDeltas.length >= wheelDeltaN) {
+            inaccurateScrollDevice = false;
             var wds = wheelDeltas;
-            inaccurateScrollDevice = allAreDivisibleBy(wds, 5);
-            if (!inaccurateScrollDevice) {
-              var firstMag = Math.abs(wds[0]);
-              inaccurateScrollDevice = allAreSameMagnitude(wds) && firstMag > 5;
-            }
-            if (inaccurateScrollDevice) {
-              for (var i5 = 0; i5 < wds.length; i5++) {
-                inaccurateScrollFactor = Math.min(Math.abs(wds[i5]), inaccurateScrollFactor);
+            if (wds[0] >= 5) {
+              var factor;
+              if (allAreSameMagnitude(wds)) {
+                factor = wds[0];
+              } else {
+                factor = gcdMultipleZeroIfNonInt(wds);
+              }
+              if (factor > 1) {
+                inaccurateScrollDevice = true;
+                inaccurateScrollFactor = factor;
               }
             }
           } else {
-            wheelDeltas.push(delta);
+            wheelDeltas.push(Math.abs(delta));
             clamp2 = true;
           }
         } else if (inaccurateScrollDevice) {
@@ -86702,10 +86717,14 @@ var init_cytoscape_esm = __esm({
               r2.redrawHint("drag", true);
               r2.redrawHint("eles", true);
               _start.unactivate().emit(makeEvent("freeon"));
-              draggedEles.emit(makeEvent("free"));
+              if (draggedEles) {
+                draggedEles.emit(makeEvent("free"));
+              }
               if (r2.dragData.didDrag) {
                 _start.emit(makeEvent("dragfreeon"));
-                draggedEles.emit(makeEvent("dragfree"));
+                if (draggedEles) {
+                  draggedEles.emit(makeEvent("dragfree"));
+                }
               }
             }
             cy.viewport({
@@ -87185,12 +87204,15 @@ var init_cytoscape_esm = __esm({
         name,
         points,
         getOrCreateCorners: function getOrCreateCorners(centerX, centerY, width3, height2, cornerRadius, rs, field) {
-          if (rs[field] !== void 0 && rs[field + "-cx"] === centerX && rs[field + "-cy"] === centerY) {
+          if (rs[field] !== void 0 && rs[field + "-cx"] === centerX && rs[field + "-cy"] === centerY && rs[field + "-w"] === width3 && rs[field + "-h"] === height2 && rs[field + "-corner-radius"] === cornerRadius) {
             return rs[field];
           }
           rs[field] = new Array(points.length / 2);
           rs[field + "-cx"] = centerX;
           rs[field + "-cy"] = centerY;
+          rs[field + "-w"] = width3;
+          rs[field + "-h"] = height2;
+          rs[field + "-corner-radius"] = cornerRadius;
           var halfW = width3 / 2;
           var halfH = height2 / 2;
           cornerRadius = cornerRadius === "auto" ? getRoundPolygonRadius(width3, height2) : cornerRadius;
@@ -92956,7 +92978,7 @@ var init_cytoscape_esm = __esm({
       }
       return style4;
     };
-    version2 = "3.34.0";
+    version2 = "3.34.1";
     cytoscape2 = function cytoscape3(options2) {
       if (options2 === void 0) {
         options2 = {};
