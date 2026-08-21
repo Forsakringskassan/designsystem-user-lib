@@ -61,7 +61,7 @@
     "@fkui/vue": "6.54.0",
     "@forsakringskassan/commitlint-config": "4.2.8",
     "@forsakringskassan/docs-generator": "3.6.1",
-    "@forsakringskassan/docs-live-example": "3.0.0",
+    "@forsakringskassan/docs-live-example": "3.0.1",
     "@forsakringskassan/eslint-config": "15.8.9",
     "@forsakringskassan/eslint-config-cli": "15.8.9",
     "@forsakringskassan/eslint-config-typescript": "15.8.9",

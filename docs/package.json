@@ -18,7 +18,7 @@
     "@fkui/design": "6.54.0",
     "@fkui/icon-lib-default": "6.54.0",
     "@fkui/vue": "6.54.0",
-    "@forsakringskassan/docs-live-example": "3.0.0"
+    "@forsakringskassan/docs-live-example": "3.0.1"
   },
   "devDependencies": {
     "@forsakringskassan/docs-generator": "3.6.1",
