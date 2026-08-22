@@ -50,7 +50,7 @@
     "@fkui/vue": "6.54.0",
     "@forsakringskassan/vite-lib-config": "5.9.2",
     "@forsakringskassan/vitest-config": "2.7.0",
-    "@forsakringskassan/vitest-config-jsdom": "2.6.0",
+    "@forsakringskassan/vitest-config-jsdom": "2.7.0",
     "@vue/test-utils": "2.4.11",
     "flush-promises": "1.0.2",
     "html-validate": "11.8.0",
