@@ -185,7 +185,7 @@
   --fkds-color-header-text-primary: #ffffff;
   --fkds-focus-indicator-color: #1b1e23;
   --fkds-focus-indicator-color-background: #ffffff;
-  --fkui-theme-default-version: "6.54.0";
+  --fkui-theme-default-version: "6.55.0";
 }
 
 /* sfc-style:/home/runner/work/docs-live-example/docs-live-example/src/LiveExampleSourcecode.vue?type=style&index=0 */
@@ -1385,7 +1385,7 @@ input[type=search]:focus,
   color: var(--fkds-color-action-text-primary-default);
   text-decoration-color: var(--fkds-color-action-text-primary-default);
   text-decoration-thickness: 3px;
-  text-underline-offset: calc(0.25em - 1px);
+  text-underline-offset: calc(0.25em + 1px);
 }
 @media (forced-colors: active) {
   .anchor:active, .file-item__file-open:active {
@@ -2625,12 +2625,12 @@ input[type=search]:focus,
   scrollbar-gutter: stable;
 }
 
-.calendar__year-selector__listbox, .combobox__listbox__list {
+.combobox__listbox__list {
   margin: 0;
   padding: 0;
 }
 
-.calendar__year-selector__year, .combobox__listbox__option {
+.combobox__listbox__option {
   color: var(--fkds-color-text-primary);
   cursor: pointer;
   list-style-type: none;
@@ -2639,28 +2639,28 @@ input[type=search]:focus,
   box-sizing: border-box;
   margin-right: 0.5rem;
 }
-.is-hover.calendar__year-selector__year, .is-hover.combobox__listbox__option, .calendar__year-selector__year:hover:not(.calendar__year-selector__year--highlight):not(.combobox__listbox__option--highlight), .combobox__listbox__option:hover:not(.calendar__year-selector__year--highlight):not(.combobox__listbox__option--highlight) {
+.combobox__listbox__option.is-hover, .combobox__listbox__option:hover:not(.combobox__listbox__option--highlight) {
   background-color: var(--fkds-color-select-background-primary-hover);
   color: var(--fkds-color-text-primary);
 }
 @media (forced-colors: active) {
-  .is-hover.calendar__year-selector__year, .is-hover.combobox__listbox__option, .calendar__year-selector__year:hover:not(.calendar__year-selector__year--highlight):not(.combobox__listbox__option--highlight), .combobox__listbox__option:hover:not(.calendar__year-selector__year--highlight):not(.combobox__listbox__option--highlight) {
+  .combobox__listbox__option.is-hover, .combobox__listbox__option:hover:not(.combobox__listbox__option--highlight) {
     outline-offset: -2px;
     margin-right: 1.5rem;
   }
 }
 @media (forced-colors: active) {
-  .is-hover.calendar__year-selector__year, .is-hover.combobox__listbox__option, .calendar__year-selector__year:hover:not(.calendar__year-selector__year--highlight):not(.combobox__listbox__option--highlight), .combobox__listbox__option:hover:not(.calendar__year-selector__year--highlight):not(.combobox__listbox__option--highlight) {
+  .combobox__listbox__option.is-hover, .combobox__listbox__option:hover:not(.combobox__listbox__option--highlight) {
     outline: 2px solid highlight;
   }
 }
-.calendar__year-selector__year--highlight, .combobox__listbox__option--highlight {
+.combobox__listbox__option--highlight {
   background-color: var(--fkds-color-select-background-primary-default);
   color: var(--fkds-color-text-inverted);
   font-weight: var(--f-font-weight-medium);
 }
 @media (forced-colors: active) {
-  .calendar__year-selector__year--highlight, .combobox__listbox__option--highlight {
+  .combobox__listbox__option--highlight {
     background-color: highlight;
     color: highlightText;
     forced-color-adjust: none;
@@ -2671,11 +2671,13 @@ input[type=search]:focus,
   background: inherit;
   border: none;
   color: var(--fkds-color-action-text-primary-default);
+  cursor: pointer;
   margin: 0;
   padding: 0;
 }
 .combobox__button:disabled {
   color: var(--fkds-color-text-disabled);
+  cursor: default;
 }
 
 .contextmenu {
@@ -2945,24 +2947,23 @@ input[type=search]:focus,
   }
 }
 .entrypoint {
+  align-items: center;
   border-radius: var(--f-border-radius-medium);
   border-style: solid;
+  cursor: pointer;
+  display: inline-flex;
   font-size: var(--f-font-size-standard);
   font-weight: var(--f-font-weight-medium);
-  transition: background-color var(--f-animation-duration-medium) ease-out;
-  display: inline-flex;
   justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
+  line-height: var(--f-line-height-large);
   margin-bottom: calc(1.5rem * var(--f-density-factor));
   margin-top: calc(0.25rem * var(--f-density-factor));
   text-align: left;
-  line-height: var(--f-line-height-large);
   width: 100%;
 }
 .entrypoint__icon {
-  margin-left: 2rem;
   flex-shrink: 0;
+  margin-left: 2rem;
 }
 
 .error-list {
@@ -5861,6 +5862,9 @@ input[type=search]:focus,
 .table-ng__cell [role=combobox]:focus {
   box-shadow: none;
 }
+.table-ng__cell--static__text {
+  text-wrap: wrap;
+}
 .table-ng__cell--align-left {
   text-align: left;
 }
@@ -6054,6 +6058,7 @@ input[type=search]:focus,
 .table-ng__editable__text {
   flex: 1 1 auto;
   white-space: pre;
+  text-wrap: wrap;
 }
 .table-ng__editable__numeric span,
 .table-ng__editable__numeric input {
@@ -6768,9 +6773,48 @@ input[type=search]:focus,
   overflow-x: auto;
   position: relative;
 }
+.calendar__year-selector__listbox {
+  margin: 0;
+  padding: 0;
+}
 .calendar__year-selector__year {
+  color: var(--fkds-color-text-primary);
+  cursor: pointer;
+  list-style-type: none;
+  padding: 0.75rem;
+  white-space: nowrap;
+  box-sizing: border-box;
+  margin-right: 0.5rem;
   margin: 5px;
 }
+.calendar__year-selector__year.is-hover, .calendar__year-selector__year:hover:not(.calendar__year-selector__year--highlight) {
+  background-color: var(--fkds-color-select-background-primary-hover);
+  color: var(--fkds-color-text-primary);
+}
+@media (forced-colors: active) {
+  .calendar__year-selector__year.is-hover, .calendar__year-selector__year:hover:not(.calendar__year-selector__year--highlight) {
+    outline-offset: -2px;
+    margin-right: 1.5rem;
+  }
+}
+@media (forced-colors: active) {
+  .calendar__year-selector__year.is-hover, .calendar__year-selector__year:hover:not(.calendar__year-selector__year--highlight) {
+    outline: 2px solid highlight;
+  }
+}
+.calendar__year-selector__year--highlight {
+  background-color: var(--fkds-color-select-background-primary-default);
+  color: var(--fkds-color-text-inverted);
+  font-weight: var(--f-font-weight-medium);
+}
+@media (forced-colors: active) {
+  .calendar__year-selector__year--highlight {
+    background-color: highlight;
+    color: highlightText;
+    forced-color-adjust: none;
+  }
+}
+
 .iflex {
   display: flex;
 }

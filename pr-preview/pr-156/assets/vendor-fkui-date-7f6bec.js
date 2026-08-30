@@ -1,4 +1,4 @@
-// node_modules/@fkui/date/lib/esm/index.js
+// node_modules/@fkui/date/dist/esm/index.js
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
 }

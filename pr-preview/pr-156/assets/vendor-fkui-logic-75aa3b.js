@@ -1,4 +1,4 @@
-// node_modules/@fkui/logic/lib/esm/index.js
+// node_modules/@fkui/logic/dist/esm/index.js
 function isEmpty(value) {
   return !value;
 }
