@@ -49,7 +49,7 @@
     "@fkui/user-lib-design": "1.5.15",
     "@fkui/vue": "6.56.0",
     "@forsakringskassan/vite-lib-config": "5.10.2",
-    "@forsakringskassan/vitest-config": "2.7.0",
+    "@forsakringskassan/vitest-config": "2.8.1",
     "@forsakringskassan/vitest-config-jsdom": "2.7.0",
     "@vue/test-utils": "2.5.0",
     "flush-promises": "1.0.2",
