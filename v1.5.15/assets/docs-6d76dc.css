@@ -7936,7 +7936,7 @@ main {
     display: block;
   }
 }
-.navigation ol {
+.navigation ul {
   padding: 0;
 }
 
@@ -7993,7 +7993,7 @@ main {
   transform: rotate(180deg) translateY(-5px);
 }
 
-.navigation details > ol {
+.navigation details > ul {
   margin-bottom: 0;
   margin-left: 1rem;
 }
@@ -8687,7 +8687,7 @@ body {
   padding: 0;
 }
 
-p {
+p:not(:where(.code-preview + .docs-paragraph)) {
   margin-top: 0;
 }
 

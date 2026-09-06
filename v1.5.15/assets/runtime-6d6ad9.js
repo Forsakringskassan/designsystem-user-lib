@@ -1485,7 +1485,7 @@ function isRegex(value2) {
 function createDOMPurify() {
   let window3 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : getGlobal();
   const DOMPurify = (root4) => createDOMPurify(root4);
-  DOMPurify.version = "3.4.13";
+  DOMPurify.version = "3.4.14";
   DOMPurify.removed = [];
   if (!window3 || !window3.document || window3.document.nodeType !== NODE_TYPE.document || !window3.Element) {
     DOMPurify.isSupported = false;
@@ -1510,6 +1510,12 @@ function createDOMPurify() {
   const getNodeType = Node2 && Node2.prototype ? lookupGetter(Node2.prototype, "nodeType") : null;
   const getNodeName = Node2 && Node2.prototype ? lookupGetter(Node2.prototype, "nodeName") : null;
   const getOwnerDocument = Node2 && Node2.prototype ? lookupGetter(Node2.prototype, "ownerDocument") : null;
+  const _readNodeType = function _readNodeType2(node2) {
+    return getNodeType ? getNodeType(node2) : node2.nodeType;
+  };
+  const _readNodeName = function _readNodeName2(node2) {
+    return getNodeName ? getNodeName(node2) : node2.nodeName;
+  };
   if (typeof HTMLTemplateElement === "function") {
     const template = document2.createElement("template");
     if (template.content && template.content.ownerDocument) {
@@ -1736,9 +1742,19 @@ function createDOMPurify() {
     IN_PLACE = cfg.IN_PLACE || false;
     IS_ALLOWED_URI$1 = isRegex(cfg.ALLOWED_URI_REGEXP) ? cfg.ALLOWED_URI_REGEXP : IS_ALLOWED_URI;
     NAMESPACE2 = typeof cfg.NAMESPACE === "string" ? cfg.NAMESPACE : HTML_NAMESPACE;
-    MATHML_TEXT_INTEGRATION_POINTS = objectHasOwnProperty(cfg, "MATHML_TEXT_INTEGRATION_POINTS") && cfg.MATHML_TEXT_INTEGRATION_POINTS && typeof cfg.MATHML_TEXT_INTEGRATION_POINTS === "object" ? clone(cfg.MATHML_TEXT_INTEGRATION_POINTS) : addToSet({}, DEFAULT_MATHML_TEXT_INTEGRATION_POINTS);
-    HTML_INTEGRATION_POINTS = objectHasOwnProperty(cfg, "HTML_INTEGRATION_POINTS") && cfg.HTML_INTEGRATION_POINTS && typeof cfg.HTML_INTEGRATION_POINTS === "object" ? clone(cfg.HTML_INTEGRATION_POINTS) : addToSet({}, DEFAULT_HTML_INTEGRATION_POINTS);
-    const customElementHandling = objectHasOwnProperty(cfg, "CUSTOM_ELEMENT_HANDLING") && cfg.CUSTOM_ELEMENT_HANDLING && typeof cfg.CUSTOM_ELEMENT_HANDLING === "object" ? clone(cfg.CUSTOM_ELEMENT_HANDLING) : create(null);
+    MATHML_TEXT_INTEGRATION_POINTS = _resolveObjectOption(
+      cfg,
+      "MATHML_TEXT_INTEGRATION_POINTS",
+      () => addToSet({}, DEFAULT_MATHML_TEXT_INTEGRATION_POINTS)
+      // Default built-in map
+    );
+    HTML_INTEGRATION_POINTS = _resolveObjectOption(
+      cfg,
+      "HTML_INTEGRATION_POINTS",
+      () => addToSet({}, DEFAULT_HTML_INTEGRATION_POINTS)
+      // Default built-in map
+    );
+    const customElementHandling = _resolveObjectOption(cfg, "CUSTOM_ELEMENT_HANDLING", () => create(null));
     CUSTOM_ELEMENT_HANDLING = create(null);
     if (objectHasOwnProperty(customElementHandling, "tagNameCheck") && isRegexOrFunction(customElementHandling.tagNameCheck)) {
       CUSTOM_ELEMENT_HANDLING.tagNameCheck = customElementHandling.tagNameCheck;
@@ -1800,15 +1816,6 @@ function createDOMPurify() {
         }
         addToSet(ALLOWED_ATTR, cfg.ADD_ATTR, transformCaseFunc);
       }
-    }
-    if (objectHasOwnProperty(cfg, "ADD_URI_SAFE_ATTR") && arrayIsArray(cfg.ADD_URI_SAFE_ATTR)) {
-      addToSet(URI_SAFE_ATTRIBUTES, cfg.ADD_URI_SAFE_ATTR, transformCaseFunc);
-    }
-    if (objectHasOwnProperty(cfg, "FORBID_CONTENTS") && arrayIsArray(cfg.FORBID_CONTENTS)) {
-      if (FORBID_CONTENTS === DEFAULT_FORBID_CONTENTS) {
-        FORBID_CONTENTS = clone(FORBID_CONTENTS);
-      }
-      addToSet(FORBID_CONTENTS, cfg.FORBID_CONTENTS, transformCaseFunc);
     }
     if (objectHasOwnProperty(cfg, "ADD_FORBID_CONTENTS") && arrayIsArray(cfg.ADD_FORBID_CONTENTS)) {
       if (FORBID_CONTENTS === DEFAULT_FORBID_CONTENTS) {
@@ -1926,6 +1933,16 @@ function createDOMPurify() {
       }
     }
   };
+  const _stripAttributeNode = function _stripAttributeNode2(element3, attribute, name) {
+    try {
+      element3.removeAttributeNode(attribute);
+    } catch (_3) {
+      try {
+        element3.removeAttribute(name);
+      } catch (_4) {
+      }
+    }
+  };
   const _neutralizeRoot = function _neutralizeRoot2(root4) {
     _neutralizeSubtree(root4);
     const childNodes = getChildNodes(root4);
@@ -1947,27 +1964,35 @@ function createDOMPurify() {
         const attribute = attributes[i4];
         const name = attribute && attribute.name;
         if (typeof name === "string") {
-          try {
-            root4.removeAttribute(name);
-          } catch (_3) {
-          }
+          _stripAttributeNode(root4, attribute, name);
         }
       }
     }
   };
-  const _removeAttribute = function _removeAttribute2(name, element3) {
-    try {
-      arrayPush(DOMPurify.removed, {
-        attribute: element3.getAttributeNode(name),
-        from: element3
-      });
-    } catch (_3) {
-      arrayPush(DOMPurify.removed, {
-        attribute: null,
-        from: element3
-      });
+  const _removeAttribute = function _removeAttribute2(name, element3, attr) {
+    if (!attr) {
+      try {
+        attr = element3.getAttributeNode(name);
+      } catch (_3) {
+        attr = null;
+      }
     }
-    element3.removeAttribute(name);
+    arrayPush(DOMPurify.removed, {
+      attribute: attr || null,
+      from: element3
+    });
+    try {
+      if (attr) {
+        element3.removeAttributeNode(attr);
+      } else {
+        element3.removeAttribute(name);
+      }
+    } catch (_3) {
+      try {
+        element3.removeAttribute(name);
+      } catch (_4) {
+      }
+    }
     if (name === "is") {
       if (RETURN_DOM || RETURN_DOM_FRAGMENT) {
         try {
@@ -1993,17 +2018,14 @@ function createDOMPurify() {
       if (typeof name !== "string" || ALLOWED_ATTR[transformCaseFunc(name)]) {
         continue;
       }
-      try {
-        element3.removeAttribute(name);
-      } catch (_3) {
-      }
+      _stripAttributeNode(element3, attribute, name);
     }
   };
   const _neutralizeSubtree = function _neutralizeSubtree2(root4) {
     const stack = [root4];
     while (stack.length > 0) {
       const node2 = stack.pop();
-      const nodeType3 = getNodeType ? getNodeType(node2) : node2.nodeType;
+      const nodeType3 = _readNodeType(node2);
       if (nodeType3 === NODE_TYPE.element) {
         _stripDisallowedAttributes(node2);
       }
@@ -2015,6 +2037,15 @@ function createDOMPurify() {
       }
     }
   };
+  const _isPatchLinkageAttribute = function _isPatchLinkageAttribute2(lcName, lcTag) {
+    if (!SAFE_FOR_XML) {
+      return false;
+    }
+    if (lcName === "patchsrc") {
+      return true;
+    }
+    return lcName === "for" && lcTag !== "label" && lcTag !== "output";
+  };
   const _neutralizePatchLinkage = function _neutralizePatchLinkage2(root4) {
     if (!SAFE_FOR_XML) {
       return;
@@ -2022,7 +2053,7 @@ function createDOMPurify() {
     const stack = [root4];
     while (stack.length > 0) {
       const node2 = stack.pop();
-      const nodeType3 = getNodeType ? getNodeType(node2) : node2.nodeType;
+      const nodeType3 = _readNodeType(node2);
       if (nodeType3 === NODE_TYPE.processingInstruction || nodeType3 === NODE_TYPE.comment && regExpTest(COMMENT_MARKUP_PROBE, node2.data)) {
         try {
           remove3(node2);
@@ -2032,12 +2063,12 @@ function createDOMPurify() {
       }
       if (nodeType3 === NODE_TYPE.element) {
         const element3 = node2;
-        const lcTag = transformCaseFunc(getNodeName ? getNodeName(node2) : node2.nodeName);
+        const lcTag = transformCaseFunc(_readNodeName(node2));
         try {
           if (element3.hasAttribute && element3.hasAttribute("patchsrc")) {
             element3.removeAttribute("patchsrc");
           }
-          if (element3.hasAttribute && element3.hasAttribute("for") && lcTag !== "label" && lcTag !== "output") {
+          if (element3.hasAttribute && element3.hasAttribute("for") && _isPatchLinkageAttribute("for", lcTag)) {
             element3.removeAttribute("for");
           }
         } catch (_3) {
@@ -2192,7 +2223,7 @@ function createDOMPurify() {
     if (SAFE_FOR_XML && currentNode.hasChildNodes() && !_isNode(currentNode.firstElementChild) && regExpTest(ELEMENT_MARKUP_PROBE, currentNode.textContent) && regExpTest(ELEMENT_MARKUP_PROBE, currentNode.innerHTML)) {
       return true;
     }
-    if (SAFE_FOR_XML && currentNode.namespaceURI === HTML_NAMESPACE && tagName === "style" && _isNode(currentNode.firstElementChild)) {
+    if (SAFE_FOR_XML && currentNode.namespaceURI === HTML_NAMESPACE && LITERAL_TEXT_ELEMENTS[tagName] && (_isNode(currentNode.firstElementChild) || typeof currentNode.textContent === "string" && regExpTest(LITERAL_TEXT_CLOSE[tagName], currentNode.textContent))) {
       return true;
     }
     if (currentNode.nodeType === NODE_TYPE.processingInstruction) {
@@ -2203,14 +2234,21 @@ function createDOMPurify() {
     }
     return false;
   };
+  const _matchesNameCheck = function _matchesNameCheck2(check, name) {
+    if (check instanceof RegExp) {
+      return regExpTest(check, name);
+    }
+    if (check instanceof Function) {
+      for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        args[_key - 2] = arguments[_key];
+      }
+      return Boolean(check(name, ...args));
+    }
+    return false;
+  };
   const _sanitizeDisallowedNode = function _sanitizeDisallowedNode2(currentNode, tagName, root4) {
-    if (!FORBID_TAGS[tagName] && _isBasicCustomElement(tagName)) {
-      if (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, tagName)) {
-        return false;
-      }
-      if (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(tagName)) {
-        return false;
-      }
+    if (!FORBID_TAGS[tagName] && _isBasicCustomElement(tagName) && _matchesNameCheck(CUSTOM_ELEMENT_HANDLING.tagNameCheck, tagName)) {
+      return false;
     }
     if (KEEP_CONTENT && !FORBID_CONTENTS[tagName]) {
       const parentNode = getParentNode(currentNode);
@@ -2232,28 +2270,31 @@ function createDOMPurify() {
     }
     return set5 === defaultSet || set5 === setConfigSet ? clone(set5) : set5;
   };
+  const _handleHookDetachedNode = function _handleHookDetachedNode2(currentNode, root4) {
+    if (currentNode === root4 || getParentNode(currentNode) !== null) {
+      return false;
+    }
+    if (IN_PLACE) {
+      _neutralizeSubtree(currentNode);
+    }
+    return true;
+  };
   const _sanitizeElements = function _sanitizeElements2(currentNode, root4) {
     _executeHooks(hooks.beforeSanitizeElements, currentNode, null);
-    if (currentNode !== root4 && getParentNode(currentNode) === null) {
-      if (IN_PLACE) {
-        _neutralizeSubtree(currentNode);
-      }
+    if (_handleHookDetachedNode(currentNode, root4)) {
       return true;
     }
     if (_isClobbered(currentNode)) {
       _forceRemove(currentNode);
       return true;
     }
-    const tagName = transformCaseFunc(getNodeName ? getNodeName(currentNode) : currentNode.nodeName);
+    const tagName = transformCaseFunc(_readNodeName(currentNode));
     ALLOWED_TAGS = _forkSharedAllowlist(hooks.uponSanitizeElement, ALLOWED_TAGS, DEFAULT_ALLOWED_TAGS, SET_CONFIG_ALLOWED_TAGS);
     _executeHooks(hooks.uponSanitizeElement, currentNode, {
       tagName,
       allowedTags: ALLOWED_TAGS
     });
-    if (currentNode !== root4 && getParentNode(currentNode) === null) {
-      if (IN_PLACE) {
-        _neutralizeSubtree(currentNode);
-      }
+    if (_handleHookDetachedNode(currentNode, root4)) {
       return true;
     }
     if (_isUnsafeNode(currentNode, tagName)) {
@@ -2267,7 +2308,7 @@ function createDOMPurify() {
       }
       return removed;
     }
-    const nt2 = getNodeType ? getNodeType(currentNode) : currentNode.nodeType;
+    const nt2 = _readNodeType(currentNode);
     if (nt2 === NODE_TYPE.element && !_checkValidNamespace(currentNode)) {
       _forceRemove(currentNode);
       return true;
@@ -2292,38 +2333,43 @@ function createDOMPurify() {
     if (FORBID_ATTR[lcName]) {
       return false;
     }
-    if (SAFE_FOR_XML && lcName === "patchsrc") {
-      return false;
-    }
-    if (SAFE_FOR_XML && lcName === "for" && lcTag !== "label" && lcTag !== "output") {
+    if (_isPatchLinkageAttribute(lcName, lcTag)) {
       return false;
     }
     if (SANITIZE_DOM && (lcName === "id" || lcName === "name") && (value2 in document2 || value2 in formElement)) {
       return false;
     }
     const nameIsPermitted = ALLOWED_ATTR[lcName] || EXTRA_ELEMENT_HANDLING.attributeCheck instanceof Function && EXTRA_ELEMENT_HANDLING.attributeCheck(lcName, lcTag);
-    if (ALLOW_DATA_ATTR && regExpTest(DATA_ATTR$1, lcName)) ;
-    else if (ALLOW_ARIA_ATTR && regExpTest(ARIA_ATTR$1, lcName)) ;
-    else if (!nameIsPermitted) {
-      if (
-        // First condition does a very basic check if a) it's basically a valid custom element tagname AND
-        // b) if the tagName passes whatever the user has configured for CUSTOM_ELEMENT_HANDLING.tagNameCheck
-        // and c) if the attribute name passes whatever the user has configured for CUSTOM_ELEMENT_HANDLING.attributeNameCheck
-        _isBasicCustomElement(lcTag) && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, lcTag) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(lcTag)) && (CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.attributeNameCheck, lcName) || CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.attributeNameCheck(lcName, lcTag)) || // Alternative, second condition checks if it's an `is`-attribute, AND
-        // the value passes whatever the user has configured for CUSTOM_ELEMENT_HANDLING.tagNameCheck
-        lcName === "is" && CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, value2) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(value2))
-      ) ;
-      else {
-        return false;
-      }
-    } else if (URI_SAFE_ATTRIBUTES[lcName]) ;
-    else if (regExpTest(IS_ALLOWED_URI$1, stringReplace(value2, ATTR_WHITESPACE$1, ""))) ;
-    else if ((lcName === "src" || lcName === "xlink:href" || lcName === "href") && lcTag !== "script" && stringIndexOf(value2, "data:") === 0 && DATA_URI_TAGS[lcTag]) ;
-    else if (ALLOW_UNKNOWN_PROTOCOLS && !regExpTest(IS_SCRIPT_OR_DATA$1, stringReplace(value2, ATTR_WHITESPACE$1, ""))) ;
-    else if (value2) {
-      return false;
-    } else ;
-    return true;
+    if (ALLOW_DATA_ATTR && regExpTest(DATA_ATTR$1, lcName)) {
+      return true;
+    }
+    if (ALLOW_ARIA_ATTR && regExpTest(ARIA_ATTR$1, lcName)) {
+      return true;
+    }
+    if (!nameIsPermitted) {
+      return (
+        // Condition a) covers a basically valid custom element tag name whose
+        // tag passes the configured tagNameCheck and whose attribute name
+        // passes the configured attributeNameCheck ...
+        _isBasicCustomElement(lcTag) && _matchesNameCheck(CUSTOM_ELEMENT_HANDLING.tagNameCheck, lcTag) && _matchesNameCheck(CUSTOM_ELEMENT_HANDLING.attributeNameCheck, lcName, lcTag) || // Condition b) covers an `is` attribute whose value passes the
+        // configured tagNameCheck while customized built-in elements are
+        // allowed.
+        lcName === "is" && CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements && _matchesNameCheck(CUSTOM_ELEMENT_HANDLING.tagNameCheck, value2)
+      );
+    }
+    if (URI_SAFE_ATTRIBUTES[lcName]) {
+      return true;
+    }
+    if (regExpTest(IS_ALLOWED_URI$1, stringReplace(value2, ATTR_WHITESPACE$1, ""))) {
+      return true;
+    }
+    if ((lcName === "src" || lcName === "xlink:href" || lcName === "href") && lcTag !== "script" && stringIndexOf(value2, "data:") === 0 && DATA_URI_TAGS[lcTag]) {
+      return true;
+    }
+    if (ALLOW_UNKNOWN_PROTOCOLS && !regExpTest(IS_SCRIPT_OR_DATA$1, stringReplace(value2, ATTR_WHITESPACE$1, ""))) {
+      return true;
+    }
+    return !value2;
   };
   const RESERVED_CUSTOM_ELEMENT_NAMES = addToSet({}, ["annotation-xml", "color-profile", "font-face", "font-face-format", "font-face-name", "font-face-src", "font-face-uri", "missing-glyph"]);
   const _isBasicCustomElement = function _isBasicCustomElement2(tagName) {
@@ -2387,33 +2433,33 @@ function createDOMPurify() {
       _executeHooks(hooks.uponSanitizeAttribute, currentNode, hookEvent);
       value2 = hookEvent.attrValue;
       if (SANITIZE_NAMED_PROPS && (lcName === "id" || lcName === "name") && stringIndexOf(value2, SANITIZE_NAMED_PROPS_PREFIX) !== 0) {
-        _removeAttribute(name, currentNode);
+        _removeAttribute(name, currentNode, attr);
         value2 = SANITIZE_NAMED_PROPS_PREFIX + value2;
       }
       if (SAFE_FOR_XML && regExpTest(/((--!?|])>)|<\/(style|script|title|xmp|textarea|noscript|iframe|noembed|noframes)/i, value2)) {
-        _removeAttribute(name, currentNode);
+        _removeAttribute(name, currentNode, attr);
         continue;
       }
       if (lcName === "attributename" && stringMatch(value2, "href")) {
-        _removeAttribute(name, currentNode);
+        _removeAttribute(name, currentNode, attr);
         continue;
       }
       if (hookEvent.forceKeepAttr) {
         continue;
       }
       if (!hookEvent.keepAttr) {
-        _removeAttribute(name, currentNode);
+        _removeAttribute(name, currentNode, attr);
         continue;
       }
       if (!ALLOW_SELF_CLOSE_IN_ATTR && regExpTest(SELF_CLOSING_TAG, value2)) {
-        _removeAttribute(name, currentNode);
+        _removeAttribute(name, currentNode, attr);
         continue;
       }
       if (SAFE_FOR_TEMPLATES) {
         value2 = _stripTemplateExpressions(value2);
       }
       if (!_isValidAttribute(lcTag, lcName, value2)) {
-        _removeAttribute(name, currentNode);
+        _removeAttribute(name, currentNode, attr);
         continue;
       }
       value2 = _applyTrustedTypesToAttribute(lcTag, lcName, namespaceURI, value2);
@@ -2434,8 +2480,7 @@ function createDOMPurify() {
       if (_isDocumentFragment(shadowNode.content)) {
         _sanitizeShadowDOM2(shadowNode.content);
       }
-      const shadowNodeType = getNodeType ? getNodeType(shadowNode) : shadowNode.nodeType;
-      if (shadowNodeType === NODE_TYPE.element) {
+      if (_readNodeType(shadowNode) === NODE_TYPE.element) {
         const innerSr = getShadowRoot(shadowNode);
         if (_isDocumentFragment(innerSr)) {
           _sanitizeAttachedShadowRoots(innerSr);
@@ -2457,7 +2502,7 @@ function createDOMPurify() {
         continue;
       }
       const node2 = item.node;
-      const nodeType3 = getNodeType ? getNodeType(node2) : node2.nodeType;
+      const nodeType3 = _readNodeType(node2);
       const isElement = nodeType3 === NODE_TYPE.element;
       const childNodes = getChildNodes(node2);
       if (childNodes) {
@@ -2529,7 +2574,7 @@ function createDOMPurify() {
     const inPlace = IN_PLACE && typeof dirty !== "string" && _isNode(dirty);
     if (inPlace) {
       _neutralizePatchLinkage(dirty);
-      const nn = getNodeName ? getNodeName(dirty) : dirty.nodeName;
+      const nn = _readNodeName(dirty);
       if (typeof nn === "string") {
         const tagName = transformCaseFunc(nn);
         if (!ALLOWED_TAGS[tagName] || FORBID_TAGS[tagName]) {
@@ -2739,10 +2784,14 @@ var COMMENT_MARKUP_PROBE;
 var FALLBACK_TAG_CLOSE;
 var SELF_CLOSING_TAG;
 var NODE_TYPE;
+var LITERAL_TEXT_ELEMENT_NAMES;
+var LITERAL_TEXT_ELEMENTS;
+var LITERAL_TEXT_CLOSE;
 var getGlobal;
 var _createTrustedTypesPolicy;
 var _createHooksMap;
 var _resolveSetOption;
+var _resolveObjectOption;
 var purify;
 var init_purify_es = __esm({
   "node_modules/dompurify/dist/purify.es.mjs"() {
@@ -2811,7 +2860,7 @@ var init_purify_es = __esm({
     mathMlDisallowed = freeze(["maction", "maligngroup", "malignmark", "mlongdiv", "mscarries", "mscarry", "msgroup", "mstack", "msline", "msrow", "semantics", "annotation", "annotation-xml", "mprescripts", "none"]);
     text = freeze(["#text"]);
     html = freeze(["accept", "action", "align", "alt", "autocapitalize", "autocomplete", "autopictureinpicture", "autoplay", "background", "bgcolor", "border", "capture", "cellpadding", "cellspacing", "checked", "cite", "class", "clear", "color", "cols", "colspan", "command", "commandfor", "controls", "controlslist", "coords", "crossorigin", "datetime", "decoding", "default", "dir", "disabled", "disablepictureinpicture", "disableremoteplayback", "download", "draggable", "enctype", "enterkeyhint", "exportparts", "face", "for", "headers", "height", "hidden", "high", "href", "hreflang", "id", "inert", "inputmode", "integrity", "ismap", "kind", "label", "lang", "list", "loading", "loop", "low", "max", "maxlength", "media", "method", "min", "minlength", "multiple", "muted", "name", "nonce", "noshade", "novalidate", "nowrap", "open", "optimum", "part", "pattern", "placeholder", "playsinline", "popover", "popovertarget", "popovertargetaction", "poster", "preload", "pubdate", "radiogroup", "readonly", "rel", "required", "rev", "reversed", "role", "rows", "rowspan", "spellcheck", "scope", "selected", "shape", "size", "sizes", "slot", "span", "srclang", "start", "src", "srcset", "step", "style", "summary", "tabindex", "title", "translate", "type", "usemap", "valign", "value", "width", "wrap", "xmlns"]);
-    svg = freeze(["accent-height", "accumulate", "additive", "alignment-baseline", "amplitude", "ascent", "attributename", "attributetype", "azimuth", "basefrequency", "baseline-shift", "begin", "bias", "by", "class", "clip", "clippathunits", "clip-path", "clip-rule", "color", "color-interpolation", "color-interpolation-filters", "color-profile", "color-rendering", "cx", "cy", "d", "dx", "dy", "diffuseconstant", "direction", "display", "divisor", "dominant-baseline", "dur", "edgemode", "elevation", "end", "exponent", "fill", "fill-opacity", "fill-rule", "filter", "filterunits", "flood-color", "flood-opacity", "font-family", "font-size", "font-size-adjust", "font-stretch", "font-style", "font-variant", "font-weight", "fx", "fy", "g1", "g2", "glyph-name", "glyphref", "gradientunits", "gradienttransform", "height", "href", "id", "image-rendering", "in", "in2", "intercept", "k", "k1", "k2", "k3", "k4", "kerning", "keypoints", "keysplines", "keytimes", "lang", "lengthadjust", "letter-spacing", "kernelmatrix", "kernelunitlength", "lighting-color", "local", "marker-end", "marker-mid", "marker-start", "markerheight", "markerunits", "markerwidth", "maskcontentunits", "maskunits", "max", "mask", "mask-type", "media", "method", "mode", "min", "name", "numoctaves", "offset", "operator", "opacity", "order", "orient", "orientation", "origin", "overflow", "paint-order", "path", "pathlength", "patterncontentunits", "patterntransform", "patternunits", "points", "preservealpha", "preserveaspectratio", "primitiveunits", "r", "rx", "ry", "radius", "refx", "refy", "repeatcount", "repeatdur", "restart", "result", "rotate", "scale", "seed", "shape-rendering", "slope", "specularconstant", "specularexponent", "spreadmethod", "startoffset", "stddeviation", "stitchtiles", "stop-color", "stop-opacity", "stroke-dasharray", "stroke-dashoffset", "stroke-linecap", "stroke-linejoin", "stroke-miterlimit", "stroke-opacity", "stroke", "stroke-width", "style", "surfacescale", "systemlanguage", "tabindex", "tablevalues", "targetx", "targety", "transform", "transform-origin", "text-anchor", "text-decoration", "text-orientation", "text-rendering", "textlength", "type", "u1", "u2", "unicode", "values", "viewbox", "visibility", "version", "vert-adv-y", "vert-origin-x", "vert-origin-y", "width", "word-spacing", "wrap", "writing-mode", "xchannelselector", "ychannelselector", "x", "x1", "x2", "xmlns", "y", "y1", "y2", "z", "zoomandpan"]);
+    svg = freeze(["accent-height", "accumulate", "additive", "alignment-baseline", "amplitude", "ascent", "attributename", "attributetype", "azimuth", "basefrequency", "baseline-shift", "begin", "bias", "by", "class", "clip", "clippathunits", "clip-path", "clip-rule", "color", "color-interpolation", "color-interpolation-filters", "color-profile", "color-rendering", "cx", "cy", "d", "dx", "dy", "diffuseconstant", "direction", "display", "divisor", "dominant-baseline", "dur", "edgemode", "elevation", "end", "exponent", "fill", "fill-opacity", "fill-rule", "filter", "filterunits", "flood-color", "flood-opacity", "font-family", "font-size", "font-size-adjust", "font-stretch", "font-style", "font-variant", "font-weight", "fx", "fy", "g1", "g2", "glyph-name", "glyphref", "gradientunits", "gradienttransform", "height", "href", "id", "image-rendering", "in", "in2", "intercept", "k", "k1", "k2", "k3", "k4", "kerning", "keypoints", "keysplines", "keytimes", "lang", "lengthadjust", "letter-spacing", "kernelmatrix", "kernelunitlength", "lighting-color", "local", "marker-end", "marker-mid", "marker-start", "markerheight", "markerunits", "markerwidth", "maskcontentunits", "maskunits", "max", "mask", "mask-type", "media", "method", "mode", "min", "name", "numoctaves", "offset", "operator", "opacity", "order", "orient", "orientation", "origin", "overflow", "paint-order", "path", "pathlength", "patterncontentunits", "patterntransform", "patternunits", "pointer-events", "points", "preservealpha", "preserveaspectratio", "primitiveunits", "r", "rx", "ry", "radius", "refx", "refy", "repeatcount", "repeatdur", "restart", "result", "rotate", "scale", "seed", "shape-rendering", "slope", "specularconstant", "specularexponent", "spreadmethod", "startoffset", "stddeviation", "stitchtiles", "stop-color", "stop-opacity", "stroke-dasharray", "stroke-dashoffset", "stroke-linecap", "stroke-linejoin", "stroke-miterlimit", "stroke-opacity", "stroke", "stroke-width", "style", "surfacescale", "systemlanguage", "tabindex", "tablevalues", "targetx", "targety", "transform", "transform-origin", "text-anchor", "text-decoration", "text-orientation", "text-rendering", "textlength", "type", "u1", "u2", "unicode", "values", "vector-effect", "viewbox", "visibility", "version", "vert-adv-y", "vert-origin-x", "vert-origin-y", "width", "word-spacing", "wrap", "writing-mode", "xchannelselector", "ychannelselector", "x", "x1", "x2", "xmlns", "y", "y1", "y2", "z", "zoomandpan"]);
     mathMl = freeze(["accent", "accentunder", "align", "bevelled", "close", "columnalign", "columnlines", "columnspacing", "columnspan", "denomalign", "depth", "dir", "display", "displaystyle", "encoding", "fence", "frame", "height", "href", "id", "largeop", "length", "linethickness", "lquote", "lspace", "mathbackground", "mathcolor", "mathsize", "mathvariant", "maxsize", "minsize", "movablelimits", "notation", "numalign", "open", "rowalign", "rowlines", "rowspacing", "rowspan", "rspace", "rquote", "scriptlevel", "scriptminsize", "scriptsizemultiplier", "selection", "separator", "separators", "stretchy", "subscriptshift", "supscriptshift", "symmetric", "voffset", "width", "xmlns"]);
     xml = freeze(["xlink:href", "xml:id", "xlink:title", "xml:space", "xmlns:xlink"]);
     MUSTACHE_EXPR = seal(/{{[\w\W]*|^[\w\W]*}}/g);
@@ -2851,6 +2900,15 @@ var init_purify_es = __esm({
       notation: 12
       // Deprecated
     };
+    LITERAL_TEXT_ELEMENT_NAMES = ["style", "script", "xmp", "iframe", "noembed", "noframes", "plaintext", "noscript"];
+    LITERAL_TEXT_ELEMENTS = freeze(addToSet({}, LITERAL_TEXT_ELEMENT_NAMES));
+    LITERAL_TEXT_CLOSE = (function() {
+      const map6 = {};
+      arrayForEach(LITERAL_TEXT_ELEMENT_NAMES, (name) => {
+        map6[name] = seal(new RegExp("</" + name + "(?=[\\t\\n\\f\\r />])", "i"));
+      });
+      return freeze(map6);
+    })();
     getGlobal = function getGlobal2() {
       return typeof window === "undefined" ? null : window;
     };
@@ -2893,6 +2951,10 @@ var init_purify_es = __esm({
     };
     _resolveSetOption = function _resolveSetOption2(cfg, key, fallback, options2) {
       return objectHasOwnProperty(cfg, key) && arrayIsArray(cfg[key]) ? addToSet(options2.base ? clone(options2.base) : {}, cfg[key], options2.transform) : fallback;
+    };
+    _resolveObjectOption = function _resolveObjectOption2(cfg, key, makeFallback) {
+      const value2 = objectHasOwnProperty(cfg, key) ? cfg[key] : void 0;
+      return value2 && typeof value2 === "object" ? clone(value2) : makeFallback();
     };
     purify = createDOMPurify();
   }
@@ -48555,7 +48617,7 @@ var init_sizeCapture_INFHLROL = __esm({
     __name(captureNodeSizes, "captureNodeSizes");
   }
 });
-function createLayoutElementGroups(element3, { edgePathsClass = "edges edgePath" } = {}) {
+function createLayoutElementGroups(element3, { edgePathsClass = "edges edgePaths" } = {}) {
   const rootGroups = element3.insert("g").attr("class", "root");
   const clusters = rootGroups.insert("g").attr("class", "clusters");
   const edgePaths = rootGroups.insert("g").attr("class", edgePathsClass);
@@ -48850,8 +48912,8 @@ var sorter;
 var sortNodesByHierarchy;
 var isNodeInExtractableCluster;
 var findSafeAnchorNode;
-var init_chunk_H2I77ZZE = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-H2I77ZZE.mjs"() {
+var init_chunk_2E4U76K2 = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-2E4U76K2.mjs"() {
     init_chunk_L3NEJ4N5();
     init_chunk_OSK3NFVY();
     init_chunk_GVQU2GXP();
@@ -54693,8 +54755,8 @@ var init_dagre = __esm({
     init_rank();
   }
 });
-var dagre_OS7QT2EB_exports = {};
-__export(dagre_OS7QT2EB_exports, {
+var dagre_GXQ25YYZ_exports = {};
+__export(dagre_GXQ25YYZ_exports, {
   applyDagreLayoutResult: () => applyDagreLayoutResult,
   getEdgesToRender: () => getEdgesToRender,
   measureDagreLayout: () => measureDagreLayout,
@@ -54724,9 +54786,9 @@ var runDagreLayoutCore;
 var getDagrePaintNodes;
 var getDagreEdgeNode;
 var render3;
-var init_dagre_OS7QT2EB = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/dagre-OS7QT2EB.mjs"() {
-    init_chunk_H2I77ZZE();
+var init_dagre_GXQ25YYZ = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/dagre-GXQ25YYZ.mjs"() {
+    init_chunk_2E4U76K2();
     init_chunk_L3NEJ4N5();
     init_chunk_OSK3NFVY();
     init_chunk_GVQU2GXP();
@@ -55393,8 +55455,8 @@ var init_dagre_OS7QT2EB = __esm({
     });
   }
 });
-var swimlanes_V6O3JKXN_exports = {};
-__export(swimlanes_V6O3JKXN_exports, {
+var swimlanes_42K2YHIH_exports = {};
+__export(swimlanes_42K2YHIH_exports, {
   render: () => render4
 });
 function buildSegmentList(points) {
@@ -63588,9 +63650,9 @@ var ROUTING_MARGIN;
 var ANCHOR_OFFSET;
 var TRACK_SPACING;
 var render4;
-var init_swimlanes_V6O3JKXN = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/swimlanes-V6O3JKXN.mjs"() {
-    init_chunk_H2I77ZZE();
+var init_swimlanes_42K2YHIH = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/swimlanes-42K2YHIH.mjs"() {
+    init_chunk_2E4U76K2();
     init_chunk_L3NEJ4N5();
     init_chunk_OSK3NFVY();
     init_chunk_GVQU2GXP();
@@ -94778,7 +94840,7 @@ var init_cytoscape_esm = __esm({
       }
       return style4;
     };
-    version2 = "3.34.1";
+    version2 = "3.34.2";
     cytoscape2 = function cytoscape3(options2) {
       if (options2 === void 0) {
         options2 = {};
@@ -99808,8 +99870,8 @@ var registerLayoutLoaders;
 var registerDefaultLayoutLoaders;
 var render6;
 var getRegisteredLayoutAlgorithm;
-var init_chunk_LQGUR6SS = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-LQGUR6SS.mjs"() {
+var init_chunk_TLUHSLCS = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-TLUHSLCS.mjs"() {
     init_chunk_L3NEJ4N5();
     init_chunk_OSK3NFVY();
     init_chunk_GVQU2GXP();
@@ -99841,11 +99903,11 @@ var init_chunk_LQGUR6SS = __esm({
       registerLayoutLoaders([
         {
           name: "dagre",
-          loader: /* @__PURE__ */ __name(async () => await Promise.resolve().then(() => (init_dagre_OS7QT2EB(), dagre_OS7QT2EB_exports)), "loader")
+          loader: /* @__PURE__ */ __name(async () => await Promise.resolve().then(() => (init_dagre_GXQ25YYZ(), dagre_GXQ25YYZ_exports)), "loader")
         },
         {
           name: "swimlane",
-          loader: /* @__PURE__ */ __name(async () => await Promise.resolve().then(() => (init_swimlanes_V6O3JKXN(), swimlanes_V6O3JKXN_exports)), "loader")
+          loader: /* @__PURE__ */ __name(async () => await Promise.resolve().then(() => (init_swimlanes_42K2YHIH(), swimlanes_42K2YHIH_exports)), "loader")
         },
         ...true ? [
           {
@@ -102650,13 +102712,13 @@ var getStyles3;
 var styles_default3;
 var createFlowDiagram;
 var diagram2;
-var init_chunk_3NF5O7KM = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-3NF5O7KM.mjs"() {
+var init_chunk_SHT3W25Y = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-SHT3W25Y.mjs"() {
     init_chunk_5VM5RSS4();
     init_chunk_XXDRQBXY();
     init_chunk_POPQ4Y6H();
     init_chunk_LNGE3PJU();
-    init_chunk_LQGUR6SS();
+    init_chunk_TLUHSLCS();
     init_chunk_F27PBJKO();
     init_chunk_4HAMMTFA();
     init_chunk_75Z2AOVW();
@@ -105076,7 +105138,7 @@ You have to call mermaid.initialize.`
     fill: ${options2.arrowheadColor};
   }
 
-  .edgePath .path {
+  .edgePaths .path {
     stroke: ${options2.lineColor};
     stroke-width: ${options2.strokeWidth ?? 2}px;
   }
@@ -105200,19 +105262,19 @@ You have to call mermaid.initialize.`
     diagram2 = createFlowDiagram();
   }
 });
-var flowDiagram_T62WH6J4_exports = {};
-__export(flowDiagram_T62WH6J4_exports, {
+var flowDiagram_HODETNUW_exports = {};
+__export(flowDiagram_HODETNUW_exports, {
   createFlowDiagram: () => createFlowDiagram,
   diagram: () => diagram2
 });
-var init_flowDiagram_T62WH6J4 = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/flowDiagram-T62WH6J4.mjs"() {
-    init_chunk_3NF5O7KM();
+var init_flowDiagram_HODETNUW = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/flowDiagram-HODETNUW.mjs"() {
+    init_chunk_SHT3W25Y();
     init_chunk_5VM5RSS4();
     init_chunk_XXDRQBXY();
     init_chunk_POPQ4Y6H();
     init_chunk_LNGE3PJU();
-    init_chunk_LQGUR6SS();
+    init_chunk_TLUHSLCS();
     init_chunk_F27PBJKO();
     init_chunk_L3NEJ4N5();
     init_chunk_OSK3NFVY();
@@ -105227,21 +105289,21 @@ var init_flowDiagram_T62WH6J4 = __esm({
     init_chunk_Y2CYZVJY();
   }
 });
-var swimlanesDiagram_JKAHXJPX_exports = {};
-__export(swimlanesDiagram_JKAHXJPX_exports, {
+var swimlanesDiagram_VR7AAH4N_exports = {};
+__export(swimlanesDiagram_VR7AAH4N_exports, {
   diagram: () => diagram3
 });
 var getStyles4;
 var styles_default22;
 var diagram3;
-var init_swimlanesDiagram_JKAHXJPX = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/swimlanesDiagram-JKAHXJPX.mjs"() {
-    init_chunk_3NF5O7KM();
+var init_swimlanesDiagram_VR7AAH4N = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/swimlanesDiagram-VR7AAH4N.mjs"() {
+    init_chunk_SHT3W25Y();
     init_chunk_5VM5RSS4();
     init_chunk_XXDRQBXY();
     init_chunk_POPQ4Y6H();
     init_chunk_LNGE3PJU();
-    init_chunk_LQGUR6SS();
+    init_chunk_TLUHSLCS();
     init_chunk_F27PBJKO();
     init_chunk_L3NEJ4N5();
     init_chunk_OSK3NFVY();
@@ -105266,8 +105328,8 @@ var init_swimlanesDiagram_JKAHXJPX = __esm({
     diagram3 = createFlowDiagram({ defaultLayout: "swimlane", styles: styles_default22 });
   }
 });
-var erDiagram_2YWLMYGG_exports = {};
-__export(erDiagram_2YWLMYGG_exports, {
+var erDiagram_RLTQ6QDP_exports = {};
+__export(erDiagram_RLTQ6QDP_exports, {
   diagram: () => diagram4
 });
 var parser3;
@@ -105281,11 +105343,11 @@ var genColor;
 var getStyles5;
 var styles_default4;
 var diagram4;
-var init_erDiagram_2YWLMYGG = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/erDiagram-2YWLMYGG.mjs"() {
+var init_erDiagram_RLTQ6QDP = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/erDiagram-RLTQ6QDP.mjs"() {
     init_chunk_XXDRQBXY();
     init_chunk_POPQ4Y6H();
-    init_chunk_LQGUR6SS();
+    init_chunk_TLUHSLCS();
     init_chunk_L3NEJ4N5();
     init_chunk_OSK3NFVY();
     init_chunk_GVQU2GXP();
@@ -145349,8 +145411,8 @@ var init_ganttDiagram_EL5Y4UJY = __esm({
     };
   }
 });
-var infoDiagram_FKFFQAWI_exports = {};
-__export(infoDiagram_FKFFQAWI_exports, {
+var infoDiagram_27XIBGKW_exports = {};
+__export(infoDiagram_27XIBGKW_exports, {
   diagram: () => diagram7
 });
 var parser6;
@@ -145360,8 +145422,8 @@ var db2;
 var draw6;
 var renderer3;
 var diagram7;
-var init_infoDiagram_FKFFQAWI = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/infoDiagram-FKFFQAWI.mjs"() {
+var init_infoDiagram_27XIBGKW = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/infoDiagram-27XIBGKW.mjs"() {
     init_chunk_CLGD4ZFX();
     init_chunk_DU6HZSFF();
     init_chunk_X3CZISLH();
@@ -145374,7 +145436,7 @@ var init_infoDiagram_FKFFQAWI = __esm({
       }, "parse")
     };
     DEFAULT_INFO_DB = {
-      version: "11.17.1" + (true ? "" : "-tiny")
+      version: "11.17.2" + (true ? "" : "-tiny")
     };
     getVersion = /* @__PURE__ */ __name(() => DEFAULT_INFO_DB.version, "getVersion");
     db2 = {
@@ -149268,8 +149330,8 @@ var init_xychartDiagram_S5SC5T6Z = __esm({
     };
   }
 });
-var requirementDiagram_IS5BZ75X_exports = {};
-__export(requirementDiagram_IS5BZ75X_exports, {
+var requirementDiagram_BXWQKSXE_exports = {};
+__export(requirementDiagram_BXWQKSXE_exports, {
   diagram: () => diagram11
 });
 var parser10;
@@ -149281,11 +149343,11 @@ var styles_default7;
 var requirementRenderer_exports;
 var draw10;
 var diagram11;
-var init_requirementDiagram_IS5BZ75X = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/requirementDiagram-IS5BZ75X.mjs"() {
+var init_requirementDiagram_BXWQKSXE = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/requirementDiagram-BXWQKSXE.mjs"() {
     init_chunk_XXDRQBXY();
     init_chunk_POPQ4Y6H();
-    init_chunk_LQGUR6SS();
+    init_chunk_TLUHSLCS();
     init_chunk_L3NEJ4N5();
     init_chunk_OSK3NFVY();
     init_chunk_GVQU2GXP();
@@ -155285,12 +155347,12 @@ var getDir;
 var getClasses2;
 var draw12;
 var classRenderer_v3_unified_default;
-var init_chunk_HLEWEB6X = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-HLEWEB6X.mjs"() {
+var init_chunk_TICWLB2K = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-TICWLB2K.mjs"() {
     init_chunk_5VM5RSS4();
     init_chunk_XXDRQBXY();
     init_chunk_POPQ4Y6H();
-    init_chunk_LQGUR6SS();
+    init_chunk_TLUHSLCS();
     init_chunk_F27PBJKO();
     init_chunk_75Z2AOVW();
     init_chunk_DU6HZSFF();
@@ -157401,18 +157463,18 @@ g.classGroup line {
     };
   }
 });
-var classDiagram_CYGNFDIV_exports = {};
-__export(classDiagram_CYGNFDIV_exports, {
+var classDiagram_ZZMXUADV_exports = {};
+__export(classDiagram_ZZMXUADV_exports, {
   diagram: () => diagram13
 });
 var diagram13;
-var init_classDiagram_CYGNFDIV = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/classDiagram-CYGNFDIV.mjs"() {
-    init_chunk_HLEWEB6X();
+var init_classDiagram_ZZMXUADV = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/classDiagram-ZZMXUADV.mjs"() {
+    init_chunk_TICWLB2K();
     init_chunk_5VM5RSS4();
     init_chunk_XXDRQBXY();
     init_chunk_POPQ4Y6H();
-    init_chunk_LQGUR6SS();
+    init_chunk_TLUHSLCS();
     init_chunk_F27PBJKO();
     init_chunk_L3NEJ4N5();
     init_chunk_OSK3NFVY();
@@ -157441,18 +157503,18 @@ var init_classDiagram_CYGNFDIV = __esm({
     };
   }
 });
-var classDiagram_v2_TLXNO2FR_exports = {};
-__export(classDiagram_v2_TLXNO2FR_exports, {
+var classDiagram_v2_VYDZK3BY_exports = {};
+__export(classDiagram_v2_VYDZK3BY_exports, {
   diagram: () => diagram14
 });
 var diagram14;
-var init_classDiagram_v2_TLXNO2FR = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/classDiagram-v2-TLXNO2FR.mjs"() {
-    init_chunk_HLEWEB6X();
+var init_classDiagram_v2_VYDZK3BY = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/classDiagram-v2-VYDZK3BY.mjs"() {
+    init_chunk_TICWLB2K();
     init_chunk_5VM5RSS4();
     init_chunk_XXDRQBXY();
     init_chunk_POPQ4Y6H();
-    init_chunk_LQGUR6SS();
+    init_chunk_TLUHSLCS();
     init_chunk_F27PBJKO();
     init_chunk_L3NEJ4N5();
     init_chunk_OSK3NFVY();
@@ -157574,11 +157636,11 @@ var clone7;
 var StateDB;
 var getStyles12;
 var styles_default10;
-var init_chunk_ZLD2IHE6 = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-ZLD2IHE6.mjs"() {
+var init_chunk_IMKFNOWR = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/chunk-IMKFNOWR.mjs"() {
     init_chunk_XXDRQBXY();
     init_chunk_POPQ4Y6H();
-    init_chunk_LQGUR6SS();
+    init_chunk_TLUHSLCS();
     init_chunk_F27PBJKO();
     init_chunk_75Z2AOVW();
     init_chunk_DU6HZSFF();
@@ -159606,8 +159668,8 @@ g.stateGroup line {
     styles_default10 = getStyles12;
   }
 });
-var stateDiagram_XQSTLZYL_exports = {};
-__export(stateDiagram_XQSTLZYL_exports, {
+var stateDiagram_D77RDMKH_exports = {};
+__export(stateDiagram_D77RDMKH_exports, {
   diagram: () => diagram15
 });
 var drawStartState;
@@ -159631,12 +159693,12 @@ var getLabelWidth;
 var renderDoc;
 var stateRenderer_default;
 var diagram15;
-var init_stateDiagram_XQSTLZYL = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/stateDiagram-XQSTLZYL.mjs"() {
-    init_chunk_ZLD2IHE6();
+var init_stateDiagram_D77RDMKH = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/stateDiagram-D77RDMKH.mjs"() {
+    init_chunk_IMKFNOWR();
     init_chunk_XXDRQBXY();
     init_chunk_POPQ4Y6H();
-    init_chunk_LQGUR6SS();
+    init_chunk_TLUHSLCS();
     init_chunk_F27PBJKO();
     init_chunk_L3NEJ4N5();
     init_chunk_OSK3NFVY();
@@ -160101,17 +160163,17 @@ var init_stateDiagram_XQSTLZYL = __esm({
     };
   }
 });
-var stateDiagram_v2_IH3M54BS_exports = {};
-__export(stateDiagram_v2_IH3M54BS_exports, {
+var stateDiagram_v2_MP3YSRHH_exports = {};
+__export(stateDiagram_v2_MP3YSRHH_exports, {
   diagram: () => diagram16
 });
 var diagram16;
-var init_stateDiagram_v2_IH3M54BS = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/stateDiagram-v2-IH3M54BS.mjs"() {
-    init_chunk_ZLD2IHE6();
+var init_stateDiagram_v2_MP3YSRHH = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/stateDiagram-v2-MP3YSRHH.mjs"() {
+    init_chunk_IMKFNOWR();
     init_chunk_XXDRQBXY();
     init_chunk_POPQ4Y6H();
-    init_chunk_LQGUR6SS();
+    init_chunk_TLUHSLCS();
     init_chunk_F27PBJKO();
     init_chunk_L3NEJ4N5();
     init_chunk_OSK3NFVY();
@@ -160140,8 +160202,8 @@ var init_stateDiagram_v2_IH3M54BS = __esm({
     };
   }
 });
-var journeyDiagram_EYS64GPL_exports = {};
-__export(journeyDiagram_EYS64GPL_exports, {
+var journeyDiagram_3NMN7TZE_exports = {};
+__export(journeyDiagram_3NMN7TZE_exports, {
   diagram: () => diagram17
 });
 function drawActorLegend(diagram210) {
@@ -160260,8 +160322,8 @@ var textColours;
 var drawTasks;
 var journeyRenderer_default;
 var diagram17;
-var init_journeyDiagram_EYS64GPL = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/journeyDiagram-EYS64GPL.mjs"() {
+var init_journeyDiagram_3NMN7TZE = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/journeyDiagram-3NMN7TZE.mjs"() {
     init_chunk_5VM5RSS4();
     init_chunk_F27PBJKO();
     init_chunk_DU6HZSFF();
@@ -160990,7 +161052,7 @@ var init_journeyDiagram_EYS64GPL = __esm({
     fill: ${options2.arrowheadColor};
   }
 
-  .edgePath .path {
+  .edgePaths .path {
     stroke: ${options2.lineColor};
     stroke-width: 1.5px;
   }
@@ -163221,8 +163283,8 @@ var init_dist2 = __esm({
     init_v4();
   }
 });
-var mindmap_definition_THT77NOG_exports = {};
-__export(mindmap_definition_THT77NOG_exports, {
+var mindmap_definition_YA3MSWOX_exports = {};
+__export(mindmap_definition_YA3MSWOX_exports, {
   diagram: () => diagram19
 });
 var parser16;
@@ -163237,11 +163299,11 @@ var genGradient;
 var getStyles15;
 var styles_default13;
 var diagram19;
-var init_mindmap_definition_THT77NOG = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/mindmap-definition-THT77NOG.mjs"() {
+var init_mindmap_definition_YA3MSWOX = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/mindmap-definition-YA3MSWOX.mjs"() {
     init_chunk_XXDRQBXY();
     init_chunk_POPQ4Y6H();
-    init_chunk_LQGUR6SS();
+    init_chunk_TLUHSLCS();
     init_chunk_L3NEJ4N5();
     init_chunk_OSK3NFVY();
     init_chunk_GVQU2GXP();
@@ -167563,8 +167625,8 @@ var init_diagram_UQ7AKVKN = __esm({
     };
   }
 });
-var blockDiagram_OSKFZWR5_exports = {};
-__export(blockDiagram_OSKFZWR5_exports, {
+var blockDiagram_I7D4REHJ_exports = {};
+__export(blockDiagram_I7D4REHJ_exports, {
   diagram: () => diagram24
 });
 function typeStr2Type(typeStr) {
@@ -168161,8 +168223,8 @@ var getClasses22;
 var draw23;
 var blockRenderer_default;
 var diagram24;
-var init_blockDiagram_OSKFZWR5 = __esm({
-  "node_modules/mermaid/dist/chunks/mermaid.core/blockDiagram-OSKFZWR5.mjs"() {
+var init_blockDiagram_I7D4REHJ = __esm({
+  "node_modules/mermaid/dist/chunks/mermaid.core/blockDiagram-I7D4REHJ.mjs"() {
     init_chunk_5VM5RSS4();
     init_chunk_OSK3NFVY();
     init_chunk_GVQU2GXP();
@@ -169483,7 +169545,7 @@ var init_blockDiagram_OSKFZWR5 = __esm({
     fill: ${options2.arrowheadColor};
   }
 
-  .edgePath .path {
+  .edgePaths .path {
     stroke: ${options2.lineColor};
     stroke-width: 2.0px;
   }
@@ -186965,9 +187027,9 @@ function toggleMarkup(button) {
   }
 }
 init_chunk_CLGD4ZFX();
-init_chunk_H2I77ZZE();
+init_chunk_2E4U76K2();
 init_chunk_LNGE3PJU();
-init_chunk_LQGUR6SS();
+init_chunk_TLUHSLCS();
 init_chunk_L3NEJ4N5();
 init_chunk_OSK3NFVY();
 init_chunk_GVQU2GXP();
@@ -187367,7 +187429,7 @@ var detector2 = /* @__PURE__ */ __name((txt, config3) => {
   return /^\s*graph/.test(txt);
 }, "detector");
 var loader22 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_flowDiagram_T62WH6J4(), flowDiagram_T62WH6J4_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_flowDiagram_HODETNUW(), flowDiagram_HODETNUW_exports));
   return { id: id22, diagram: diagram210 };
 }, "loader");
 var plugin2 = {
@@ -187390,7 +187452,7 @@ var detector3 = /* @__PURE__ */ __name((txt, config3) => {
   return /^\s*flowchart/.test(txt);
 }, "detector");
 var loader3 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_flowDiagram_T62WH6J4(), flowDiagram_T62WH6J4_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_flowDiagram_HODETNUW(), flowDiagram_HODETNUW_exports));
   return { id: id32, diagram: diagram210 };
 }, "loader");
 var plugin3 = {
@@ -187404,7 +187466,7 @@ var detector4 = /* @__PURE__ */ __name((txt) => {
   return /^\s*swimlane-beta\b/.test(txt);
 }, "detector");
 var loader4 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_swimlanesDiagram_JKAHXJPX(), swimlanesDiagram_JKAHXJPX_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_swimlanesDiagram_VR7AAH4N(), swimlanesDiagram_VR7AAH4N_exports));
   return { id: id4, diagram: diagram210 };
 }, "loader");
 var plugin4 = {
@@ -187418,7 +187480,7 @@ var detector5 = /* @__PURE__ */ __name((txt) => {
   return /^\s*erDiagram/.test(txt);
 }, "detector");
 var loader5 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_erDiagram_2YWLMYGG(), erDiagram_2YWLMYGG_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_erDiagram_RLTQ6QDP(), erDiagram_RLTQ6QDP_exports));
   return { id: id5, diagram: diagram210 };
 }, "loader");
 var plugin5 = {
@@ -187460,7 +187522,7 @@ var detector8 = /* @__PURE__ */ __name((txt) => {
   return /^\s*info/.test(txt);
 }, "detector");
 var loader8 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_infoDiagram_FKFFQAWI(), infoDiagram_FKFFQAWI_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_infoDiagram_27XIBGKW(), infoDiagram_27XIBGKW_exports));
   return { id: id8, diagram: diagram210 };
 }, "loader");
 var info = {
@@ -187514,7 +187576,7 @@ var detector12 = /* @__PURE__ */ __name((txt) => {
   return /^\s*requirement(Diagram)?/.test(txt);
 }, "detector");
 var loader12 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_requirementDiagram_IS5BZ75X(), requirementDiagram_IS5BZ75X_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_requirementDiagram_BXWQKSXE(), requirementDiagram_BXWQKSXE_exports));
   return { id: id12, diagram: diagram210 };
 }, "loader");
 var plugin10 = {
@@ -187545,7 +187607,7 @@ var detector14 = /* @__PURE__ */ __name((txt, config3) => {
   return /^\s*classDiagram/.test(txt);
 }, "detector");
 var loader14 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_classDiagram_CYGNFDIV(), classDiagram_CYGNFDIV_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_classDiagram_ZZMXUADV(), classDiagram_ZZMXUADV_exports));
   return { id: id14, diagram: diagram210 };
 }, "loader");
 var plugin12 = {
@@ -187562,7 +187624,7 @@ var detector15 = /* @__PURE__ */ __name((txt, config3) => {
   return /^\s*classDiagram-v2/.test(txt);
 }, "detector");
 var loader15 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_classDiagram_v2_TLXNO2FR(), classDiagram_v2_TLXNO2FR_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_classDiagram_v2_VYDZK3BY(), classDiagram_v2_VYDZK3BY_exports));
   return { id: id15, diagram: diagram210 };
 }, "loader");
 var plugin13 = {
@@ -187579,7 +187641,7 @@ var detector16 = /* @__PURE__ */ __name((txt, config3) => {
   return /^\s*stateDiagram/.test(txt);
 }, "detector");
 var loader16 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_stateDiagram_XQSTLZYL(), stateDiagram_XQSTLZYL_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_stateDiagram_D77RDMKH(), stateDiagram_D77RDMKH_exports));
   return { id: id16, diagram: diagram210 };
 }, "loader");
 var plugin14 = {
@@ -187599,7 +187661,7 @@ var detector17 = /* @__PURE__ */ __name((txt, config3) => {
   return false;
 }, "detector");
 var loader17 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_stateDiagram_v2_IH3M54BS(), stateDiagram_v2_IH3M54BS_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_stateDiagram_v2_MP3YSRHH(), stateDiagram_v2_MP3YSRHH_exports));
   return { id: id17, diagram: diagram210 };
 }, "loader");
 var plugin15 = {
@@ -187613,7 +187675,7 @@ var detector18 = /* @__PURE__ */ __name((txt) => {
   return /^\s*journey/.test(txt);
 }, "detector");
 var loader18 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_journeyDiagram_EYS64GPL(), journeyDiagram_EYS64GPL_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_journeyDiagram_3NMN7TZE(), journeyDiagram_3NMN7TZE_exports));
   return { id: id18, diagram: diagram210 };
 }, "loader");
 var plugin16 = {
@@ -187680,7 +187742,7 @@ var detector19 = /* @__PURE__ */ __name((txt, config3 = {}) => {
   return false;
 }, "detector");
 var loader19 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_flowDiagram_T62WH6J4(), flowDiagram_T62WH6J4_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_flowDiagram_HODETNUW(), flowDiagram_HODETNUW_exports));
   return { id: id19, diagram: diagram210 };
 }, "loader");
 var plugin17 = {
@@ -187708,7 +187770,7 @@ var detector21 = /* @__PURE__ */ __name((txt) => {
   return /^\s*mindmap/.test(txt);
 }, "detector");
 var loader21 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_mindmap_definition_THT77NOG(), mindmap_definition_THT77NOG_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_mindmap_definition_YA3MSWOX(), mindmap_definition_YA3MSWOX_exports));
   return { id: id21, diagram: diagram210 };
 }, "loader");
 var plugin19 = {
@@ -187776,7 +187838,7 @@ var detector26 = /* @__PURE__ */ __name((txt) => {
   return /^\s*block(-beta)?/.test(txt);
 }, "detector");
 var loader26 = /* @__PURE__ */ __name(async () => {
-  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_blockDiagram_OSKFZWR5(), blockDiagram_OSKFZWR5_exports));
+  const { diagram: diagram210 } = await Promise.resolve().then(() => (init_blockDiagram_I7D4REHJ(), blockDiagram_I7D4REHJ_exports));
   return { id: id26, diagram: diagram210 };
 }, "loader");
 var plugin22 = {
@@ -188492,15 +188554,15 @@ var render7 = /* @__PURE__ */ __name(async function(id39, text4, svgContainingEl
   svg2.insertBefore(style1, firstChild);
   try {
     if (false) {
-      await profiler.span("draw", () => diag.renderer.draw(text4, id39, "11.17.1", diag));
+      await profiler.span("draw", () => diag.renderer.draw(text4, id39, "11.17.2", diag));
     } else {
-      await diag.renderer.draw(text4, id39, "11.17.1", diag);
+      await diag.renderer.draw(text4, id39, "11.17.2", diag);
     }
   } catch (e3) {
     if (config3.suppressErrorRendering) {
       removeTempElements();
     } else {
-      errorRenderer_default.draw(text4, id39, "11.17.1");
+      errorRenderer_default.draw(text4, id39, "11.17.2");
     }
     throw e3;
   }
@@ -189258,7 +189320,7 @@ export {
   (*! Bundled license information:
   
   dompurify/dist/purify.es.mjs:
-    (*! @license DOMPurify 3.4.13 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.4.13/LICENSE *)
+    (*! @license DOMPurify 3.4.14 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.4.14/LICENSE *)
   
   lodash-es/lodash.js:
     (**
