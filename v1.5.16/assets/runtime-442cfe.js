@@ -1485,7 +1485,7 @@ function isRegex(value2) {
 function createDOMPurify() {
   let window3 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : getGlobal();
   const DOMPurify = (root4) => createDOMPurify(root4);
-  DOMPurify.version = "3.4.14";
+  DOMPurify.version = "3.4.15";
   DOMPurify.removed = [];
   if (!window3 || !window3.document || window3.document.nodeType !== NODE_TYPE.document || !window3.Element) {
     DOMPurify.isSupported = false;
@@ -1502,6 +1502,7 @@ function createDOMPurify() {
   const ElementPrototype = Element3.prototype;
   const cloneNode = lookupGetter(ElementPrototype, "cloneNode");
   const remove3 = lookupGetter(ElementPrototype, "remove");
+  const removeAttributeNode = lookupGetter(ElementPrototype, "removeAttributeNode");
   const getNextSibling = lookupGetter(ElementPrototype, "nextSibling");
   const getChildNodes = lookupGetter(ElementPrototype, "childNodes");
   const getParentNode = lookupGetter(ElementPrototype, "parentNode");
@@ -1935,7 +1936,7 @@ function createDOMPurify() {
   };
   const _stripAttributeNode = function _stripAttributeNode2(element3, attribute, name) {
     try {
-      element3.removeAttributeNode(attribute);
+      removeAttributeNode(element3, attribute);
     } catch (_3) {
       try {
         element3.removeAttribute(name);
@@ -1983,7 +1984,7 @@ function createDOMPurify() {
     });
     try {
       if (attr) {
-        element3.removeAttributeNode(attr);
+        removeAttributeNode(element3, attr);
       } else {
         element3.removeAttribute(name);
       }
@@ -2171,7 +2172,16 @@ function createDOMPurify() {
     // makes the direct read diverge from the cached read; a clean form
     // (same-realm OR foreign-realm) has both reads pointing at the same
     // canonical NamedNodeMap.
-    element3.attributes !== getAttributes(element3) || typeof element3.removeAttribute !== "function" || typeof element3.setAttribute !== "function" || typeof element3.namespaceURI !== "string" || typeof element3.insertBefore !== "function" || typeof element3.hasChildNodes !== "function" || // NodeType clobbering probe. Cached Node.prototype.nodeType getter
+    element3.attributes !== getAttributes(element3) || typeof element3.removeAttribute !== "function" || // A form descendant named "removeAttributeNode" or "getAttributeNode"
+    // shadows these Attr-node methods via [LegacyOverrideBuiltIns].
+    // _removeAttribute() / _stripAttributeNode() reach for
+    // element.removeAttributeNode(attr) first; when it is shadowed the call
+    // throws and the name-based fallback element.removeAttribute(name)
+    // ASCII-lowercases its lookup key in an HTML document, silently missing
+    // a case-preserved event-handler attribute (e.g. an ONANIMATIONSTART
+    // that reached the sanitizer through an XML/XHTML parse). Flag the form
+    // so it is removed wholesale, exactly as for the other shadowed methods.
+    typeof element3.removeAttributeNode !== "function" || typeof element3.getAttributeNode !== "function" || typeof element3.setAttribute !== "function" || typeof element3.namespaceURI !== "string" || typeof element3.insertBefore !== "function" || typeof element3.hasChildNodes !== "function" || // NodeType clobbering probe. Cached Node.prototype.nodeType getter
     // returns the integer 1 for any Element regardless of realm; direct
     // read on a clobbered form (e.g. <input name="nodeType">) returns
     // the named child element. Cheap addition — nodeType is read from
@@ -2397,11 +2407,12 @@ function createDOMPurify() {
       }
       if (_isClobbered(currentNode)) {
         _forceRemove(currentNode);
-      } else {
-        arrayPop(DOMPurify.removed);
+        return false;
       }
+      return true;
     } catch (_3) {
       _removeAttribute(name, currentNode);
+      return false;
     }
   };
   const _sanitizeAttributes = function _sanitizeAttributes2(currentNode) {
@@ -2426,6 +2437,7 @@ function createDOMPurify() {
       const lcName = transformCaseFunc(name);
       const initValue = attrValue;
       let value2 = name === "value" ? initValue : stringTrim(initValue);
+      let recreatedNamedProp = false;
       hookEvent.attrName = lcName;
       hookEvent.attrValue = value2;
       hookEvent.keepAttr = true;
@@ -2435,6 +2447,7 @@ function createDOMPurify() {
       if (SANITIZE_NAMED_PROPS && (lcName === "id" || lcName === "name") && stringIndexOf(value2, SANITIZE_NAMED_PROPS_PREFIX) !== 0) {
         _removeAttribute(name, currentNode, attr);
         value2 = SANITIZE_NAMED_PROPS_PREFIX + value2;
+        recreatedNamedProp = true;
       }
       if (SAFE_FOR_XML && regExpTest(/((--!?|])>)|<\/(style|script|title|xmp|textarea|noscript|iframe|noembed|noframes)/i, value2)) {
         _removeAttribute(name, currentNode, attr);
@@ -2464,7 +2477,10 @@ function createDOMPurify() {
       }
       value2 = _applyTrustedTypesToAttribute(lcTag, lcName, namespaceURI, value2);
       if (value2 !== initValue) {
-        _setAttributeValue(currentNode, name, namespaceURI, value2);
+        const cleanWrite = _setAttributeValue(currentNode, name, namespaceURI, value2);
+        if (cleanWrite && recreatedNamedProp) {
+          arrayPop(DOMPurify.removed);
+        }
       }
     }
     _executeHooks(hooks.afterSanitizeAttributes, currentNode, null);
@@ -2602,7 +2618,7 @@ function createDOMPurify() {
       } else {
         body.appendChild(importedNode);
       }
-      _sanitizeAttachedShadowRoots(importedNode);
+      _sanitizeAttachedShadowRoots(body);
     } else {
       if (!RETURN_DOM && !SAFE_FOR_TEMPLATES && !WHOLE_DOCUMENT && // eslint-disable-next-line unicorn/prefer-includes
       dirty.indexOf("<") === -1) {
@@ -30856,13 +30872,14 @@ function iconToSVG(icon2, customisations) {
     const hFlip = props.hFlip;
     const vFlip = props.vFlip;
     let rotation = props.rotate;
-    if (hFlip) if (vFlip) rotation += 2;
-    else {
-      transformations.push("translate(" + (box.width + box.left).toString() + " " + (0 - box.top).toString() + ")");
-      transformations.push("scale(-1 1)");
-      box.top = box.left = 0;
-    }
-    else if (vFlip) {
+    if (hFlip) {
+      if (vFlip) rotation += 2;
+      else {
+        transformations.push("translate(" + (box.width + box.left).toString() + " " + (0 - box.top).toString() + ")");
+        transformations.push("scale(-1 1)");
+        box.top = box.left = 0;
+      }
+    } else if (vFlip) {
       transformations.push("translate(" + (0 - box.left).toString() + " " + (box.height + box.top).toString() + ")");
       transformations.push("scale(1 -1)");
       box.top = box.left = 0;
@@ -30881,7 +30898,6 @@ function iconToSVG(icon2, customisations) {
       case 3:
         tempValue = box.width / 2 + box.left;
         transformations.unshift("rotate(-90 " + tempValue.toString() + " " + tempValue.toString() + ")");
-        break;
     }
     if (rotation % 2 === 1) {
       if (box.left !== box.top) {
@@ -31738,7 +31754,7 @@ function mergeWithDeep(target, source, merge6, stack) {
   stack.set(source, target);
   if (Array.isArray(source)) {
     source = source.slice();
-    for (let i4 = 0; i4 < source.length; i4++) source[i4] = source[i4] ?? void 0;
+    for (let i4 = 0; i4 < source.length; i4++) if (!(i4 in source)) source[i4] = void 0;
   }
   const sourceKeys = [...Object.keys(source), ...getSymbols(source)];
   for (let i4 = 0; i4 < sourceKeys.length; i4++) {
@@ -189320,7 +189336,7 @@ export {
   (*! Bundled license information:
   
   dompurify/dist/purify.es.mjs:
-    (*! @license DOMPurify 3.4.14 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.4.14/LICENSE *)
+    (*! @license DOMPurify 3.4.15 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.4.15/LICENSE *)
   
   lodash-es/lodash.js:
     (**
