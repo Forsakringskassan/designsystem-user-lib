@@ -1,13 +1,13 @@
 {
   "terms": [
     "Användaranpassat Designsystem",
+    "Visuellt",
     "Datumväljare 2",
     "FDatepickerField",
     "Betygsmodal",
     "CRatingModal",
     "Betyg",
     "CRating",
-    "Visuellt",
     "Densitet",
     "Datumväljare",
     "FDatepickerField"
@@ -16,6 +16,11 @@
     {
       "url": "index.html",
       "title": "Användaranpassat Designsystem",
+      "terms": []
+    },
+    {
+      "url": "style/index.html",
+      "title": "Visuellt",
       "terms": []
     },
     {
@@ -40,11 +45,6 @@
       ]
     },
     {
-      "url": "style/index.html",
-      "title": "Visuellt",
-      "terms": []
-    },
-    {
       "url": "style/density.html",
       "title": "Densitet",
       "terms": []
@@ -60,11 +60,11 @@
   "mapping": {
     "0": 0,
     "1": 1,
-    "2": 1,
+    "2": 2,
     "3": 2,
-    "4": 2,
+    "4": 3,
     "5": 3,
-    "6": 3,
+    "6": 4,
     "7": 4,
     "8": 5,
     "9": 6,
