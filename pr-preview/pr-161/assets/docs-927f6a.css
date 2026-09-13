@@ -185,7 +185,7 @@
   --fkds-color-header-text-primary: #ffffff;
   --fkds-focus-indicator-color: #1b1e23;
   --fkds-focus-indicator-color-background: #ffffff;
-  --fkui-theme-default-version: "6.56.0";
+  --fkui-theme-default-version: "6.57.1";
 }
 
 /* sfc-style:/home/runner/work/docs-live-example/docs-live-example/src/LiveExampleSourcecode.vue?type=style&index=0 */
@@ -527,24 +527,24 @@ h5 + h6, .heading--h5 + h6, h5 + .heading--h6, .heading--h5 + .heading--h6 {
   display: block !important;
 }
 
-button:focus,
-a:focus,
-a.button:focus,
-img:focus,
-select:focus,
-textarea:focus,
-input[type=submit]:focus,
-input[type=text]:focus,
-input[type=email]:focus,
-input[type=tel]:focus,
-input[type=image]:focus,
-input[type=search]:focus,
-[tabindex]:focus {
+button:focus-visible,
+a:focus-visible,
+a.button:focus-visible,
+img:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+input[type=submit]:focus-visible,
+input[type=text]:focus-visible,
+input[type=email]:focus-visible,
+input[type=tel]:focus-visible,
+input[type=image]:focus-visible,
+input[type=search]:focus-visible,
+[tabindex]:focus-visible {
   box-shadow: var(--f-focus-box-shadow);
   outline: 3px solid transparent;
 }
 
-[tabindex="-1"]:focus {
+[tabindex="-1"]:focus-visible {
   box-shadow: none;
   outline: none;
 }
@@ -1527,7 +1527,7 @@ input[type=search]:focus,
   transition-property: background-color, border-color, transform;
   transition-timing-function: var(--f-button-animation-curve);
 }
-.button:focus, .calendar-navbar__year-selector-button:focus {
+.button:focus-visible, .calendar-navbar__year-selector-button:focus-visible {
   background-color: var(--fkds-color-action-background-secondary-focus);
   border-color: var(--fkds-color-action-border-primary-default);
   color: var(--fkds-color-action-text-primary-focus);
@@ -1545,7 +1545,7 @@ input[type=search]:focus,
   color: var(--fkds-color-action-text-primary-active);
   transform: translateY(1px);
 }
-.button:focus, .calendar-navbar__year-selector-button:focus {
+.button:focus-visible, .calendar-navbar__year-selector-button:focus-visible {
   box-shadow: var(--f-focus-box-shadow);
   outline: 3px solid transparent;
 }
@@ -1575,7 +1575,7 @@ input[type=search]:focus,
   transition-property: background-color, border-color, transform;
   transition-timing-function: var(--f-button-animation-curve);
 }
-.button--primary:focus {
+.button--primary:focus-visible {
   background-color: var(--fkds-color-action-background-primary-focus);
   border-color: transparent;
   color: var(--fkds-color-action-text-inverted-focus);
@@ -1593,7 +1593,7 @@ input[type=search]:focus,
   color: var(--fkds-color-action-text-inverted-active);
   transform: translateY(1px);
 }
-.button--primary:focus {
+.button--primary:focus-visible {
   box-shadow: var(--f-focus-box-shadow);
   outline: 3px solid transparent;
 }
@@ -1623,7 +1623,7 @@ input[type=search]:focus,
   transition-property: background-color, border-color, transform;
   transition-timing-function: var(--f-button-animation-curve);
 }
-.button--secondary:focus {
+.button--secondary:focus-visible {
   background-color: var(--fkds-color-action-background-secondary-focus);
   border-color: var(--fkds-color-action-border-primary-default);
   color: var(--fkds-color-action-text-primary-focus);
@@ -1641,7 +1641,7 @@ input[type=search]:focus,
   color: var(--fkds-color-action-text-primary-active);
   transform: translateY(1px);
 }
-.button--secondary:focus {
+.button--secondary:focus-visible {
   box-shadow: var(--f-focus-box-shadow);
   outline: 3px solid transparent;
 }
@@ -1677,7 +1677,7 @@ input[type=search]:focus,
   transition-property: background-color, border-color, transform;
   transition-timing-function: var(--f-button-animation-curve);
 }
-.button--discrete:focus, .button--text:focus {
+.button--discrete:focus-visible, .button--text:focus-visible {
   background-color: transparent;
   border-color: transparent;
   color: var(--fkds-color-action-text-primary-default);
@@ -1695,7 +1695,7 @@ input[type=search]:focus,
   color: var(--fkds-color-action-text-primary-hover);
   transform: translateY(1px);
 }
-.button--discrete:focus, .button--text:focus {
+.button--discrete:focus-visible, .button--text:focus-visible {
   box-shadow: var(--f-focus-box-shadow);
   outline: 3px solid transparent;
 }
@@ -1732,7 +1732,7 @@ input[type=search]:focus,
   box-shadow: none;
   mix-blend-mode: multiply;
 }
-.button--discrete, .button--text, .button--discrete:focus, .button--discrete:active, .button--discrete:hover {
+.button--discrete, .button--text, .button--discrete:focus-visible, .button--discrete:active, .button--discrete:hover {
   border-radius: var(--f-button-discrete-radius-hover);
 }
 .button--discrete > .button__icon, .button--text > .button__icon {
@@ -1760,7 +1760,7 @@ input[type=search]:focus,
   transition-property: background-color, border-color, transform;
   transition-timing-function: var(--f-button-animation-curve);
 }
-.button--discrete-inverted:focus {
+.button--discrete-inverted:focus-visible {
   background-color: transparent;
   border-color: transparent;
   color: var(--fkds-color-action-text-inverted-default);
@@ -1778,7 +1778,7 @@ input[type=search]:focus,
   color: var(--fkds-color-action-text-inverted-hover);
   transform: translateY(1px);
 }
-.button--discrete-inverted:focus {
+.button--discrete-inverted:focus-visible {
   box-shadow: var(--f-focus-box-shadow);
   outline: 3px solid transparent;
 }
@@ -1802,7 +1802,7 @@ input[type=search]:focus,
     width: auto;
   }
 }
-.button--discrete-inverted, .button--discrete-inverted:focus, .button--discrete-inverted:active, .button--discrete-inverted:hover {
+.button--discrete-inverted, .button--discrete-inverted:focus-visible, .button--discrete-inverted:active, .button--discrete-inverted:hover {
   border-radius: var(--f-button-discrete-radius-hover);
 }
 .button--tertiary, .calendar-navbar__year-selector-button {
@@ -1817,7 +1817,7 @@ input[type=search]:focus,
   transition-property: background-color, border-color, transform;
   transition-timing-function: var(--f-button-animation-curve);
 }
-.button--tertiary:focus, .calendar-navbar__year-selector-button:focus {
+.button--tertiary:focus-visible, .calendar-navbar__year-selector-button:focus-visible {
   background-color: transparent;
   border-color: transparent;
   color: var(--fkds-color-action-text-primary-focus);
@@ -1835,7 +1835,7 @@ input[type=search]:focus,
   color: var(--fkds-color-action-text-primary-active);
   transform: translateY(1px);
 }
-.button--tertiary:focus, .calendar-navbar__year-selector-button:focus {
+.button--tertiary:focus-visible, .calendar-navbar__year-selector-button:focus-visible {
   box-shadow: var(--f-focus-box-shadow);
   outline: 3px solid transparent;
 }
@@ -1862,13 +1862,13 @@ input[type=search]:focus,
 .button--tertiary--muted, .calendar-navbar__year-selector-button, .button--tertiary--black {
   color: var(--fkds-color-action-text-secondary-default);
 }
-.button--tertiary--muted:hover, .calendar-navbar__year-selector-button:hover, .button--tertiary--muted:active, .calendar-navbar__year-selector-button:active, .button--tertiary--muted:focus, .calendar-navbar__year-selector-button:focus, .button--tertiary--black:hover, .button--tertiary--black:active, .button--tertiary--black:focus {
+.button--tertiary--muted:hover, .calendar-navbar__year-selector-button:hover, .button--tertiary--muted:active, .calendar-navbar__year-selector-button:active, .button--tertiary--muted:focus-visible, .calendar-navbar__year-selector-button:focus-visible, .button--tertiary--black:hover, .button--tertiary--black:active, .button--tertiary--black:focus-visible {
   color: var(--fkds-color-action-text-secondary-default);
 }
 .button--tertiary--inverted {
   color: var(--fkds-color-action-text-inverted-default);
 }
-.button--tertiary--inverted:hover, .button--tertiary--inverted:active, .button--tertiary--inverted:focus {
+.button--tertiary--inverted:hover, .button--tertiary--inverted:active, .button--tertiary--inverted:focus-visible {
   color: var(--fkds-color-action-text-inverted-focus);
   background-color: transparent;
 }
@@ -2295,7 +2295,7 @@ input[type=search]:focus,
 .radio-button-group--border .radio-button-group__content .radio-button:last-child, .checkbox-group--border .checkbox-group__content .checkbox:last-child {
   border-bottom: var(--f-border-width-medium) solid var(--fkds-color-border-primary);
 }
-.radio-button-group--border .radio-button-group__content .radio-button input:focus + label, .checkbox-group--border .checkbox-group__content .checkbox input:focus + label {
+.radio-button-group--border .radio-button-group__content .radio-button input:focus-visible + label, .checkbox-group--border .checkbox-group__content .checkbox input:focus-visible + label {
   outline: 2px solid var(--fkds-color-border-primary);
   outline-offset: -2px;
 }
@@ -2319,6 +2319,7 @@ input[type=search]:focus,
 
 .radio-button__details,
 .checkbox__details {
+  color: var(--fkds-color-text-secondary);
   display: block;
   margin-top: calc(0.25rem * var(--f-density-factor));
 }
@@ -2433,7 +2434,7 @@ input[type=search]:focus,
 .checkbox input[type=checkbox]:checked + .checkbox__label::after {
   opacity: 1;
 }
-.checkbox input[type=checkbox]:focus + .checkbox__label {
+.checkbox input[type=checkbox]:focus-visible + .checkbox__label {
   box-shadow: var(--f-focus-box-shadow);
   outline: 3px solid transparent;
 }
@@ -2501,7 +2502,7 @@ input[type=search]:focus,
     forced-color-adjust: none;
   }
 }
-.radio-button-group--chip input[type=radio]:focus + label.radio-button__label {
+.radio-button-group--chip input[type=radio]:focus-visible + label.radio-button__label {
   border-radius: 20px;
 }
 
@@ -2584,7 +2585,7 @@ input[type=search]:focus,
     forced-color-adjust: none;
   }
 }
-.checkbox-group--chip input[type=checkbox]:focus + label.checkbox__label {
+.checkbox-group--chip input[type=checkbox]:focus-visible + label.checkbox__label {
   border-radius: 20px;
 }
 
@@ -2849,12 +2850,12 @@ input[type=search]:focus,
   list-style-type: none;
   border-radius: 2px;
 }
-.dialogue-tree__list-item:focus-within {
+.dialogue-tree__list-item:has(:focus-visible) {
   z-index: 2;
   box-shadow: var(--f-focus-box-shadow);
   outline: 3px solid transparent;
 }
-.dialogue-tree__list-item:focus-within:not(:first-child) {
+.dialogue-tree__list-item:has(:focus-visible):not(:first-child) {
   border-top: 1px solid var(--fkds-color-border-primary);
 }
 .dialogue-tree__list-item {
@@ -2874,7 +2875,7 @@ input[type=search]:focus,
   background-color: var(--fkds-color-action-background-secondary-hover);
   z-index: 1;
 }
-.dialogue-tree__list-item button:focus {
+.dialogue-tree__list-item button:focus-visible {
   box-shadow: none;
 }
 .dialogue-tree__list-item button {
@@ -2915,7 +2916,7 @@ input[type=search]:focus,
   transition-property: background-color, border-color, transform;
   transition-timing-function: var(--f-button-animation-curve);
 }
-.entrypoint:focus {
+.entrypoint:focus-visible {
   background-color: var(--fkds-color-action-background-primary-focus);
   border-color: transparent;
   color: var(--fkds-color-action-text-inverted-focus);
@@ -2933,7 +2934,7 @@ input[type=search]:focus,
   color: var(--fkds-color-action-text-inverted-active);
   transform: translateY(1px);
 }
-.entrypoint:focus {
+.entrypoint:focus-visible {
   box-shadow: var(--f-focus-box-shadow);
   outline: 3px solid transparent;
 }
@@ -3106,7 +3107,7 @@ input[type=search]:focus,
   font-weight: var(--f-font-weight-bold);
   line-height: var(--f-line-height-large);
 }
-.expandable-panel__heading button:focus, .expandable-panel__heading button:hover {
+.expandable-panel__heading button:focus-visible, .expandable-panel__heading button:hover {
   background-color: var(--fkds-color-interactive-surface-background-primary-hover);
 }
 .expandable-panel__title {
@@ -3298,7 +3299,7 @@ input[type=search]:focus,
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
-.file-selector input[type=file]:focus + label {
+.file-selector input[type=file]:focus-visible + label {
   box-shadow: var(--f-focus-box-shadow);
   outline: 3px solid transparent;
 }
@@ -4243,7 +4244,7 @@ input[type=search]:focus,
   padding: 0.5rem;
   transition: background-color var(--f-animation-duration-medium) ease-out;
 }
-.layout-navigation__navigation__inner__button:focus {
+.layout-navigation__navigation__inner__button:focus-visible {
   background-color: transparent;
 }
 .layout-navigation__navigation__inner__button:hover {
@@ -4252,7 +4253,7 @@ input[type=search]:focus,
 .layout-navigation__navigation__inner__button:active {
   background-color: var(--fkds-color-action-background-secondary-active);
 }
-.layout-navigation__navigation__inner__button:focus {
+.layout-navigation__navigation__inner__button:focus-visible {
   box-shadow: var(--f-focus-box-shadow);
   outline: 3px solid transparent;
 }
@@ -5345,7 +5346,7 @@ input[type=search]:focus,
   border: var(--f-border-width-medium) solid transparent;
   opacity: 1;
 }
-.radio-button input[type=radio]:focus + label {
+.radio-button input[type=radio]:focus-visible + label {
   box-shadow: var(--f-focus-box-shadow);
   outline: 3px solid transparent;
 }
@@ -5415,7 +5416,7 @@ input[type=search]:focus,
 .select-field__select:hover {
   background-color: var(--fkds-color-action-background-secondary-hover);
 }
-.select-field__select:focus {
+.select-field__select:focus-visible {
   background-color: var(--fkds-color-background-primary);
 }
 .select-field__select:disabled {
@@ -5516,19 +5517,19 @@ input[type=search]:focus,
   outline: 1px solid var(--fkds-color-border-primary);
 }
 
-.table tbody .table__row:focus-within, .table tbody .table__row--focus-within {
+.table tbody .table__row:has(:focus-visible), .table tbody .table__row--focus-within {
   background: var(--fkds-color-select-background-primary-hover);
   color: var(--fkds-color-text-primary);
 }
 
-.table tbody .table__row:focus, .table tbody .table__row--focus {
+.table tbody .table__row:focus-visible, .table tbody .table__row--focus {
   background: var(--fkds-color-select-background-primary-hover);
   color: var(--fkds-color-text-primary);
   outline: 2px solid var(--fkds-color-border-strong);
   box-shadow: none;
 }
 
-.table--hover tbody .table__row:hover.table__row--active, .table--striped tbody .table__row:nth-child(even).table__row--active, .table tbody .table__row--active, .table tbody .table__row:focus.table__row--active, .table tbody .table__row--focus.table__row--active, .table tbody .table__row:focus-within.table__row--active, .table tbody .table__row--focus-within.table__row--active {
+.table--hover tbody .table__row:hover.table__row--active, .table--striped tbody .table__row:nth-child(even).table__row--active, .table tbody .table__row--active, .table tbody .table__row:focus-visible.table__row--active, .table tbody .table__row--focus.table__row--active, .table tbody .table__row:has(:focus-visible).table__row--active, .table tbody .table__row--focus-within.table__row--active {
   background: var(--fkds-color-select-background-primary-hover);
   color: var(--fkds-color-text-primary);
 }
@@ -5550,7 +5551,7 @@ input[type=search]:focus,
   width: 100%;
   border: 2px solid transparent;
 }
-.table:focus {
+.table:focus-visible {
   border-color: var(--fkds-color-border-strong);
   box-shadow: none;
 }
@@ -5734,7 +5735,7 @@ input[type=search]:focus,
   transition-property: background-color, border-color, transform;
   transition-timing-function: var(--f-button-animation-curve);
 }
-.table__button:focus {
+.table__button:focus-visible {
   background-color: transparent;
   border-color: transparent;
   color: var(--fkds-color-action-text-primary-focus);
@@ -5752,7 +5753,7 @@ input[type=search]:focus,
   color: var(--fkds-color-action-text-primary-active);
   transform: translateY(1px);
 }
-.table__button:focus {
+.table__button:focus-visible {
   box-shadow: var(--f-focus-box-shadow);
   outline: 3px solid transparent;
 }
@@ -5849,7 +5850,7 @@ input[type=search]:focus,
   text-wrap: nowrap;
   border: 1px solid transparent;
 }
-.table-ng__cell:focus, .table-ng__cell:focus-within {
+.table-ng__cell:focus-visible, .table-ng__cell:has(:focus-visible) {
   box-shadow: none;
   outline: 3px solid var(--fkds-focus-indicator-color);
   outline-offset: -3px;
@@ -5857,10 +5858,10 @@ input[type=search]:focus,
 .table-ng__cell:not(.table-ng__cell--menu-open):hover:has(button) {
   background: var(--fkds-color-action-background-secondary-hover);
 }
-.table-ng__cell input:focus,
-.table-ng__cell button:focus,
-.table-ng__cell a:focus,
-.table-ng__cell [role=combobox]:focus {
+.table-ng__cell input:focus-visible,
+.table-ng__cell button:focus-visible,
+.table-ng__cell a:focus-visible,
+.table-ng__cell [role=combobox]:focus-visible {
   box-shadow: none;
 }
 .table-ng__cell--static__text {
@@ -5897,22 +5898,31 @@ input[type=search]:focus,
 .table-ng__cell--select:hover, .table-ng__cell--text:hover {
   background: var(--fkds-color-action-background-secondary-hover);
 }
-.table-ng__cell--select:focus .table-ng__editable, .table-ng__cell--select:focus-within .table-ng__editable, .table-ng__cell--text:focus .table-ng__editable, .table-ng__cell--text:focus-within .table-ng__editable {
+.table-ng__cell--select:focus-within {
+  box-shadow: none;
+  outline: 3px solid var(--fkds-focus-indicator-color);
+  outline-offset: -3px;
+}
+.table-ng__cell--select:focus-within .table-ng__editable {
   box-shadow: inset 0 -3px 0 0 var(--fkds-color-border-strong);
   border-radius: 0;
 }
-.table-ng__cell--text:hover:has(.table-ng__textedit:focus) {
+.table-ng__cell--text:focus-visible .table-ng__editable, .table-ng__cell--text:has(:focus-visible) .table-ng__editable {
+  box-shadow: inset 0 -3px 0 0 var(--fkds-color-border-strong);
+  border-radius: 0;
+}
+.table-ng__cell--text:hover:has(.table-ng__textedit:focus-visible) {
   background: transparent;
 }
 .table-ng__cell .table-ng__editable {
   min-block-size: calc(var(--f-font-size-standard) * var(--f-line-height-large) + 0.25rem * var(--f-density-factor) * 2 + 6px);
 }
-.table-ng__cell .table-ng__editable:focus-within {
+.table-ng__cell .table-ng__editable:has(:focus-visible) {
   box-shadow: inset 0 -3px 0 0 var(--fkds-color-border-strong);
   border-radius: 0;
   background: transparent;
 }
-.table-ng__cell .table-ng__editable:hover:not(:focus-within) {
+.table-ng__cell .table-ng__editable:hover:not(:has(:focus-visible)) {
   box-shadow: inset 0 -3px 0 0 var(--fkds-color-border-strong);
   border-radius: 0;
 }
@@ -5923,15 +5933,15 @@ input[type=search]:focus,
 .table-ng__cell--text:focus-visible {
   box-shadow: none !important;
 }
-.table-ng__cell--text.table-ng__cell--error:not(:focus-within) .table-ng__editable {
+.table-ng__cell--text.table-ng__cell--error:not(:has(:focus-visible)) .table-ng__editable {
   box-shadow: inset 0 -3px 0 0 var(--fkds-color-feedback-text-negative);
   border-radius: 0;
 }
-.table-ng__cell--text.table-ng__cell--error:hover:not(:focus-within) .table-ng__editable {
+.table-ng__cell--text.table-ng__cell--error:hover:not(:has(:focus-visible)) .table-ng__editable {
   box-shadow: inset 0 -3px 0 0 var(--fkds-color-feedback-text-negative);
   border-radius: 0;
 }
-.table-ng__cell--text.table-ng__cell--error:focus .table-ng__editable {
+.table-ng__cell--text.table-ng__cell--error:focus-visible .table-ng__editable {
   box-shadow: inset 0 -3px 0 0 var(--fkds-color-feedback-text-negative);
   border-radius: 0;
 }
@@ -5940,14 +5950,14 @@ input[type=search]:focus,
   box-sizing: border-box;
   position: relative;
 }
-.table-ng__cell--text .table-ng__editable:focus-within {
+.table-ng__cell--text .table-ng__editable:has(:focus-visible) {
   box-shadow: inset 0 -3px 0 0 var(--fkds-color-border-strong);
   border-radius: 0;
 }
-.table-ng__cell--text .table-ng__editable:focus-within .table-ng__editable__text {
+.table-ng__cell--text .table-ng__editable:has(:focus-visible) .table-ng__editable__text {
   visibility: hidden;
 }
-.table-ng__cell--text .table-ng__editable:focus-within .table-ng__textedit {
+.table-ng__cell--text .table-ng__editable:has(:focus-visible) .table-ng__textedit {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -6012,7 +6022,7 @@ input[type=search]:focus,
   padding: calc(0.25rem * var(--f-density-factor)) 0.5rem;
   border: 1px solid transparent;
 }
-.table-ng__cell--custom:focus {
+.table-ng__cell--custom:focus-visible {
   box-shadow: none;
   outline: 3px solid var(--fkds-focus-indicator-color);
   outline-offset: -3px;
@@ -6046,7 +6056,7 @@ input[type=search]:focus,
   padding: 0;
   background: transparent;
 }
-.table-ng__textedit:focus {
+.table-ng__textedit:focus-visible {
   box-shadow: none !important;
 }
 
@@ -6077,7 +6087,7 @@ input[type=search]:focus,
   }
   .table-ng__cell--text:hover .table-ng__editable,
   .table-ng__cell--select:hover .table-ng__editable,
-  .table-ng__cell--text:focus-within .table-ng__editable,
+  .table-ng__cell--text:has(:focus-visible) .table-ng__editable,
   .table-ng__cell--select:focus-within .table-ng__editable {
     box-shadow: inset 0 -3px 0 0 Highlight;
     border-radius: 0;
@@ -6090,13 +6100,11 @@ input[type=search]:focus,
     box-shadow: none;
     border-radius: 0;
   }
-  .table-ng [tabindex="0"]:focus,
   .table-ng [tabindex="0"]:focus-visible {
     outline: 3px solid CanvasText;
     outline-offset: -3px;
     background: transparent;
   }
-  .table-ng__cell :is(button, a, input, select, [role=combobox]):focus,
   .table-ng__cell :is(button, a, input, select, [role=combobox]):focus-visible {
     outline: none;
   }
@@ -6106,7 +6114,7 @@ input[type=search]:focus,
   border-bottom: 2px solid transparent;
   border-right: 1px solid transparent;
 }
-.table-ng__column:focus, .table-ng__column:focus-within {
+.table-ng__column:focus-visible, .table-ng__column:has(:focus-visible) {
   box-shadow: none;
   outline: 3px solid var(--fkds-focus-indicator-color);
   outline-offset: -3px;
@@ -6121,7 +6129,6 @@ input[type=search]:focus,
   vertical-align: middle;
   accent-color: var(--fkds-color-action-background-primary-default);
 }
-.table-ng__column--selectable input[type=checkbox]:focus,
 .table-ng__column--selectable input[type=checkbox]:focus-visible {
   box-shadow: none;
 }
@@ -6674,11 +6681,11 @@ input[type=search]:focus,
   background-color: var(--fkds-color-background-secondary);
   font-size: 1rem;
 }
-.calendar-month__button:focus {
+.calendar-month__button:focus-visible {
   position: relative;
   z-index: 9997;
 }
-.calendar-month__button:focus[tabindex="-1"] {
+.calendar-month__button:focus-visible[tabindex="-1"] {
   box-shadow: var(--f-focus-box-shadow);
 }
 
