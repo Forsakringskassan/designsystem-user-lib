@@ -2,7 +2,7 @@
 import { ElementIdService } from "@fkui/logic";
 import { FLabel } from "@fkui/vue";
 
-const selected = defineModel({ type: Number });
+const selected = defineModel({ type: Number, default: null });
 
 withDefaults(defineProps<{ id?: string; count?: number }>(), {
     id: () => ElementIdService.generateElementId(),
