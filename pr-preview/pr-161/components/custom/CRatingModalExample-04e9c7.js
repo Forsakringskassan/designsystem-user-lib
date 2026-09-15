@@ -103,7 +103,7 @@ var CRating_default = /* @__PURE__ */ _defineComponent({
     id: { type: String, required: false, default: () => ElementIdService.generateElementId() },
     count: { type: Number, required: false, default: 5 }
   }, {
-    "modelValue": { type: Number },
+    "modelValue": { type: Number, default: null },
     "modelModifiers": {}
   }),
   emits: ["update:modelValue"],
