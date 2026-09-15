@@ -48,7 +48,7 @@
     "@fkui/tsconfig": "6.57.0",
     "@fkui/user-lib-design": "1.5.17",
     "@fkui/vue": "6.57.1",
-    "@forsakringskassan/vite-lib-config": "5.11.1",
+    "@forsakringskassan/vite-lib-config": "5.12.1",
     "@forsakringskassan/vitest-config": "5.0.0",
     "@forsakringskassan/vitest-config-jsdom": "5.0.0",
     "@vue/test-utils": "2.5.0",
