@@ -2,12 +2,12 @@
   "terms": [
     "Användaranpassat Designsystem",
     "Visuellt",
+    "Datumväljare 2",
+    "FDatepickerField",
     "Betygsmodal",
     "CRatingModal",
     "Betyg",
     "CRating",
-    "Datumväljare 2",
-    "FDatepickerField",
     "Densitet",
     "Datumväljare",
     "FDatepickerField"
@@ -24,6 +24,13 @@
       "terms": []
     },
     {
+      "url": "components/fkds/foo.html",
+      "title": "Datumväljare 2",
+      "terms": [
+        "FDatepickerField"
+      ]
+    },
+    {
       "url": "components/custom/cratingmodal.html",
       "title": "Betygsmodal",
       "terms": [
@@ -35,13 +42,6 @@
       "title": "Betyg",
       "terms": [
         "CRating"
-      ]
-    },
-    {
-      "url": "components/fkds/foo.html",
-      "title": "Datumväljare 2",
-      "terms": [
-        "FDatepickerField"
       ]
     },
     {
