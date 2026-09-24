@@ -909,8 +909,7 @@ function setup() {
       );
       fragment.append(li);
     }
-    results.replaceChildren();
-    results.append(fragment);
+    results.replaceChildren(fragment);
   }
   function clickOutside(event) {
     const rect = dialog.getBoundingClientRect();
