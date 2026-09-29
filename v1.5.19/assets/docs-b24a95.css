@@ -8573,16 +8573,25 @@ main #aside dd {
   margin: 0 0 1.5rem;
 }
 
+.user-background {
+  color-scheme: light dark;
+}
+
 @media (prefers-color-scheme: light) {
   .user-background {
-    background: repeating-conic-gradient(#fff 0 90deg, rgb(235, 235, 235) 0 180deg) 0 0/20px 20px round;
+    background: repeating-conic-gradient(Canvas 0 90deg, color-mix(in srgb, Canvas 92%, CanvasText) 0 180deg) 0 0/20px 20px round;
   }
 }
 @media (prefers-color-scheme: dark) {
   .user-background {
-    background: repeating-conic-gradient(#1b1e23 0 90deg, #313438 0 180deg) 0 0/20px 20px round;
+    background: repeating-conic-gradient(Canvas 0 90deg, color-mix(in srgb, Canvas 86%, CanvasText) 0 180deg) 0 0/20px 20px round;
   }
 }
+.code-preview[data-background=solid] .user-background {
+  background: Canvas;
+  color: CanvasText;
+}
+
 .code-preview main,
 .code-preview header,
 .code-preview footer {
