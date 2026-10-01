@@ -4,10 +4,10 @@
     "Visuellt",
     "Datumväljare 2",
     "FDatepickerField",
-    "Betygsmodal",
-    "CRatingModal",
     "Betyg",
     "CRating",
+    "Betygsmodal",
+    "CRatingModal",
     "Densitet",
     "Datumväljare",
     "FDatepickerField"
@@ -31,17 +31,17 @@
       ]
     },
     {
-      "url": "components/custom/cratingmodal.html",
-      "title": "Betygsmodal",
-      "terms": [
-        "CRatingModal"
-      ]
-    },
-    {
       "url": "components/custom/crating.html",
       "title": "Betyg",
       "terms": [
         "CRating"
+      ]
+    },
+    {
+      "url": "components/custom/cratingmodal.html",
+      "title": "Betygsmodal",
+      "terms": [
+        "CRatingModal"
       ]
     },
     {
