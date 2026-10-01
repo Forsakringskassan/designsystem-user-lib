@@ -53,7 +53,7 @@
     "@forsakringskassan/vitest-config-jsdom": "5.0.0",
     "@vue/test-utils": "2.5.1",
     "flush-promises": "1.0.2",
-    "html-validate": "11.16.0",
+    "html-validate": "11.16.1",
     "vite": "8.3.1",
     "vitest": "5.0.2",
     "vue": "3.5.43"
