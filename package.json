@@ -3,7 +3,7 @@
   "version": "1.5.22",
   "private": true,
   "description": "fkui custom user monorepo",
-  "homepage": "https://forsakringskassan.github.io/designsystem-user-lib/",
+  "homepage": "https://forsakringskassan.github.io/designsystem-user-lib",
   "bugs": "https://github.com/Forsakringskassan/designsystem-user-lib/issues",
   "repository": {
     "type": "git",
@@ -60,7 +60,7 @@
     "@fkui/date": "6.61.0",
     "@fkui/vue": "6.61.0",
     "@forsakringskassan/commitlint-config": "4.2.8",
-    "@forsakringskassan/docs-generator": "3.15.2",
+    "@forsakringskassan/docs-generator": "3.18.0",
     "@forsakringskassan/docs-live-example": "3.0.3",
     "@forsakringskassan/eslint-config": "15.11.12",
     "@forsakringskassan/eslint-config-cli": "15.11.11",

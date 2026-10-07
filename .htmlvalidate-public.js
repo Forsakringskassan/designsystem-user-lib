@@ -13,6 +13,7 @@ module.exports = {
                 allowExternal: {
                     include: [
                         "^https://forsakringskassan.github.io/designsystem/",
+                        "^https://forsakringskassan.github.io/designsystem-user-lib/",
                         "^https://github.com/Forsakringskassan/",
                         "^https://developer.mozilla.org/",
                     ],
