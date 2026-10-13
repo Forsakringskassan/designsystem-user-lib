@@ -71,7 +71,7 @@
     "@forsakringskassan/prettier-config": "3.7.11",
     "@forsakringskassan/stylelint-config": "3.5.1",
     "@forsakringskassan/vite-lib-config": "5.13.2",
-    "@html-validate/release-scripts": "7.6.12",
+    "@html-validate/release-scripts": "7.6.14",
     "@types/estree": "1.0.9",
     "@types/node": "22.20.5",
     "@typescript/native": "npm:typescript@7.0.2",
