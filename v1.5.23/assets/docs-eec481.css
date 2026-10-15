@@ -7980,6 +7980,7 @@ main {
 #docs-title {
   grid-area: title;
   margin-top: 1.2rem;
+  margin-bottom: var(--docs-heading-margin-bottom-h1);
 }
 
 #docs-content {
