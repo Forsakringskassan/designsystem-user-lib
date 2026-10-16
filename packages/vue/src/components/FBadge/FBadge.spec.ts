@@ -4,9 +4,8 @@ import FBadge from "./FBadge.vue";
 import { statuses } from "./statuses";
 import "html-validate/vitest";
 
-function createWrapper({ props = {}, attrs = {} } = {}): VueWrapper {
+function createWrapper({ props = {} } = {}): VueWrapper {
     return mount(FBadge, {
-        attrs: { ...attrs },
         props: { ...props },
         slots: {
             default: "Badge text",
