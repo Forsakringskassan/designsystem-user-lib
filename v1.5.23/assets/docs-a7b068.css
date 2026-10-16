@@ -8735,7 +8735,8 @@ pre.mermaid:not([data-processed])::after {
 :root {
   --docs-background-color: #ffffff;
   --docs-font-family: "Inter Variable", sans-serif;
-  --docs-font-line-height: 1.5;
+  --docs-line-height: 1.5;
+  --docs-font-line-height: var(--docs-line-height);
   --docs-font-size: 16px;
   --docs-font-weight: normal;
   --docs-text-color-default: #1b1e23;
@@ -8891,6 +8892,26 @@ textarea {
   color: inherit;
   font: inherit;
   margin: 0;
+}
+
+:where(#docs-title:not(.code-preview *), #docs-content :not(.code-preview *)):where(ul, ol, dl, blockquote, .docs-messagebox) {
+  box-sizing: border-box;
+  max-width: min(100%, var(--docs-content-max-width, 100%), var(--docs-text-max-width, 100%));
+}
+
+:where(#docs-title:not(.code-preview *), #docs-content :not(.code-preview *)):where(#docs-title, .docs-heading, .code-preview, pre, .table, .docs-messagebox--details) {
+  box-sizing: border-box;
+  max-width: min(100%, var(--docs-content-max-width, 100%));
+}
+
+:where(#docs-title:not(.code-preview *), #docs-content :not(.code-preview *)):where(.code-preview[data-tags~=live-example]) {
+  box-sizing: border-box;
+  max-width: min(100%, var(--docs-live-example-max-width, 100%));
+}
+
+:where(#docs-content) p:not(.code-preview p) {
+  box-sizing: border-box;
+  max-width: min(100%, var(--docs-content-max-width, 100%), var(--docs-text-max-width, 680px));
 }
 
 /* inter-cyrillic-ext-wght-normal */
