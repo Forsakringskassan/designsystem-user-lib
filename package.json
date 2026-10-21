@@ -41,6 +41,14 @@
     "test": "vitest run",
     "vue": "npm run --workspace packages/vue --"
   },
+  "allowScripts": {
+    "@parcel/watcher": false,
+    "core-js": false,
+    "esbuild": true,
+    "fsevents": false,
+    "nx": false,
+    "unrs-resolver": true
+  },
   "commitlint": {
     "extends": "@forsakringskassan/commitlint-config/no-jira"
   },
@@ -68,7 +76,7 @@
     "@forsakringskassan/eslint-config-typescript-typeinfo": "15.12.0",
     "@forsakringskassan/eslint-config-vitest": "15.12.5",
     "@forsakringskassan/eslint-config-vue": "15.12.1",
-    "@forsakringskassan/prettier-config": "3.7.12",
+    "@forsakringskassan/prettier-config": "3.7.13",
     "@forsakringskassan/stylelint-config": "3.5.1",
     "@forsakringskassan/vite-lib-config": "5.13.3",
     "@html-validate/release-scripts": "7.6.17",
@@ -107,13 +115,5 @@
   "engines": {
     "node": "^22.16 || >= 24",
     "npm": ">= 7"
-  },
-  "allowScripts": {
-    "@parcel/watcher": false,
-    "core-js": false,
-    "esbuild": true,
-    "fsevents": false,
-    "nx": false,
-    "unrs-resolver": true
   }
 }
