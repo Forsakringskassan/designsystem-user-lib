@@ -21,7 +21,7 @@
     "@forsakringskassan/docs-live-example": "3.0.3"
   },
   "devDependencies": {
-    "@forsakringskassan/docs-generator": "3.22.2",
+    "@forsakringskassan/docs-generator": "3.22.3",
     "express": "5.3.0",
     "vue": "3.5.44"
   },
