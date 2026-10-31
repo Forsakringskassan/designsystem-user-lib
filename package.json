@@ -80,7 +80,6 @@
     "@forsakringskassan/stylelint-config": "3.5.1",
     "@forsakringskassan/vite-lib-config": "5.14.1",
     "@html-validate/release-scripts": "7.6.17",
-    "@types/estree": "1.0.10",
     "@types/node": "22.20.5",
     "@typescript/native": "npm:typescript@7.0.2",
     "@vue/server-renderer": "3.5.44",
