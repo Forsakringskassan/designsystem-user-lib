@@ -19,7 +19,6 @@ export default [
             "**/node_modules/**",
             "**/public/**",
             "**/temp/**",
-            "**/typedoc/**",
             "docs/examples/**/*-nolint*",
             "packages/date/lib/**",
             "packages/logic/lib/**",
