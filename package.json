@@ -85,7 +85,6 @@
     "@typescript/native": "npm:typescript@7.0.2",
     "@vue/server-renderer": "3.5.44",
     "autoprefixer": "10.6.2",
-    "cli-table": "0.3.11",
     "core-js": "3.51.0",
     "html-validate": "11.17.0",
     "html-validate-markdown": "6.0.0",
