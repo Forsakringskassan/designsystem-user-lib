@@ -76,7 +76,7 @@
     "@forsakringskassan/eslint-config-vue": "15.13.2",
     "@forsakringskassan/prettier-config": "3.7.13",
     "@forsakringskassan/stylelint-config": "3.5.1",
-    "@forsakringskassan/vite-lib-config": "5.15.0",
+    "@forsakringskassan/vite-lib-config": "5.15.1",
     "@html-validate/release-scripts": "7.6.17",
     "@types/node": "22.20.5",
     "@typescript/native": "npm:typescript@7.0.2",
