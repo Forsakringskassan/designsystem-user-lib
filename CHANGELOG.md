@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.5.25 (2026-11-04)
+
+### Bug Fixes
+
+* **deps:** update [@fkui](undefined/fkui) packages b78951e
+
 ## 1.5.24 (2026-10-28)
 
 ### Bug Fixes
