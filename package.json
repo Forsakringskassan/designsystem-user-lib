@@ -80,7 +80,7 @@
     "@html-validate/release-scripts": "7.6.17",
     "@types/node": "22.20.5",
     "@typescript/native": "npm:typescript@7.0.2",
-    "@vue/server-renderer": "3.5.44",
+    "@vue/server-renderer": "3.5.45",
     "core-js": "3.51.0",
     "html-validate": "11.18.0",
     "html-validate-markdown": "6.0.0",
@@ -94,7 +94,7 @@
     "typescript": "npm:@typescript/typescript6@6.0.2",
     "vite": "8.3.6",
     "vitest": "5.1.0",
-    "vue": "3.5.44",
+    "vue": "3.5.45",
     "vue-tsc": "3.3.14"
   },
   "engines": {
