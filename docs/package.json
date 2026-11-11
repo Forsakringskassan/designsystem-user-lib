@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@fkui/user-lib-vue": "*",
-    "@forsakringskassan/docs-generator": "3.23.1",
+    "@forsakringskassan/docs-generator": "3.24.1",
     "express": "5.3.0",
     "vue": "3.5.45"
   },
