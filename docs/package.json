@@ -14,10 +14,10 @@
     "clean": "rimraf -g *.tsbuildinfo"
   },
   "dependencies": {
-    "@fkui/date": "6.64.0",
-    "@fkui/design": "6.64.1",
-    "@fkui/icon-lib-default": "6.64.0",
-    "@fkui/vue": "6.64.1",
+    "@fkui/date": "6.65.0",
+    "@fkui/design": "6.65.0",
+    "@fkui/icon-lib-default": "6.65.0",
+    "@fkui/vue": "6.65.0",
     "@forsakringskassan/docs-live-example": "3.0.3"
   },
   "devDependencies": {
