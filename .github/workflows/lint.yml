@@ -20,7 +20,7 @@ jobs:
             - name: build
               run: npm run build
             - name: Prettier
-              uses: Forsakringskassan/prettier-config@b170cc346f291b88a74cf9ab01501aa61e4602a7 # v3.7.13
+              uses: Forsakringskassan/prettier-config@96cf7f1ae58a464095258ed66ce8fa09c54a433e # v3.7.14
             - name: ESLint
               if: success() || failure()
               uses: Forsakringskassan/eslint-config@11319b3f8060df95c74626793d0eb6653935d11e # v15.13.15
