@@ -87,7 +87,7 @@
     "html-validate-vue": "9.3.1",
     "jsdom": "31.0.1",
     "lerna": "10.1.1",
-    "npm-pkg-lint": "5.4.1",
+    "npm-pkg-lint": "5.4.2",
     "npm-run-all2": "9.0.4",
     "rimraf": "6.1.4",
     "sass": "1.108.2",
