@@ -85,7 +85,7 @@
     "html-validate": "11.21.1",
     "html-validate-markdown": "6.0.0",
     "html-validate-vue": "9.3.1",
-    "jsdom": "31.0.0",
+    "jsdom": "31.0.1",
     "lerna": "10.1.1",
     "npm-pkg-lint": "5.4.1",
     "npm-run-all2": "9.0.4",
