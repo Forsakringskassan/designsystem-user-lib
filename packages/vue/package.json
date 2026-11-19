@@ -32,11 +32,10 @@
     "htmlvalidate"
   ],
   "scripts": {
-    "prebuild": "run-s clean",
     "build": "run-s build:lib build:dts build:api",
-    "build:api": "fk-api-extractor --patch-augmentations --patch-declare-var-vls api-extractor.json",
+    "build:api": "fk-api-extractor --patch-augmentations --patch-declare-var-vls api-extractor.*.json",
     "build:dts": "vue-tsc -b",
-    "build:lib": "fk-build-vue-lib",
+    "build:lib": "fk-build-vue-lib --clean",
     "clean": "rimraf -g *.tsbuildinfo coverage dist public temp test-results",
     "start": "vite --"
   },
@@ -48,7 +47,7 @@
     "@fkui/tsconfig": "6.65.0",
     "@fkui/user-lib-design": "1.5.26",
     "@fkui/vue": "6.65.1",
-    "@forsakringskassan/vite-lib-config": "5.15.3",
+    "@forsakringskassan/vite-lib-config": "6.0.2",
     "@forsakringskassan/vitest-config": "5.1.0",
     "@forsakringskassan/vitest-config-jsdom": "5.1.0",
     "@vue/test-utils": "2.6.0",
